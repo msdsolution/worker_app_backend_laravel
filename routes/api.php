@@ -22,3 +22,4 @@ Route::post('/login', [ApiController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [ApiController::class, 'logout']);
 Route::post('/register', [ApiController::class, 'register']);
 Route::post('/create_job', [ApiController::class, 'createJob']);
+Route::get('/check_holiday/{date}', [ApiController::class, 'checkDateStatus']);

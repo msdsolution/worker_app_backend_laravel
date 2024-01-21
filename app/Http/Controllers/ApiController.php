@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Job;
 use App\Models\Job_Service_Cat;
+use App\Models\Holiday;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class ApiController extends Controller
 {
@@ -103,4 +105,26 @@ class ApiController extends Controller
 
         return response()->json(['message' => 'Job created successfully', 'job' => $job], 201);
     }
+
+    public function checkDateStatus($selectedDate)
+	{
+	    //$selectedDate = Carbon::parse($selectedDate);
+	    $carbonInstance = Carbon::createFromFormat('M d, Y', $selectedDate);
+	    $exists = Holiday::where('date', $carbonInstance->format('M d, Y'))->exists();
+
+	    //dd($carbonInstance->format('M d, Y'));
+
+	    // Check holiday
+	    if ($exists) {
+	        return response()->json(['message' => 'success', 'data' => 'holiday'], 201);
+	    }
+
+	    // Check weekend (Saturday or Sunday)
+	    if ($carbonInstance->isWeekend()) {
+	        return response()->json(['message' => 'success', 'data' => 'weekend'], 201);
+	    }
+
+	    // weekday
+	    return response()->json(['message' => 'success', 'data' => 'weekday'], 201);
+	}
 }
