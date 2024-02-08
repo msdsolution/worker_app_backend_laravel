@@ -10,8 +10,13 @@ use App\Models\Holiday;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use JWTAuth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
+use App\Notifications\VerifyEmail;
 
 class ApiController extends Controller
 {
@@ -27,34 +32,12 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        $user = Auth::user();
-        $token = $user->createToken('auth-token')->plainTextToken;
-
-        return response()->json(['token' => $token, 'user' => $user]);
-    }
-
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json(['message' => 'Token revoked successfully']);
-    }
-
     public function register(Request $request)
     {
+        if (User::where('email', $request['email'])->exists()) {
+            return  response()->json(['success' => false,'message' => 'The email address is already registered.']);
+        }
+
         $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -71,40 +54,76 @@ class ApiController extends Controller
             'location' => $request->input('location'),
             'password' => Hash::make($request->input('password')),
             'user_type' => $request->input('user_type'),
-            'status' => 0, // Default status is set to 0
+            'status' => $request->input('user_type') == 2 ? 1 : 0, // Default status is set to 0
         ]);
 
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+        // Send email verification link
+        //$user->notify(new VerifyEmail);
+
+        return response()->json(['success' => true,'message' => 'User registered successfully', 'user' => $user], 201);
     }
 
-    public function createJob(Request $request)
+    public function authenticate(Request $request)
     {
-        $request->validate([
-            'description' => 'required',
-            'start_location' => 'required',
-            'end_location' => 'required',
-            'required_date' => 'required',
-            'required_time' => 'required',
-            'preferred_sex' => 'required',
-            'job_categories' => 'required|array',
-            'job_categories.*.name' => 'required',
-            'job_categories.*.job_type_id' => 'required',
+        $credentials = $request->only('email', 'password');
+
+        //valid credential
+        $validator = Validator::make($credentials, [
+            'email' => 'required|email',
+            'password' => 'required|string|min:6|max:50'
         ]);
 
-        //dd($request->service_required_time);
-
-        $job = Job::create($request->except('job_categories'));
-
-        // Save job categories
-        foreach ($request->input('job_categories') as $jobCategoryData) {
-            Job_Service_Cat::create([
-                'service_cat_id' => $jobCategoryData['job_type_id'],
-                'job_id' => $job->id,
-            ]);
+        //Send failed response if request is not valid
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->messages()], 200);
         }
 
-        return response()->json(['message' => 'Job created successfully', 'job' => $job], 201);
+        //Request is validated
+        //Crean token
+        try {
+            if (! $token = JWTAuth::attempt($credentials)) {
+                return response()->json([
+                 'success' => false,
+                 'message' => 'Login credentials are invalid.',
+                ], 400);
+            }
+        } catch (JWTException $e) {
+     return $credentials;
+            return response()->json([
+                 'success' => false,
+                 'message' => 'Could not create token.',
+                ], 500);
+        }
+  
+        if (auth()->user()->status == 1) {
+            //Token created, return with success response and jwt token
+            return response()->json([
+                'success' => true,
+                'token' => $token,
+                'data' => auth()->user(),
+             ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => "User is not verified",
+             ]);
+        }
+   
     }
+
+    public function user()
+    {
+        return response()->json(Auth::user());
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();
+        return response()->json(['message' => 'Successfully logged out']);
+    }
+
+
+    
 
     public function checkDateStatus($selectedDate)
 	{

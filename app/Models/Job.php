@@ -20,4 +20,9 @@ class Job extends Model
         'preferred_sex',
         'worker_id',
     ];
+
+    public function jobType()
+    {
+        return $this->hasMany(Job_Service_Cat::class, 'job_id');
+    }
 }

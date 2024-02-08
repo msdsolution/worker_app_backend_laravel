@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Mobile\JobApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +16,19 @@ use App\Http\Controllers\ApiController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::post('/login', [ApiController::class, 'login']);
-Route::middleware('auth:sanctum')->post('/logout', [ApiController::class, 'logout']);
+Auth::routes(['verify' => true]);
+
+Route::post('/login', [ApiController::class, 'authenticate']);
+
 Route::post('/register', [ApiController::class, 'register']);
-Route::post('/create_job', [ApiController::class, 'createJob']);
+
+
 Route::get('/check_holiday/{date}', [ApiController::class, 'checkDateStatus']);
+
+Route::group(['middleware' => ['jwt.verify']], function() {
+    Route::get('/user', [ApiController::class, 'user']);
+    Route::post('/logout', [ApiController::class, 'logout']);
+    Route::post('/create_job', [JobApiController::class, 'createJob']);
+	Route::get('/get_service_list', [JobApiController::class, 'getServiceList']);
+	Route::get('/get_job_history_list', [JobApiController::class, 'getJobHistoryList']);
+});
