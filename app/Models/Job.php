@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Job extends Model
+class Job extends Model 
 {
     use HasFactory;
 
@@ -19,10 +19,12 @@ class Job extends Model
         'required_time',
         'preferred_sex',
         'worker_id',
+        'user_id',
     ];
 
     public function jobType()
     {
         return $this->hasMany(Job_Service_Cat::class, 'job_id');
     }
+
 }

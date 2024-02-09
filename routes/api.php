@@ -31,4 +31,5 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('/create_job', [JobApiController::class, 'createJob']);
 	Route::get('/get_service_list', [JobApiController::class, 'getServiceList']);
 	Route::get('/get_job_history_list', [JobApiController::class, 'getJobHistoryList']);
+	Route::get('/get_job_form_data', [JobApiController::class, 'getJobCreatFormData']);
 });

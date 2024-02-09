@@ -18,6 +18,9 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      *
      * @var array<int, string>
      */
+
+    protected $userId;
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -52,8 +55,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return $this->getKey();
     }
+
     public function getJWTCustomClaims()
     {
         return [];
     }
+
 }
