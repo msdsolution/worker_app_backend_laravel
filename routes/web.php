@@ -8,13 +8,13 @@ use App\Http\Controllers\Web\DashBoardController;
 
 
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 Route::get('/', function () {
-    return view('/login');
-})->middleware('auth','isAdmin');
+    return view('welcome');
+});
+
+// Route::get('/', function () {
+//     return view('/login');
+// })->middleware('auth','isAdmin');
 
 
 
