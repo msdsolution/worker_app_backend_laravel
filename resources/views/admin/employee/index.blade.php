@@ -6,14 +6,14 @@
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-    <form action="{{url('admin/delete-client')}}" method="POST">
+    <form action="{{url('admin/delete-employee/{employee_id}')}}" method="POST">
         @csrf
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Delete Employee</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <input type="hidden" name="company_delete_id" id="company_id">
+        <input type="hidden" name="company_delete_id" id="employee_id">
         <h5>Are you sure You want to delete this Employee?</h5>
       </div>
       <div class="modal-footer">
@@ -31,7 +31,7 @@
 <div class="card mt-4">
     <div class="card-header">
 
-    <h4>View Company 
+    <h4>View Employee 
     <a href="{{ url('admin/add-employee')}}" class="btn btn-primary btn-sm float-end">Add Employee</a>
     </h4>
     </div>
@@ -66,8 +66,8 @@
                 <a href="{{url('admin/edit-employee/' .$item -> id )}}" class="btn btn-success">Edit</a>
             </td>
             <td>
-            <!-- <a href="{{url('admin/delete-category/' .$item -> id )}}" class="btn btn-danger">Delete</a> -->
-            <button type="button" class="btn btn-danger deleteCategoryBtn" value="{{$item -> id}}">Delete</button>
+            <a href="{{url('admin/delete-employee/' .$item -> id )}}" class="btn btn-danger">Delete</a>
+            <!-- <button type="button" class="btn btn-danger deleteCategoryBtn" value="{{$item -> id}}">Delete</button> -->
             </td>
         </tr>
         @endforeach
@@ -92,8 +92,8 @@
            // });
             e.preventDefault();
 
-          var company_id =  $(this).val();
-          $('#company_id').val(company_id);
+          var employee_id =  $(this).val();
+          $('#employee_id').val(employee_id);
           $('#deleteModal').modal('show');
         });
     });

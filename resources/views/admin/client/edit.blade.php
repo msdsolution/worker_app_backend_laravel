@@ -18,18 +18,18 @@
         @endforeach
         </div>
         @endif
-            <form action="{{url('admin/update-company/' .$client -> id)}}" method="POST" enctype="multipart/form-data">
+            <form action="{{url('admin/update-client/' .$client -> id)}}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
                 <div class="mb-3">
                     <label >first_name</label>
-                    <input type="text" name="name" value="{{$client -> first_name}}" class="form-control">
+                    <input type="text" name="first_name" value="{{$client -> first_name}}" class="form-control">
                 </div>
                 
                 <div class="mb-3">
                     <label >last_name</label>
-                    <input type="text" name="name" value="{{$client -> last_name}}"  class="form-control">
+                    <input type="text" name="last_name" value="{{$client -> last_name}}"  class="form-control">
                 </div>
 
                 <div class="mb-3">

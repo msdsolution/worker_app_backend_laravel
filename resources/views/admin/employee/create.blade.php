@@ -7,7 +7,7 @@
 
     <div class="card mt-4">
         <div class="card-header">
-        <h4 class=""> Add Client</h1>
+        <h4 class=""> Add Employee</h1>
         </div>
         <div class="card-body">
 
@@ -43,7 +43,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">Save Client</button>
+                        <button type="submit" class="btn btn-primary">Save Employee</button>
                     </div>
                 </div>
             </form>

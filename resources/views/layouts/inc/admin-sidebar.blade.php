@@ -34,6 +34,10 @@
                                 </nav>
                             </div>
 
+                            <a class="nav-link {{ Request::is('admin/servicecategory') ? 'active':''}}" href="{{url('admin/servicecategory')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                Service Category
+                            </a>
                             <a class="nav-link {{ Request::is('admin/users') ? 'active':''}}" href="{{url('admin/users')}}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Job listing
@@ -42,10 +46,21 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Invoices
                             </a>
-                            <a class="nav-link" href="tables.html">
+                            <a class="nav-link {{Request::is('admin/employees') || Request::is('admin/add-employee') || Request::is('admin/employee/*')? 'collapse active' : 'collapsed'}}" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePost2" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Rate Management
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse {{Request::is('admin/worker_rate') ||  Request::is('admin/client_rate') || Request::is('admin/worker_rate/*')  ? 'show' : ''}}" id="collapsePost2" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {{ Request::is('admin/worker_rate') ? 'active':''}}" href="{{url('admin/worker_rate')}}">Rates for Worker</a>
+                                    <a class="nav-link {{ Request::is('admin/client_rate') ? 'active':''}}" href="{{url('admin/client_rate')}}">Rates for Client</a>
+                                </nav>
+                            </div>
+                            <!-- <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Rate Management
-                            </a>
+                            </a> -->
                             <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Payment Management

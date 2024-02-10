@@ -40,7 +40,7 @@ class ClientController extends Controller
     {
   
         $client = User::find($client_id);
-        return view('admin.employee.edit',compact('employee','company'));
+        return view('admin.client.edit',compact('client'));
     }
     public function update(ClientFormRequest $request,$client_id)
     {
@@ -48,18 +48,19 @@ class ClientController extends Controller
         $data = $request -> validated();
 
         $client = user::find($client_id);
-        $client -> firstname = $data['firstname'];
-        $client -> lastname = $data['lastname'];
+        $client -> first_name = $data['first_name'];
+        $client -> last_name = $data['last_name'];
         $client -> email = $data['email'];
-        $client -> phone = $data['phone'];
+        $client -> password = Hash::make($data['password']);
+        $client -> location = $data['location'];
         $client -> update();
 
-        return redirect('admin/employees') -> with('message','Employee Updated Successfully');
+        return redirect('admin/client') -> with('message','Client Updated Successfully');
     }
-    public function destroy($employee_id)
+    public function destroy($client_id)
     {
-        $client = User::find($employee_id);
+        $client = User::find($client_id);
         $client -> delete();
-        return redirect('admin/employees') -> with('message','Employee Deleted Successfully');
+        return redirect('admin/client') -> with('message','Client Deleted Successfully');
     }
 }
