@@ -20,6 +20,7 @@ Auth::routes(['verify' => true]);
 
 Route::post('/login', [ApiController::class, 'authenticate']);
 
+Route::get('/get_signup_form_data', [ApiController::class, 'getSignupFormData']);
 Route::post('/register', [ApiController::class, 'register']);
 
 

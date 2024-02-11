@@ -53,7 +53,7 @@ public function createJob(Request $request)
             ]);
         }
 
-        return response()->json(['message' => 'Job created successfully', 'job' => $job], 201);
+        return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $job], 201);
     }
 
     public function getServiceList(Request $request)
@@ -64,6 +64,7 @@ public function createJob(Request $request)
                         ->get();
 
 	    return response()->json([
+            'status' => 200,
 	        'success' => true,
 	        'message' => 'Records retrieved successfully.',
 	        'data' => $service_list,
@@ -81,6 +82,7 @@ public function createJob(Request $request)
         ->get();
 
 	    return response()->json([
+            'status' => 200,
 	        'success' => true,
 	        'message' => 'Records retrieved successfully.',
 	        'data' => $job_history,
@@ -102,6 +104,7 @@ public function createJob(Request $request)
                             ->get();
 
         return response()->json([
+            'status' => 200,
             'success' => true,
             'message' => 'Records retrieved successfully.',
             'job_type' => $job_type,
