@@ -23,12 +23,12 @@
                 @method('PUT')
 
                 <div class="mb-3">
-                    <label >first_name</label>
+                    <label >First Name</label>
                     <input type="text" name="first_name" value="{{$employee -> first_name}}" class="form-control">
                 </div>
                 
                 <div class="mb-3">
-                    <label >last_name</label>
+                    <label >Last Name</label>
                     <input type="text" name="last_name" value="{{$employee -> last_name}}"  class="form-control">
                 </div>
 
@@ -48,7 +48,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">Update employee</button>
+                        <button type="submit" class="btn btn-primary">Update Employee</button>
                     </div>
                 </div>
             </form>

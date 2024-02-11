@@ -22,16 +22,16 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label >amount</label>
+                    <label >Amount</label>
                     <input type="number" name="amount" class="form-control">
                 </div>
                 <div class="mb-3">
-                    <label >day</label>
+                    <label >Day</label>
                     <input type="text" name="day" class="form-control">
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">Save Rates</button>
+                        <button type="submit" class="btn btn-primary">Save Rate</button>
                     </div>
                 </div>
             </form>

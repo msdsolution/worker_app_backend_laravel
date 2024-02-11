@@ -44,8 +44,8 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>amount</th>
-            <th>day</th>
+            <th>Amount</th>
+            <th>Day</th>
             <th>Edit</th>
             <th>Delete</th>
         </tr>

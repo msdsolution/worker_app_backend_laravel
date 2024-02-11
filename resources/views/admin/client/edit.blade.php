@@ -48,7 +48,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">Update Company</button>
+                        <button type="submit" class="btn btn-primary">Update Client</button>
                     </div>
                 </div>
             </form>

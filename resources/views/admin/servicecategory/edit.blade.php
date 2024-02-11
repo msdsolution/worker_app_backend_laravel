@@ -23,12 +23,12 @@
                 @method('PUT')
 
                 <div class="mb-3">
-                    <label >name</label>
+                    <label >Name</label>
                     <input type="text" name="name" value="{{$Service_Category -> name}}" class="form-control">
                 </div>
                 
                 <div class="mb-3">
-                    <label >descritption</label>
+                    <label >Descritption</label>
                     <!-- <input type="text" name="description" value="{{$Service_Category -> description}}"  class="form-control"> -->
 
                     <textarea name="description" id="description" class="form-control"
@@ -36,7 +36,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">Update employee</button>
+                        <button type="submit" class="btn btn-primary">Update Services</button>
                     </div>
                 </div>
             </form>
