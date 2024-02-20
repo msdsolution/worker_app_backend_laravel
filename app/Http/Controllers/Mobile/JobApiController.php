@@ -47,9 +47,15 @@ public function createJob(Request $request)
 
         // Save selected job categories
         foreach ($request->input('job_categories') as $jobCategoryData) {
+            // return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $jobCategoryData], 201);
+            $worker_rate = WokerRates::find($jobCategoryData['refferal_rate_id']);
             Job_Service_Cat::create([
                 'service_cat_id' => $jobCategoryData['job_type_id'],
                 'job_id' => $job->id,
+                'refferal_rate_id' => $jobCategoryData['refferal_rate_id'],
+                'refferal_amount' => $jobCategoryData['refferal_amount'],
+                'woker_rate_id' => $worker_rate->id,
+                'worker_amount' => $worker_rate->amount,
             ]);
         }
 

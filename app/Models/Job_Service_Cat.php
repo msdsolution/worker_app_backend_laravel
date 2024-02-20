@@ -14,5 +14,9 @@ class Job_Service_Cat extends Model
     protected $fillable = [
         'job_id',
         'service_cat_id',
+        'refferal_rate_id',
+        'refferal_amount',
+        'woker_rate_id',
+        'worker_amount',
     ];
 }

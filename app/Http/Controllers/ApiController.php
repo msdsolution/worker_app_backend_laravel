@@ -310,8 +310,11 @@ class ApiController extends Controller
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
             'location' => 'required',
+            'city_id' => 'required',
             'password' => 'required|min:6',
             'user_type' => 'required',
+            'phone_no' => 'required',
+            'user_address' => 'required',
         ]);
 
         $user = User::create([
@@ -319,9 +322,12 @@ class ApiController extends Controller
             'last_name' => $request->input('last_name'),
             'email' => $request->input('email'),
             'location' => $request->input('location'),
+            'city_id' => $request->input('city_id'),
             'password' => Hash::make($request->input('password')),
             'user_type' => $request->input('user_type'),
             'status' => $request->input('user_type') == 2 ? 1 : 0, // Default status is set to 0
+            'phone_no' => $request->input('phone_no'),
+            'user_address' => $request->input('user_address'),
         ]);
 
         // Send email verification link
@@ -364,7 +370,7 @@ class ApiController extends Controller
                 ], 500);
         }
   
-        if (auth()->user()->status == 1) {
+        if (auth()->user()->status == 1 && (auth()->user()->user_type == 2 || auth()->user()->user_type == 3)) {
             //Token created, return with success response and jwt token
             return response()->json([
                 'status' => 200,
