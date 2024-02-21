@@ -9,13 +9,13 @@ use App\Http\Controllers\Web\DashBoardController;
 use App\Http\Controllers\Web\ServicecategoryController;
 use App\Http\Controllers\Web\workerRateController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 // Route::get('/', function () {
-//     return view('/login');
-// })->middleware('auth','isAdmin');
+//     return view('welcome');
+// });
+
+Route::get('/', function () {
+    return view('/login');
+})->middleware('auth','isAdmin');
 
 
 
