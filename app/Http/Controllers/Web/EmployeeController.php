@@ -47,13 +47,13 @@ class EmployeeController extends Controller
         $employee -> location = $data['location'];
         $employee->user_type = 3;
         $employee -> save();
-        return redirect('admin/client') -> with('message','Employee Added Successfully');
+        return redirect('admin/employees') -> with('message','Employee Added Successfully');
     }
     public function edit($employee_id)
     {
   
         $employee = User::find($employee_id);
-        return view('admin.employee.edit',compact('employee','company'));
+        return view('admin.employee.edit',compact('employee'));
     }
     public function update(EmployeeFormRequest $request,$employee_id)
     {
@@ -62,11 +62,12 @@ class EmployeeController extends Controller
 
         $employee = user::find($employee_id);
 
-        $employee -> company_id = $data['company_id'];
-        $employee -> firstname = $data['firstname'];
-        $employee -> lastname = $data['lastname'];
+        $employee -> first_name = $data['first_name'];
+        $employee -> last_name = $data['last_name'];
         $employee -> email = $data['email'];
-        $employee -> phone = $data['phone'];
+        $employee -> password = Hash::make($data['password']);
+        $employee -> location = $data['location'];
+
         $employee -> update();
 
         return redirect('admin/employees') -> with('message','Employee Updated Successfully');

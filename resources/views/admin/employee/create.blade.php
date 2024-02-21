@@ -7,7 +7,7 @@
 
     <div class="card mt-4">
         <div class="card-header">
-        <h4 class=""> Add Client</h1>
+        <h4 class=""> Add Employee</h1>
         </div>
         <div class="card-body">
 
@@ -22,11 +22,11 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label >first_name</label>
+                    <label >First Name</label>
                     <input type="text" name="first_name" class="form-control">
                 </div>
                 <div class="mb-3">
-                    <label >last_name</label>
+                    <label >Last Name</label>
                     <input type="text" name="last_name" class="form-control">
                 </div>
                 <div class="mb-3">
@@ -43,7 +43,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">Save Client</button>
+                        <button type="submit" class="btn btn-primary">Save Employee</button>
                     </div>
                 </div>
             </form>
