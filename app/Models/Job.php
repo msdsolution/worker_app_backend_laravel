@@ -13,6 +13,7 @@ class Job extends Model
 
     protected $fillable = [
         'description',
+        'city_id',
         'start_location',
         'end_location',
         'required_date',
@@ -26,5 +27,10 @@ class Job extends Model
     {
         return $this->hasMany(Job_Service_Cat::class, 'job_id');
     }
+
+    //  public function jobServices()
+    // {
+    //     return $this->belongsToMany(Job_Service_Cat::class, 'job_service_cat', 'job_id', 'id');
+    // }
 
 }

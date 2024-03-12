@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Mobile\JobApiController;
+use App\Http\Controllers\Mobile\WorkerJobApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,4 +34,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::get('/get_service_list', [JobApiController::class, 'getServiceList']);
 	Route::get('/get_job_history_list', [JobApiController::class, 'getJobHistoryList']);
 	Route::get('/get_job_form_data', [JobApiController::class, 'getJobCreatFormData']);
+
+	Route::get('/get_woker_job_history_list', [WorkerJobApiController::class, 'getWorkerJobList']);
+	Route::put('/job/{id}/accept', [WorkerJobApiController::class, 'acceptJob']);
+	Route::put('/job/{id}/reject', [WorkerJobApiController::class, 'rejectJob']);
+	Route::put('/job/{id}/start', [WorkerJobApiController::class, 'startJob']);
+	Route::put('/job/{id}/finish', [WorkerJobApiController::class, 'finishJob']);
 });

@@ -11,6 +11,7 @@ use App\Models\Service_Category;
 use App\Models\TimeHours;
 use App\Models\RefferalRates;
 use App\Models\WokerRates;
+use App\Models\SriLankaDistricts;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
@@ -25,6 +26,7 @@ public function createJob(Request $request)
 
         $request->validate([
             'description' => 'required',
+            'city_id' => 'required',
             'start_location' => 'required',
             'end_location' => 'required',
             'required_date' => 'required',
@@ -38,6 +40,7 @@ public function createJob(Request $request)
         $job = Job::create([
             'user_id' => $userId,
             'description' => $request->input('description'),
+            'city_id' => $request->input('city_id'),
             'start_location' => $request->input('start_location'),
             'end_location' => $request->input('end_location'),
             'required_date' => $request->input('required_date'),
@@ -105,9 +108,9 @@ public function createJob(Request $request)
                     ->select('id', 'name')
                     ->get();
 
-        $refferal_rates = RefferalRates::whereNull('deleted_at')
-                            ->select('id', 'amount', 'day')
-                            ->get();
+        // $refferal_rates = RefferalRates::whereNull('deleted_at')
+        //                     ->select('id', 'amount', 'day')
+        //                     ->get();
 
         return response()->json([
             'status' => 200,
@@ -115,7 +118,7 @@ public function createJob(Request $request)
             'message' => 'Records retrieved successfully.',
             'job_type' => $job_type,
             'time_hrs' => $time_hrs,
-            'refferal_rates' => $refferal_rates,
+            //'refferal_rates' => $refferal_rates,
         ], 200);
 
     }
