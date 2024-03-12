@@ -41,4 +41,30 @@ class ClientRateController extends Controller
         $client_rate -> save();
         return redirect('admin/client_rate') -> with('message','Client Rate Added Successfully');
     }
+    public function edit($clientrate_id)
+    {
+  
+        $client_rate = Client_rate::find($clientrate_id);
+        return view('admin.clientrate.edit',compact('client_rate'));
+    }
+    public function update(ClientRateFormRequest $request,$clientrate_id)
+    {
+
+        $data = $request -> validated();
+
+        $client_rate = Client_rate::find($clientrate_id);
+
+        $client_rate -> amount = $data['amount'];
+        $client_rate -> day = $data['day'];;
+
+        $client_rate -> update();
+
+        return redirect('admin/client_rate') -> with('message','Worker rates Updated Successfully');
+    }
+    public function destroy($clientrate_id)
+    {
+        $client_rate = Client_rate::find($clientrate_id);
+        $client_rate -> delete();
+        return redirect('admin/worker_rate') -> with('message','Worker rate Deleted Successfully');
+    }
 }
