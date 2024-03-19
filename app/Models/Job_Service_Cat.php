@@ -19,4 +19,14 @@ class Job_Service_Cat extends Model
         'woker_rate_id',
         'worker_amount',
     ];
+
+    public function job()
+    {
+        return $this->belongsTo(Job::class);
+    }
+
+    public function serviceCat()
+    {
+        return $this->belongsTo(Service_Category::class);
+    }
 }

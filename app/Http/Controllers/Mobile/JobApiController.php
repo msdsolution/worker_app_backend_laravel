@@ -86,15 +86,28 @@ public function createJob(Request $request)
        $user = auth()->user();
 
 
-       $job_history = Job::with('jobType')
-       	->where('user_id', $user->id)
-        ->get();
+       // $job_history = Job::with('jobType')
+       // 	->where('user_id', $user->id)
+       //  ->get();
+
+        $jobs = Job::with('jobType.serviceCat')->where('user_id', $user->id)->get();
+
+        // Modify the structure of the data to append service_cat name inside job_type
+           $modifiedJobs = $jobs->map(function ($job) {
+                if ($job->jobType) {
+                    foreach ($job->jobType as $jobType) {
+                        $jobType->service_cat_name = $jobType->serviceCat->name;
+                        unset($jobType->serviceCat); // Remove the serviceCat object if needed
+                    }
+                }
+                return $job;
+            });
 
 	    return response()->json([
             'status' => 200,
 	        'success' => true,
 	        'message' => 'Records retrieved successfully.',
-	        'data' => $job_history,
+	        'data' => $modifiedJobs,
 	    ], 200);
     }
 
