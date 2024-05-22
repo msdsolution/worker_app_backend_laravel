@@ -11,12 +11,13 @@ class Job_Service_Cat extends Model
 
     protected $table = 'job_service_cat';
 
+
     protected $fillable = [
         'job_id',
         'service_cat_id',
         'refferal_rate_id',
         'refferal_amount',
-        'woker_rate_id',
+        'worker_rate_id',
         'worker_amount',
     ];
 
@@ -27,6 +28,12 @@ class Job_Service_Cat extends Model
 
     public function serviceCat()
     {
-        return $this->belongsTo(Service_Category::class);
+        return $this->belongsTo(Service_Category::class, 'service_cat_id', 'id');
+    }
+
+    // Define the relationship with Job
+    public function job()
+    {
+        return $this->belongsTo(Job::class, 'job_id', 'id');
     }
 }
