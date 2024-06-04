@@ -84,6 +84,14 @@ Route::get('delete-clientrate/{clientrate_id}',[ClientRateController::class,'des
 //Route::get('joblisting', [JobListingController::class, 'showDetails']);
 Route::get('joblisting', [JobListingController::class, 'index']);
 
+Route::get('assign-job/{jobId}', [JobListingController::class, 'assign'])->name('assign-job');
+//Route::put('job.update/{jobId}', [JobListingController::class, 'update'])->name('job.update');
+Route::put('assigning-job/{jobId}', [JobListingController::class, 'update'])->name('assigning-job');
+
+
+
+// Route::get('assigning-job/{jobId}', [JobListingController::class, 'Assigning']);
+
 Route::get('workerfeedback', [WorkerFeedbackController::class, 'index']);
 
 
