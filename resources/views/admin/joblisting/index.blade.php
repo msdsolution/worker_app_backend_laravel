@@ -36,34 +36,82 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Referer Name</th> 
                             <th>Service Name</th>
                             <th>Service Description</th>
                             <th>Required Date</th>
                             <th>Required Time</th>
                             <th>Preferred Sex</th>
+                            <th>City name</th>
                             <th>Start Location</th>
                             <th>End Location</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
+                            <!-- <th>worker id</th> -->
+                            <th>Worker name</th>
+                            <th>Status</th>
+                            <!-- <th>Edit</th>
+                            <th>Delete</th> -->
+                            <th>Assign</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($jobDetails as $job)
                             <tr>
                                 <td>{{ $job->jobId }}</td>
+                                <td>{{ $job->userFirstName }}</td> 
                                 <td>{{ $job->serviceName }}</td>
                                 <td>{{ $job->serviceDescription }}</td>
                                 <td>{{ $job->required_date }}</td>
                                 <td>{{ $job->required_time }}</td>
                                 <td>{{ $job->preferred_sex }}</td>
+                                <td>{{ $job->cityName }}</td>
                                 <td>{{ $job->start_location }}</td>
                                 <td>{{ $job->end_location }}</td>
+                                <!-- <td>{{ $job->worker_id }}</td> -->
                                 <td>
+                @if($job->worker_id && $job->status == 1)
+                    {{ $job->workerName }}
+                @elseif(!$job->worker_id && $job->status == 0)
+                    No worker assigned
+                @elseif($job->worker_id && $job->status == 2)
+                    {{ $job->workerName }}
+                @elseif($job->worker_id && $job->status == 3)
+                    {{ $job->workerName }}
+                @elseif($job->worker_id && $job->status == 4)
+                    {{ $job->workerName }}
+                @endif
+            </td>
+            <td>
+            @if($job->status == 0)
+                    Pending
+                @elseif($job->status == 1)
+                    Assigned
+                @elseif($job->status == 2)
+                    Worker accepted
+                @elseif($job->status == 3)
+                    Worker started
+                @elseif($job->status == 4)
+                    Worker finished
+                @endif
+            </td>
+                                <!-- <td>
                                     <a href="{{ url('admin/edit-employee/' . $job->jobId) }}" class="btn btn-success">Edit</a>
                                 </td>
                                 <td>
                                     <a href="{{ url('admin/delete-employee/' . $job->jobId) }}" class="btn btn-danger deleteCategoryBtn">Delete</a>
-                                </td>
+                                </td> -->
+                                <td>
+    @if ($job->worker_id === null && $job->status === 0)
+        <a href="{{ route('assign-job', $job->jobId) }}" class="btn btn-primary">Assign</a>
+    @elseif ($job->worker_id !== null && $job->status === 1)
+        <a href="{{ route('assign-job', $job->jobId) }}" class="btn btn-success">Assigned</a>
+        @elseif ($job->worker_id !== null && $job->status === 2)
+        <a href="{{ route('assign-job', $job->jobId) }}" class="btn btn-info">Worker Accepted</a>
+        @elseif ($job->worker_id !== null && $job->status === 3)
+        <a href="{{ route('assign-job', $job->jobId) }}" class="btn btn-warning">Worker Started</a>
+        @elseif ($job->worker_id !== null && $job->status === 4)
+        <a href="{{ route('assign-job', $job->jobId) }}" class="btn btn-success">Worker Finished</a>
+    @endif
+</td>
                             </tr>
                         @endforeach
                     </tbody>
