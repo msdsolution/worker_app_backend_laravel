@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Job;
 use App\Models\Job_Service_Cat;
 use App\Models\Holiday;
+use App\Models\RefferalRates;
 use App\Models\SriLankaDistricts;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
@@ -18,6 +19,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 use App\Notifications\VerifyEmail;
+use Illuminate\Auth\Events\Registered;
 
 class ApiController extends Controller
 {
@@ -332,6 +334,7 @@ class ApiController extends Controller
 
         // Send email verification link
         //$user->notify(new VerifyEmail);
+        //event(new Registered($user));
 
         return response()->json(['status' => 201, 'success' => true,'message' => 'User registered successfully', 'user' => $user], 201);
     }
@@ -348,7 +351,7 @@ class ApiController extends Controller
 
         //Send failed response if request is not valid
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->messages()], 200);
+            return response()->json(['error' => $validator->messages()], 400);
         }
 
         //Request is validated
@@ -356,10 +359,10 @@ class ApiController extends Controller
         try {
             if (! $token = JWTAuth::attempt($credentials)) {
                 return response()->json([
-                    'status' => 400,
+                    'status' => 401,
                  'success' => false,
                  'message' => 'Login credentials are invalid.',
-                ], 400);
+                ], 401);
             }
         } catch (JWTException $e) {
      return $credentials;
@@ -371,11 +374,15 @@ class ApiController extends Controller
         }
   
         if (auth()->user()->status == 1 && (auth()->user()->user_type == 2 || auth()->user()->user_type == 3)) {
+
+            $refreshToken = JWTAuth::fromUser(auth()->user());
+
             //Token created, return with success response and jwt token
             return response()->json([
                 'status' => 200,
                 'success' => true,
                 'token' => $token,
+                'refresh_token' => $refreshToken,
                 'data' => auth()->user(),
              ]);
         } else {
@@ -383,9 +390,25 @@ class ApiController extends Controller
                 'status' => 401,
                 'success' => false,
                 'message' => "User is not verified",
-             ]);
+             ], 401);
         }
    
+    }
+
+    public function refreshToken(Request $request)
+    {
+        try {
+            $token = JWTAuth::getToken();
+            if (!$token) {
+                return response()->json(['status' => 401, 'success' => false, 'message' => 'Token not provided'], 401);
+            }
+
+            $refreshToken = JWTAuth::refresh($token);
+
+            return response()->json(['status' => 200, 'success' => true, 'token' => $refreshToken]);
+        } catch (JWTException $e) {
+            return response()->json(['status' => 500, 'success' => false, 'message' => 'Could not refresh token'], 500);
+        }
     }
 
     public function user()
@@ -403,24 +426,42 @@ class ApiController extends Controller
     
 
     public function checkDateStatus($selectedDate)
-	{
-	    //$selectedDate = Carbon::parse($selectedDate);
-	    $carbonInstance = Carbon::createFromFormat('M d, Y', $selectedDate);
-	    $exists = Holiday::where('date', $carbonInstance->format('M d, Y'))->exists();
+    {
+        //$selectedDate = Carbon::parse($selectedDate);
+        $carbonInstance = Carbon::createFromFormat('M d, Y', $selectedDate);
+        $exists = Holiday::where('date', $carbonInstance->format('M d, Y'))->exists();
 
-	    //dd($carbonInstance->format('M d, Y'));
+        //dd($carbonInstance->format('M d, Y'));
 
-	    // Check holiday
-	    if ($exists) {
-	        return response()->json(['status' => 200, 'message' => 'success', 'data' => 'holiday'], 201);
-	    }
+       // Check holiday
+        if ($exists) {
+            $refferal_rate = RefferalRates::where('day', 'Holiday')->whereNull('deleted_at')->first();
+            $data = [
+                'id' => $refferal_rate->id,
+                'amount' => $refferal_rate->amount,
+                'day' => 'Holiday',
+            ];
+            return response()->json(['status' => 200, 'message' => 'success', 'data' => $data], 200);
+        }
 
-	    // Check weekend (Saturday or Sunday)
-	    if ($carbonInstance->isWeekend()) {
-	        return response()->json(['status' => 200, 'message' => 'success', 'data' => 'weekend'], 201);
-	    }
+        // Check weekend (Saturday or Sunday)
+        if ($carbonInstance->isWeekend()) {
+            $refferal_rate = RefferalRates::where('day', 'Weekend')->whereNull('deleted_at')->first();
+            $data = [
+                'id' => $refferal_rate->id,
+                'amount' => $refferal_rate->amount,
+                'day' => 'Weekend',
+            ];
+            return response()->json(['status' => 200, 'message' => 'success', 'data' => $data], 200);
+        }
 
-	    // weekday
-	    return response()->json(['status' => 200, 'message' => 'success', 'data' => 'weekday'], 201);
-	}
+        // Check weekday
+        $refferal_rate = RefferalRates::where('day', 'Weekday')->whereNull('deleted_at')->first();
+        $data = [
+            'id' => $refferal_rate->id,
+            'amount' => $refferal_rate->amount,
+            'day' => 'Weekday',
+        ];
+        return response()->json(['status' => 200, 'message' => 'success', 'data' => $data], 200);
+    }
 }

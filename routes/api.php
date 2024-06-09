@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Mobile\JobApiController;
 use App\Http\Controllers\Mobile\WorkerJobApiController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +21,18 @@ use App\Http\Controllers\Mobile\WorkerJobApiController;
 Auth::routes(['verify' => true]);
 
 Route::post('/login', [ApiController::class, 'authenticate']);
+Route::post('/refresh-token', [ApiController::class, 'refreshToken']);
 
 Route::get('/get_signup_form_data', [ApiController::class, 'getSignupFormData']);
 Route::post('/register', [ApiController::class, 'register']);
+Route::get('email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return response()->json(['message' => 'Email verified successfully'], 200);
+})->name('verification.verify');
+Route::post('email/resend', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return response()->json(['message' => 'Verification link sent!']);
+})->middleware('auth:api')->name('verification.resend');
 
 
 Route::get('/check_holiday/{date}', [ApiController::class, 'checkDateStatus']);
