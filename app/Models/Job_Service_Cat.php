@@ -21,10 +21,10 @@ class Job_Service_Cat extends Model
         'worker_amount',
     ];
 
-    public function job()
-    {
-        return $this->belongsTo(Job::class);
-    }
+    // public function job()
+    // {
+    //     return $this->belongsTo(Job::class);
+    // }
 
     public function serviceCat()
     {
