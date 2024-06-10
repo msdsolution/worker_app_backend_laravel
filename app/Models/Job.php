@@ -41,4 +41,5 @@ class Job extends Model
     public function workerFeedback()
     {
         return $this->hasMany(worker_feedback::class, 'job_id', 'id');
+    }
 }
