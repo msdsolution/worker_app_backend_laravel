@@ -48,6 +48,7 @@ Route::put('update-employee/{employee_id}',[EmployeeController::class,'update'])
 
 Route::get('delete-employee/{employee_id}',[EmployeeController::class,'destroy']);
 
+Route::get('changeStatusemp', [EmployeeController::class, 'changeStatusemp'])->name('changeStatusemp');
 
 
 Route::get('servicecategory',[ServicecategoryController::class,'index']);

@@ -20,7 +20,7 @@
             </div>
             @endif
 
-            <form action="{{ route('assigning-job', ['jobId' => $job->jobId]) }}"  method="POST" enctype="multipart/form-data">
+            <form action="{{ route('assigning-job', ['jobId' => $job->jobId]) }}"  method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                 @csrf
                 @method('PUT')
 
@@ -32,6 +32,10 @@
                 <div class="mb-3">
                     <label for="serviceDescription" class="form-label">Service Description</label>
                     <textarea name="serviceDescription" class="form-control" id="serviceDescription" rows="3" readonly>{{ $job->serviceDescription }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="Jobdescription" class="form-label">Job Description</label>
+                    <textarea name="Jobdescription" class="form-control" id="Jobdescription" rows="3" readonly>{{ $job->jobDescription }}</textarea>
                 </div>
 
                 <div class="mb-3">
@@ -116,6 +120,14 @@
         var selectedWorkerId = document.getElementById('workerId').value;
         document.getElementById('selectedWorkerId').value = selectedWorkerId;
         console.log(selectedWorkerId);
+    }
+    function validateForm() {
+        var workerId = document.getElementById('workerId').value;
+        if (workerId === "") {
+            alert("Please select a worker.");
+            return false;
+        }
+        return true;
     }
 </script>
 @endsection
