@@ -29,7 +29,7 @@
 
                 <div class="mb-3">
                     <label >day</label>
-                    <input type="text" name="day" value="{{$worker_rate -> day}}" class="form-control">
+                    <input type="text" name="day" value="{{$worker_rate -> day}}" class="form-control" readonly>
                 </div>
                 <div class="row">
                     <div class="col-md-6">

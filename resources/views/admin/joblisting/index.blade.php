@@ -38,13 +38,14 @@
                             <th>ID</th>
                             <th>Referer Name</th> 
                             <th>Service Name</th>
+                            <!-- <th>JOb Description</th> -->
                             <th>Service Description</th>
                             <th>Required Date</th>
                             <th>Required Time</th>
                             <th>Preferred Sex</th>
                             <th>City name</th>
-                            <th>Start Location</th>
-                            <th>End Location</th>
+                            <!-- <th>Start Location</th>
+                            <th>End Location</th> -->
                             <!-- <th>worker id</th> -->
                             <th>Worker name</th>
                             <th>Status</th>
@@ -59,13 +60,14 @@
                                 <td>{{ $job->jobId }}</td>
                                 <td>{{ $job->userFirstName }}</td> 
                                 <td>{{ $job->serviceName }}</td>
+                                <!-- <td>{{ $job->jobDescription }}</td> -->
                                 <td>{{ $job->serviceDescription }}</td>
                                 <td>{{ $job->required_date }}</td>
                                 <td>{{ $job->required_time }}</td>
                                 <td>{{ $job->preferred_sex }}</td>
                                 <td>{{ $job->cityName }}</td>
-                                <td>{{ $job->start_location }}</td>
-                                <td>{{ $job->end_location }}</td>
+                                <!-- <td>{{ $job->start_location }}</td>
+                                <td>{{ $job->end_location }}</td> -->
                                 <!-- <td>{{ $job->worker_id }}</td> -->
                                 <td>
                 @if($job->worker_id && $job->status == 1)
