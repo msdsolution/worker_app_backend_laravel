@@ -35,6 +35,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>No</th>
                             <th>ID</th>
                             <th>Referer Name</th> 
                             <th>Service Name</th>
@@ -55,8 +56,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($jobDetails as $job)
+                        @foreach($jobDetails as $index => $job)
                             <tr>
+                                <td>{{ $index + 1 }}</td>
                                 <td>{{ $job->jobId }}</td>
                                 <td>{{ $job->userFirstName }}</td> 
                                 <td>{{ $job->serviceName }}</td>
