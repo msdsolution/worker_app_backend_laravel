@@ -43,6 +43,7 @@
     <table id="myDataTable" class="table table-bordered">
     <thead>
         <tr>
+            <th>No</th>
             <th>ID</th>
             <th>First Name</th>
             <th>Last Name</th>
@@ -55,10 +56,9 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($employees as $item)
-
-      
+        @foreach($employees as $index => $item)      
         <tr>
+            <td>{{ $index + 1 }}</td>
             <td>{{$item -> id}}</td>
             <td>{{$item -> first_name}}</td>
             <td>{{$item -> last_name}}</td>
