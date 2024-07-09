@@ -43,25 +43,28 @@
     <table id="myDataTable" class="table table-bordered">
     <thead>
         <tr>
+            <th>No</th>
             <th>ID</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
             <th>Location</th>
+            <th>Status</th>
             <th>Edit</th>
             <th>Delete</th>
+
         </tr>
     </thead>
     <tbody>
-        @foreach($employees as $item)
-
-      
+        @foreach($employees as $index => $item)      
         <tr>
+            <td>{{ $index + 1 }}</td>
             <td>{{$item -> id}}</td>
             <td>{{$item -> first_name}}</td>
             <td>{{$item -> last_name}}</td>
             <td>{{$item -> email}}</td>
             <td>{{$item -> location}}</td>
+            <td>  <input type="checkbox" role="switch" class="toggle-class" data-id="{{ $item ->id }}" data-toggle="toggle" data-style="slow" data-on="Verified" data-off="Not Verified" {{ $item ->status == true ? 'checked' : ''}}></td>
             <td>
                 <a href="{{url('admin/edit-employee/' .$item -> id )}}" class="btn btn-success">Edit</a>
             </td>
@@ -69,6 +72,7 @@
             <a href="{{url('admin/delete-employee/' .$item -> id )}}" class="btn btn-danger">Delete</a>
             <!-- <button type="button" class="btn btn-danger deleteCategoryBtn" value="{{$item -> id}}">Delete</button> -->
             </td>
+
         </tr>
         @endforeach
     </tbody>
@@ -96,6 +100,35 @@
           $('#employee_id').val(employee_id);
           $('#deleteModal').modal('show');
         });
+    });
+</script>
+<script>
+  $(function() {
+    $('#toggle-two').bootstrapToggle({
+      on: 'Verified',
+      off: 'Not Verified'
+    });
+    
+  })
+</script>
+<script>
+    $('.toggle-class').on('change', function() {
+        var status = $(this).prop('checked') == true ? 1 : 0;
+        var id = $(this).data('id');
+       $.ajax({
+        type: 'GET',
+            dataType: 'JSON',
+            url: '{{ route('changeStatusemp') }}',
+            data: {
+                'status': status,
+                'id': id
+                
+                
+            },
+            success:function(data){
+
+            }
+       })
     });
 </script>
 @endsection

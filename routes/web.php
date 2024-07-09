@@ -6,7 +6,9 @@ use App\Http\Controllers\Web\EmployeeController;
 use App\Http\Controllers\Web\ClientController;
 use App\Http\Controllers\Web\ClientRateController;
 use App\Http\Controllers\Web\DashBoardController;
+use App\Http\Controllers\Web\JobListingController;
 use App\Http\Controllers\Web\ServicecategoryController;
+use App\Http\Controllers\Web\WorkerFeedbackController;
 use App\Http\Controllers\Web\workerRateController;
 
 // Route::get('/', function () {
@@ -46,6 +48,7 @@ Route::put('update-employee/{employee_id}',[EmployeeController::class,'update'])
 
 Route::get('delete-employee/{employee_id}',[EmployeeController::class,'destroy']);
 
+Route::get('changeStatusemp', [EmployeeController::class, 'changeStatusemp'])->name('changeStatusemp');
 
 
 Route::get('servicecategory',[ServicecategoryController::class,'index']);
@@ -63,8 +66,40 @@ Route::post('add-service',[ServicecategoryController::class,'store']);
  Route::get('add-worker_rate',[workerRateController::class,'create']);
 Route::post('add-worker_rate',[workerRateController::class,'store']);
 
+Route::get('edit-workerrate/{workerrate_id}',[workerRateController::class,'edit']);
+Route::put('update-workerrate/{workerrate_id}',[workerRateController::class,'update']);
+Route::get('delete-workerrate/{workerrate_id}',[workerRateController::class,'destroy']);
+
+
 
 Route::get('client_rate',[ClientRateController::class,'index']);
 Route::get('add-client_rate',[ClientRateController::class,'create']);
 Route::post('add-client_rate',[ClientRateController::class,'store']);
+
+Route::get('edit-clientrate/{clientrate_id}',[ClientRateController::class,'edit']);
+Route::put('update-clientrate/{clientrate_id}',[ClientRateController::class,'update']);
+Route::get('delete-clientrate/{clientrate_id}',[ClientRateController::class,'destroy']);
+
+
+// Route::get('joblisting',[JobListingController::class,'index']);
+//Route::get('joblisting', [JobListingController::class, 'showDetails']);
+Route::get('joblisting', [JobListingController::class, 'index']);
+
+Route::get('assign-job/{jobId}', [JobListingController::class, 'assign'])->name('assign-job');
+//Route::put('job.update/{jobId}', [JobListingController::class, 'update'])->name('job.update');
+Route::put('assigning-job/{jobId}', [JobListingController::class, 'update'])->name('assigning-job');
+
+
+
+// Route::get('assigning-job/{jobId}', [JobListingController::class, 'Assigning']);
+
+Route::get('workerfeedback', [WorkerFeedbackController::class, 'index']);
+
+
+Route::get('changeStatus', [WorkerFeedbackController::class, 'changeStatus'])->name('changeStatus');
+
+// Route::get('/joblisting/{jobServiceCat}', 'Web\JobListingController@index')->name('joblisting.index');
+
+
+
 });

@@ -33,4 +33,13 @@ class Job extends Model
     //     return $this->belongsToMany(Job_Service_Cat::class, 'job_service_cat', 'job_id', 'id');
     // }
 
+    public function jobServiceCat()
+    {
+        return $this->hasMany(Job_Service_Cat::class, 'job_id', 'id');
+    }
+    
+    public function workerFeedback()
+    {
+        return $this->hasMany(worker_feedback::class, 'job_id', 'id');
+    }
 }

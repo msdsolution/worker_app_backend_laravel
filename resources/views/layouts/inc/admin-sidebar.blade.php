@@ -38,14 +38,18 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Service Category
                             </a>
-                            <a class="nav-link {{ Request::is('admin/users') ? 'active':''}}" href="{{url('admin/users')}}">
+                            <a class="nav-link {{ Request::is('admin/joblisting') ? 'active':''}}" href="{{url('admin/joblisting')}}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Job listing
                             </a>
-                            <a class="nav-link" href="charts.html">
+                            <a class="nav-link {{ Request::is('admin/workerfeedback') ? 'active':''}}" href="{{url('admin/workerfeedback')}}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Invoices
+                                Feedback and Rating Management
                             </a>
+                            <!-- <a class="nav-link" href="charts.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                Feedback and Rating Management
+                            </a> -->
                             <a class="nav-link {{Request::is('admin/employees') || Request::is('admin/add-employee') || Request::is('admin/employee/*')? 'collapse active' : 'collapsed'}}" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePost2" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                 Rate Management

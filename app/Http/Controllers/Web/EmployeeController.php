@@ -78,4 +78,11 @@ class EmployeeController extends Controller
         $employee -> delete();
         return redirect('admin/employees') -> with('message','Employee Deleted Successfully');
     }
+    public function changeStatusemp(Request $request) {
+
+        $employee = User::find($request ->id);
+        $employee->status = $request->status;
+        $employee->save();
+        return response()->json(['success' => 'Status Changed Successfully']);
+    }
 }
