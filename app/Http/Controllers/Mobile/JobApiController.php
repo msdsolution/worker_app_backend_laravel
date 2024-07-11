@@ -12,6 +12,8 @@ use App\Models\TimeHours;
 use App\Models\RefferalRates;
 use App\Models\WokerRates;
 use App\Models\SriLankaDistricts;
+use App\Models\JobComplaint;
+use App\Models\ComplaintMessages;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
@@ -111,6 +113,23 @@ public function createJob(Request $request)
 	    ], 200);
     }
 
+    public function getJobDetail($id){
+        $user = auth()->user();
+
+        $jobs = Job::with('jobType.serviceCat')->findOrFail($id);
+
+         if ($jobs->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Records retrieved successfully.',
+            'data' => $jobs,
+        ], 200);
+    }
+
     public function getJobCreatFormData(Request $request)
     {
         $job_type = Service_Category::whereNull('deleted_at')
@@ -134,5 +153,50 @@ public function createJob(Request $request)
             //'refferal_rates' => $refferal_rates,
         ], 200);
 
+    }
+
+    public function submitJobComplaint(Request $request)
+    {
+        $userId = Auth::id();
+
+        $request->validate([
+            'job_id' => 'required',
+            'message' => 'required',
+        ]);
+
+        $jobComplaint = JobComplaint::where('job_id', $request->job_id)->first();
+
+        if (!$jobComplaint) {
+            $jobComplaint = JobComplaint::create([
+                'job_id' => $request->job_id,
+            ]);
+        }
+
+        $complaint_message = ComplaintMessages::create([
+            'complaint_id' => $jobComplaint->id,
+            'user_id' => $userId,
+            'message' => $request->message,
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Complaint created successfully',
+            'complaint' => $complaint_message,
+        ], 201);
+    }
+
+    public function getAllJobComplaintsWithMessages($jobId)
+    {
+        $jobComplaints = JobComplaint::leftJoin('complaint_messages', 'job_complaint.id', '=', 'complaint_messages.complaint_id')
+                                     ->where('job_complaint.job_id', $jobId)
+                                     ->select('job_complaint.*', 'complaint_messages.id as message_id', 'complaint_messages.user_id', 'complaint_messages.message')
+                                     ->get();
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'data' => $jobComplaints,
+        ]);
     }
 }
