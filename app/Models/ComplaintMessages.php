@@ -20,4 +20,9 @@ class ComplaintMessages extends Model
     {
         return $this->belongsTo(JobComplaint::class, 'complaint_id', 'id');
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(ComplaintAttachment::class, 'complaint_message_id');
+    }
 }
