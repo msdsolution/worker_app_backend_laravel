@@ -235,7 +235,7 @@ public function createJob(Request $request)
                 'complaint_messages.id as message_id',
                 'complaint_messages.user_id',
                 'complaint_messages.message',
-                DB::raw("CONCAT('https://ratamithuro.com/storage/app/', complaint_attachments.img_url) as full_img_url"))
+                DB::raw("CONCAT('https://ratamithuro.com/complaintAttachment/', complaint_attachments.img_url) as full_img_url"))
              ->get();
 
         return response()->json([
