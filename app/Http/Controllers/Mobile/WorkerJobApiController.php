@@ -24,8 +24,10 @@ class WorkerJobApiController extends Controller
         
        $user = auth()->user();
 
+       $job_statuses = [1];
+
        $job_history = Job::where('worker_id', $user->id)
-       				  ->where('status', 0)
+       				  ->whereIn('status', $job_statuses)
         			  ->get();
 
 	    return response()->json([
@@ -34,6 +36,42 @@ class WorkerJobApiController extends Controller
 	        'message' => 'Records retrieved successfully.',
 	        'data' => $job_history,
 	    ], 200);
+    }
+
+    public function getWorkerAcceptedAndStartedJobList(Request $request)
+    {
+        
+       $user = auth()->user();
+
+       $job_statuses = [2, 3];
+
+       $job_history = Job::where('worker_id', $user->id)
+                      ->whereIn('status', $job_statuses)
+                      ->get();
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Records retrieved successfully.',
+            'data' => $job_history,
+        ], 200);
+    }
+
+    public function getWorkerFinishedJobList(Request $request)
+    {
+        
+       $user = auth()->user();
+
+       $job_history = Job::where('worker_id', $user->id)
+                      ->where('status', 4)
+                      ->get();
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Records retrieved successfully.',
+            'data' => $job_history,
+        ], 200);
     }
 
     public function acceptJob($id)
@@ -52,7 +90,7 @@ class WorkerJobApiController extends Controller
     public function rejectJob($id)
     {
         $job = Job::findOrFail($id);
-        $job->status = 0;
+        $job->status = 6;
         $job->save();
 
         return response()->json([
