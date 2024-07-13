@@ -42,32 +42,51 @@ public function createJob(Request $request)
             'job_categories.*.job_type_id' => 'required',
         ]);
 
-        $job = Job::create([
-            'user_id' => $userId,
-            'description' => $request->input('description'),
-            'city_id' => $request->input('city_id'),
-            'start_location' => $request->input('start_location'),
-            'end_location' => $request->input('end_location'),
-            'required_date' => $request->input('required_date'),
-            'required_time' => $request->input('required_time'),
-            'preferred_sex' => $request->input('preferred_sex'),
-        ]);
-
-        // Save selected job categories
-        foreach ($request->input('job_categories') as $jobCategoryData) {
-            // return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $jobCategoryData], 201);
-            $worker_rate = WokerRates::find($jobCategoryData['refferal_rate_id']);
-            Job_Service_Cat::create([
-                'service_cat_id' => $jobCategoryData['job_type_id'],
-                'job_id' => $job->id,
-                'refferal_rate_id' => $jobCategoryData['refferal_rate_id'],
-                'refferal_amount' => $jobCategoryData['refferal_amount'],
-                'woker_rate_id' => $worker_rate->id,
-                'worker_amount' => $worker_rate->amount,
+        try {
+            $job = Job::create([
+                'user_id' => $userId,
+                'description' => $request->input('description'),
+                'city_id' => $request->input('city_id'),
+                'start_location' => $request->input('start_location'),
+                'end_location' => $request->input('end_location'),
+                'required_date' => $request->input('required_date'),
+                'required_time' => $request->input('required_time'),
+                'preferred_sex' => $request->input('preferred_sex'),
             ]);
-        }
 
-        return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $job], 201);
+            $jobId = $job->id;
+            $jobIdLength = strlen($jobId);
+
+            // Generate job number in format #00000 with job ID appended
+            if ($jobIdLength <= 5) {
+                $jobNumber = '#' . str_pad($jobId, 5, '0', STR_PAD_LEFT);
+                $job->job_no = $jobNumber;
+                $job->save();
+            } else {
+                $jobNumber = '#' . $jobId;
+                $job->job_no = $jobNumber;
+                $job->save();
+            }
+
+            // Save selected job categories
+            foreach ($request->input('job_categories') as $jobCategoryData) {
+                // return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $jobCategoryData], 201);
+                $worker_rate = WokerRates::find($jobCategoryData['refferal_rate_id']);
+                Job_Service_Cat::create([
+                    'service_cat_id' => $jobCategoryData['job_type_id'],
+                    'job_id' => $job->id,
+                    'refferal_rate_id' => $jobCategoryData['refferal_rate_id'],
+                    'refferal_amount' => $jobCategoryData['refferal_amount'],
+                    'woker_rate_id' => $worker_rate->id,
+                    'worker_amount' => $worker_rate->amount,
+                ]);
+            }
+
+            return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $job], 201);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     public function getServiceList(Request $request)
