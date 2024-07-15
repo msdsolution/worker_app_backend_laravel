@@ -48,10 +48,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::post('/create_complaint', [JobApiController::class, 'submitJobComplaint']);
 	Route::get('/getComplaints/{id}', [JobApiController::class, 'getAllJobComplaintsWithMessages']);
 
-	Route::get('/get_woker_job_history_list', [WorkerJobApiController::class, 'getWorkerJobList']);
+	Route::get('/get_worker_job_history_list', [WorkerJobApiController::class, 'getWorkerJobList']);
 	Route::get('/getWorkerFinishedJobList', [WorkerJobApiController::class, 'getWorkerFinishedJobList']);
 	Route::put('/job/{id}/accept', [WorkerJobApiController::class, 'acceptJob']);
 	Route::put('/job/{id}/reject', [WorkerJobApiController::class, 'rejectJob']);
 	Route::put('/job/{id}/start', [WorkerJobApiController::class, 'startJob']);
-	Route::put('/job/{id}/finish', [WorkerJobApiController::class, 'finishJob']);
+	Route::post('/job_finish', [WorkerJobApiController::class, 'finishJob']);
 });

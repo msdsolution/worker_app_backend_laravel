@@ -12,6 +12,7 @@ class RefferalRates extends Model
     protected $table = 'refferal_rates';
 
     protected $fillable = [
+    	'id',
         'amount',
         'day',
     ];

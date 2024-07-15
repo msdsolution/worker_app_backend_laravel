@@ -40,6 +40,8 @@ public function createJob(Request $request)
             'job_categories' => 'required|array',
             'job_categories.*.name' => 'required',
             'job_categories.*.job_type_id' => 'required',
+            'job_categories.*.refferal_rate_id' => 'required',
+            'job_categories.*.refferal_amount' => 'required',
         ]);
 
         try {

@@ -11,10 +11,13 @@ use App\Models\Service_Category;
 use App\Models\TimeHours;
 use App\Models\RefferalRates;
 use App\Models\WokerRates;
+use App\Models\JobAttachment;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class WorkerJobApiController extends Controller
 {
@@ -113,11 +116,39 @@ class WorkerJobApiController extends Controller
         ], 200);
     }
 
-    public function finishJob($id)
+    public function finishJob(Request $request)
     {
-        $job = Job::findOrFail($id);
+
+        $request->validate([
+            'job_id' => 'required',
+            'finish_job_description',
+            'files.*' => 'file|mimes:jpeg,png,gif|max:20000',
+        ]);
+
+        $job = Job::findOrFail($request->job_id);
+        $job->finishJobDescription = $request->finish_job_description;
         $job->status = 4;
         $job->save();
+
+        //Handle file uploads
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                // Ensure the directory exists or create it
+                $directory = 'jobAttachment';
+                if (!Storage::exists($directory)) {
+                    Storage::makeDirectory($directory);
+                }
+
+                // Store the file in the specified directory
+                $path = $file->store($directory);
+
+                // Save file path to database
+                JobAttachment::create([
+                    'job_id' => $job->id,
+                    'img_url' => $path,
+                ]);
+            }
+        }
 
         return response()->json([
         	'status' => 200,
