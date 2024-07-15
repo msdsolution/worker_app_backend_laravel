@@ -186,7 +186,7 @@ public function createJob(Request $request)
         $request->validate([
             'job_id' => 'required',
             'message' => 'required',
-            'files.*' => 'file|mimes:jpeg,png,gif|max:20000',
+            //'files.*' => 'file|mimes:jpeg,png,gif|max:20000',
         ]);
 
         // try {

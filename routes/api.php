@@ -55,4 +55,5 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::put('/job/{id}/reject', [WorkerJobApiController::class, 'rejectJob']);
 	Route::put('/job/{id}/start', [WorkerJobApiController::class, 'startJob']);
 	Route::post('/job_finish', [WorkerJobApiController::class, 'finishJob']);
+	Route::put('/job/{job_id}/job_extend', [WorkerJobApiController::class, 'extendJob']);
 });

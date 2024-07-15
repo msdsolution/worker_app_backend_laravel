@@ -122,7 +122,7 @@ class WorkerJobApiController extends Controller
         $request->validate([
             'job_id' => 'required',
             'finish_job_description',
-            'files.*' => 'file|mimes:jpeg,png,gif|max:20000',
+            //'files.*' => 'file|mimes:jpeg,png,gif|max:20000',
         ]);
 
         $job = Job::findOrFail($request->job_id);
@@ -157,12 +157,25 @@ class WorkerJobApiController extends Controller
         ], 200);
     }
 
-    // public function extendJob($id)
-    // {
-    //     $job = Job::findOrFail($id);
-    //     $job->status = 'extended';
-    //     $job->save();
+    public function extendJob(Request $request, $job_id)
+    {
 
-    //     return response()->json(['message' => 'Job extended successfully']);
-    // }
+        $validatedData = $request->validate([
+            'extended_hr' => 'required|integer|min:1', // Example validation rules
+        ]);
+
+        try {
+
+            $job = Job::findOrFail($job_id);
+            $job->is_extended = 1;
+            $job->extended_hrs = $request->extended_hr;
+            $job->save();
+
+            return response()->json(['status' => 200, 'success' => true, 'message' => 'Job extended successfully']);
+
+        } catch (\Exception $e) {
+            // Handle any exceptions (e.g., job not found)
+            return response()->json(['status' => 500, 'success' => false, 'message' => 'Failed to update extended status', 'error' => $e->getMessage()]);
+        }
+    }
 }
