@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Storage;
 class JobApiController extends Controller
 {
 
-public function createJob(Request $request)
+    public function createJob(Request $request)
     {
         $userId = Auth::id();
 
@@ -137,12 +137,27 @@ public function createJob(Request $request)
 	    ], 200);
     }
 
-    public function getJobDetail($id){
+    public function getJobDetail($id)
+    {
         $user = auth()->user();
 
-        $jobs = Job::with('jobType.serviceCat')->findOrFail($id);
+        $jobs = Job::with(['jobType.serviceCat', 'worker', 'complaint'])->findOrFail($id);
 
-         if ($jobs->user_id !== $user->id) {
+        
+        // Add worker_name to the job data
+        if ($jobs->worker_id != null) {
+            $jobs->worker_name = $jobs->worker->first_name;
+
+        } else {
+            $jobs->worker_name = "Not Assigned";
+        }
+
+        $jobs->complaint_status = $jobs->complaint->status;
+
+        unset($jobs->worker);
+        unset($jobs->complaint);
+
+         if ($jobs->user_id !== $user->id && $jobs->worker_id !== $user->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -176,7 +191,6 @@ public function createJob(Request $request)
             'time_hrs' => $time_hrs,
             //'refferal_rates' => $refferal_rates,
         ], 200);
-
     }
 
     public function submitJobComplaint(Request $request)
@@ -197,6 +211,7 @@ public function createJob(Request $request)
             if (!$jobComplaint) {
                 $jobComplaint = JobComplaint::create([
                     'job_id' => $request->job_id,
+                    'status' => 0,
                 ]);
             }
 

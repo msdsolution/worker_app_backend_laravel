@@ -12,6 +12,7 @@ class JobComplaint extends Model
 
     protected $fillable = [
         'job_id',
+        'status',
     ];
 
     public function complaintMessages()

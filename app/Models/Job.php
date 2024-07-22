@@ -33,6 +33,16 @@ class Job extends Model
         return $this->hasMany(Job_Service_Cat::class, 'job_id');
     }
 
+    public function worker()
+    {
+        return $this->belongsTo(User::class, 'worker_id');
+    }
+
+    public function complaint()
+    {
+        return $this->hasOne(JobComplaint::class, 'job_id');
+    }
+
     //  public function jobServices()
     // {
     //     return $this->belongsToMany(Job_Service_Cat::class, 'job_service_cat', 'job_id', 'id');
