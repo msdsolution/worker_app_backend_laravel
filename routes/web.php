@@ -118,6 +118,7 @@ Route::get('extended-hour', [extendedhourController::class, 'index']);
 Route::get('add-extdhour', [extendedhourController::class, 'create']);
 Route::post('add-extdhour',[extendedhourController::class,'store']);
 // Route::get('/joblisting/{jobServiceCat}', 'Web\JobListingController@index')->name('joblisting.index');
+//ManooDev
 
 
 
