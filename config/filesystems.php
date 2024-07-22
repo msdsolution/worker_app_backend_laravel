@@ -72,6 +72,7 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
         public_path('complaintAttachment') => storage_path('app/complaintAttachment'),
+        public_path('profileAttachment') => storage_path('app/profileAttachment'),
     ],
 
 ];

@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 use App\Notifications\VerifyEmail;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Storage;
 
 class ApiController extends Controller
 {
@@ -422,9 +423,6 @@ class ApiController extends Controller
         return response()->json(['status' => 200, 'message' => 'Successfully logged out']);
     }
 
-
-    
-
     public function checkDateStatus($selectedDate)
     {
         //$selectedDate = Carbon::parse($selectedDate);
@@ -463,5 +461,66 @@ class ApiController extends Controller
             'day' => 'Weekday',
         ];
         return response()->json(['status' => 200, 'message' => 'success', 'data' => $data], 200);
+    }
+
+    public function editProfilePic(Request $request){
+
+        $userId = Auth::id();
+
+        $request->validate([
+            'file' => 'required|file|mimes:jpeg,png,gif|max:20000',
+        ]);
+
+        $user = User::findOrFail($userId);
+
+
+        /// Handle file upload
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            // Ensure the directory exists or create it
+            $directory = 'profileAttachment';
+            if (!Storage::exists($directory)) {
+                Storage::makeDirectory($directory);
+            }
+
+            // Store the file in the specified directory
+            $path = $file->store($directory);
+
+            // Save file path to database
+            $user->pro_pic_url = $path;
+            $user->save();
+        }
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Profile image changed successfully',
+            'proPicUrl' => 'https://ratamithuro.com/' . $user->pro_pic_url,
+        ], 200);
+
+    }
+
+    public function changePassword(Request $request){
+        $user = Auth::user();
+
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:6',
+        ]);
+
+        // Check if the old password matches
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json(['status' => 401, 'success' => true, 'message' => 'The provided old password does not match our records.'], 401);
+        }
+
+        $user->password = Hash::make($request->input('new_password'));
+        $user->save();
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Password changed successfully',
+        ], 200);
     }
 }
