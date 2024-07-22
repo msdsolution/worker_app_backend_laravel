@@ -37,6 +37,6 @@ class DashBoardController extends Controller
      ->whereMonth('created_at', $currentMonth)
      ->count();
 
-      return view('Admin.dashboard', compact('jobCount','clientsCount','Assignedworkcount','Pendingworkcount','Rejectedworkcount','Completedworkcount','CompletedworkPaidcount'));
+      return view('admin.dashboard', compact('jobCount','clientsCount','Assignedworkcount','Pendingworkcount','Rejectedworkcount','Completedworkcount','CompletedworkPaidcount'));
     }
 }
