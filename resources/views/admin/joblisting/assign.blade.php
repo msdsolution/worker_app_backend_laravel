@@ -70,7 +70,7 @@
                 <div class="mb-3">
                     <label for="workerName" class="form-label">Worker Name</label>
                     <!-- <select name="workerId" class="form-control" id="workerId"  onchange="updateSelectedWorkerId()"> -->
-                    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4])) disabled @endif>
+                    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4,5])) disabled @endif>
         <option value="">Select Worker</option>
         @foreach($workers as $worker)
             <!-- <option value="{{ $worker->id }}">{{ $worker->first_name }}</option> -->
@@ -87,7 +87,14 @@
                 <div class="row">
                     <div class="col-md-6">
                     <!-- <button type="submit" class="btn btn-primary">Edit</button> -->
-                    <button type="submit" class="btn btn-primary" @if(in_array($job->status, [1, 2, 3, 4])) disabled @endif>Edit</button>
+                    <!-- <button type="submit" class="btn btn-primary" @if(in_array($job->status, [1, 2, 3, 4])) disabled @endif>Edit</button> -->
+                    @if ($job->status === 0)
+                            <button type="submit" class="btn btn-primary">Assign</button>
+                        @elseif ($job->status === 6)
+                            <button type="submit" class="btn btn-primary">Assign back</button>
+                        @else
+                            <button type="submit" class="btn btn-primary" disabled>Edit</button>
+                        @endif
                     </div>
                 </div>
             </form>
@@ -109,6 +116,10 @@
                 return 'Worker started';
             case 4:
                 return 'Worker finished';
+             case 5:
+                    return 'Paid';
+             case 6:
+                    return 'Worker Rejected';
             default:
                 return 'Unknown';
         }

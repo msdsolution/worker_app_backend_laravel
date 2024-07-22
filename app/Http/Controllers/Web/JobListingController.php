@@ -13,9 +13,39 @@ class JobListingController extends Controller
 {
     public function index()
     {
-        $jobDetails = DB::table('job')
+    //     $jobDetails = DB::table('job')
+    //     ->select(
+    //         'job.id as jobId', // Selecting the id from the job table
+    //         'job.user_id',
+    //         'users.first_name as userFirstName',
+    //         'job.description as jobDescription',
+    //         'job.city_id',
+    //         'cities.name_en as cityName',
+    //         'job.start_location',
+    //         'job.end_location',
+    //         'job.worker_id',
+    //         'workers.first_name as workerName',
+    //         'job.status',
+    //         'service_cat.name as serviceName',
+    //         'service_cat.description as serviceDescription',
+    //         'job.required_date',
+    //         'job.required_time',
+    //         'job.preferred_sex'
+    //     )
+    //     ->leftJoin('job_service_cat', function ($join) {
+    //         $join->on('job.id', '=', 'job_service_cat.job_id')
+    //             ->whereRaw('job_service_cat.id = (SELECT MIN(id) FROM job_service_cat WHERE job_id = job.id)');
+    //     })
+    //     ->leftJoin('service_cat', 'job_service_cat.service_cat_id', '=', 'service_cat.id')
+    //     ->leftJoin('users', 'job.user_id', '=', 'users.id') 
+    //     ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
+    //     ->leftJoin('cities', 'job.city_id', '=', 'cities.id') 
+    //     ->get();// Use get() to retrieve all results
+    // // Pass the data to the view
+    // return view('admin.joblisting.index', compact('jobDetails'));
+    $jobDetails = DB::table('job')
         ->select(
-            'job.id as jobId', // Selecting the id from the job table
+            'job.id as jobId',
             'job.user_id',
             'users.first_name as userFirstName',
             'job.description as jobDescription',
@@ -37,11 +67,12 @@ class JobListingController extends Controller
                 ->whereRaw('job_service_cat.id = (SELECT MIN(id) FROM job_service_cat WHERE job_id = job.id)');
         })
         ->leftJoin('service_cat', 'job_service_cat.service_cat_id', '=', 'service_cat.id')
-        ->leftJoin('users', 'job.user_id', '=', 'users.id') 
+        ->leftJoin('users', 'job.user_id', '=', 'users.id')
         ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
-        ->leftJoin('cities', 'job.city_id', '=', 'cities.id') 
-        ->get();// Use get() to retrieve all results
-    // Pass the data to the view
+        ->leftJoin('cities', 'job.city_id', '=', 'cities.id')
+        ->orderByRaw('CASE WHEN job.status = 6 THEN 0 ELSE 1 END, job.id')
+        ->get();
+
     return view('admin.joblisting.index', compact('jobDetails'));
     }
     public function assign($jobId)

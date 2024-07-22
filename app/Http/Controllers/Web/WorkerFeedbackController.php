@@ -12,19 +12,33 @@ class WorkerFeedbackController extends Controller
     //
     public function index()
 {
+    // $workerFeedback = DB::table('worker_feedback')
+    //     ->join('job', 'worker_feedback.job_id', '=', 'job.id')
+    //     ->join('users', 'worker_feedback.user_id', '=', 'users.id')
+    //     ->select(
+    //         'worker_feedback.id',
+    //         'job.description as job_description',
+    //         DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS user_name"),
+    //         'worker_feedback.message',
+    //         'worker_feedback.ratings',
+    //         'worker_feedback.status' 
+    //     )
+    //     ->get();
+    // return view('admin.workerfeedback.index', compact('workerFeedback'));
     $workerFeedback = DB::table('worker_feedback')
-        ->join('job', 'worker_feedback.job_id', '=', 'job.id')
-        ->join('users', 'worker_feedback.user_id', '=', 'users.id')
-        ->select(
-            'worker_feedback.id',
-            'job.description as job_description',
-            DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS user_name"),
-            'worker_feedback.message',
-            'worker_feedback.ratings',
-            'worker_feedback.status' 
-        )
-        ->get();
-    return view('admin.workerfeedback.index', compact('workerFeedback'));
+    ->leftJoin('job', 'worker_feedback.job_id', '=', 'job.id')
+    ->leftJoin('users', 'worker_feedback.user_id', '=', 'users.id')
+    ->select(
+        'worker_feedback.id',
+        'job.description as job_description',
+        DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS user_name"),
+        'worker_feedback.message',
+        'worker_feedback.ratings',
+        'worker_feedback.status' 
+    )
+    ->get();
+
+return view('admin.workerfeedback.index', compact('workerFeedback'));
 }
 public function changeStatus(Request $request) {
 
