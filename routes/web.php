@@ -6,7 +6,10 @@ use App\Http\Controllers\Web\EmployeeController;
 use App\Http\Controllers\Web\ClientController;
 use App\Http\Controllers\Web\ClientRateController;
 use App\Http\Controllers\Web\DashBoardController;
+use App\Http\Controllers\Web\extendedhourController;
+use App\Http\Controllers\Web\InvoiceController;
 use App\Http\Controllers\Web\JobListingController;
+use App\Http\Controllers\Web\PaymentworkerController;
 use App\Http\Controllers\Web\ServicecategoryController;
 use App\Http\Controllers\Web\WorkerFeedbackController;
 use App\Http\Controllers\Web\workerRateController;
@@ -98,7 +101,24 @@ Route::get('workerfeedback', [WorkerFeedbackController::class, 'index']);
 
 Route::get('changeStatus', [WorkerFeedbackController::class, 'changeStatus'])->name('changeStatus');
 
+Route::get('payment_worker',[PaymentworkerController::class,'index']);
+Route::get('add-paymentworker',[PaymentworkerController::class,'create']);
+Route::post('add-paymentworker',[PaymentworkerController::class,'store']);
+Route::get('get-worker-jobs/{workerId}', 'App\Http\Controllers\Web\PaymentworkerController@getWorkerJobs');
+Route::get('get-referral-amount/{jobId}', [PaymentworkerController::class, 'getReferralAmount']);
+Route::post('store-payment', [PaymentworkerController::class, 'store'])->name('store-payment');
+Route::get('download/{filename}', [PaymentworkerController::class, 'download']);
+Route::get('view/{filename}', [PaymentworkerController::class, 'view'])->name('view');
+
+Route::get('Invoice', [InvoiceController::class, 'index']);
+Route::get('download-pdf/{jobId}', [InvoiceController::class, 'download'])->name('download-pdf');
+Route::get('view-pdf/{jobId}', [InvoiceController::class, 'view'])->name('view-pdf');
+
+Route::get('extended-hour', [extendedhourController::class, 'index']);
+Route::get('add-extdhour', [extendedhourController::class, 'create']);
+Route::post('add-extdhour',[extendedhourController::class,'store']);
 // Route::get('/joblisting/{jobServiceCat}', 'Web\JobListingController@index')->name('joblisting.index');
+//ManooDev
 
 
 

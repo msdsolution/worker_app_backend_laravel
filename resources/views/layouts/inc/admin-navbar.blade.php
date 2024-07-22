@@ -1,6 +1,6 @@
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.html">
+            <a class="navbar-brand ps-3" href="{{url('admin/dashboard')}}">
             <img src="{{ asset('assets/images/RataMithuroologo.jpeg') }}" alt="Profile Photo" class="me-2" style="width: 30px; height: 30px; border-radius: 50%;">
         Rata Mithuro
     </a>

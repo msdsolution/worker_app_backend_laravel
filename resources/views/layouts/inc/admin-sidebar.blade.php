@@ -35,15 +35,15 @@
                             </div>
 
                             <a class="nav-link {{ Request::is('admin/servicecategory') ? 'active':''}}" href="{{url('admin/servicecategory')}}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-hammer"></i></div>
                                 Service Category
                             </a>
                             <a class="nav-link {{ Request::is('admin/joblisting') ? 'active':''}}" href="{{url('admin/joblisting')}}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-briefcase"></i></div>
                                 Job listing
                             </a>
                             <a class="nav-link {{ Request::is('admin/workerfeedback') ? 'active':''}}" href="{{url('admin/workerfeedback')}}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-star"></i></div>
                                 Feedback and Rating Management
                             </a>
                             <!-- <a class="nav-link" href="charts.html">
@@ -51,7 +51,7 @@
                                 Feedback and Rating Management
                             </a> -->
                             <a class="nav-link {{Request::is('admin/employees') || Request::is('admin/add-employee') || Request::is('admin/employee/*')? 'collapse active' : 'collapsed'}}" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePost2" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-money-bill-wave"></i></div>
                                 Rate Management
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
@@ -65,9 +65,28 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Rate Management
                             </a> -->
-                            <a class="nav-link" href="tables.html">
+                            <!-- <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Payment Management
+                            </a> -->
+                            <a class="nav-link {{Request::is('admin/employees') || Request::is('admin/add-employee') || Request::is('admin/employee/*')? 'collapse active' : 'collapsed'}}" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePost3" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-dollar-sign"></i></div>
+                                Payment Management
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                            </a>
+                            <div class="collapse {{Request::is('admin/payment_worker') ||  Request::is('admin/payment_client') || Request::is('admin/payment_worker/*')  ? 'show' : ''}}" id="collapsePost3" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link {{ Request::is('admin/payment_worker') ? 'active':''}}" href="{{url('admin/payment_worker')}}">Payement for Worker</a>
+                                    <a class="nav-link {{ Request::is('admin/payment_client') ? 'active':''}}" href="{{url('admin/payment_client')}}">Payement for Client</a>
+                                </nav>
+                            </div>
+                            <a class="nav-link {{ Request::is('admin/Invoice') ? 'active':''}}" href="{{url('admin/Invoice')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-invoice"></i></div>
+                               Invoice
+                            </a>
+                            <a class="nav-link {{ Request::is('admin/extended-hour') ? 'active':''}}" href="{{url('admin/extended-hour')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-hourglass-half"></i></div>
+                               Extended Hour Management
                             </a>
                         </div>
                     </div>
