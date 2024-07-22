@@ -21,6 +21,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class JobApiController extends Controller
 {
@@ -116,24 +118,38 @@ class JobApiController extends Controller
        // 	->where('user_id', $user->id)
        //  ->get();
 
-        $jobs = Job::with('jobType.serviceCat')->where('user_id', $user->id)->get();
+       $perPage = $request->query('per_page', 10); // Number of items per page
+        $page = $request->query('page', 1); // Current page
+
+        $jobs = Job::with('jobType.serviceCat')->where('user_id', $user->id);
+
+        // Search query
+        if ($request->filled('search')) {
+            $searchTerm = $request->query('search');
+            $jobs->where(function ($jobs) use ($searchTerm) {
+                $jobs->where('job_no', 'like', "%$searchTerm%")
+                      ->orWhere('description', 'like', "%$searchTerm%");
+            });
+        }
+
+        // Retrieve paginated results
+        $jobs = $jobs->paginate($perPage);
 
         // Modify the structure of the data to append service_cat name inside job_type
-           $modifiedJobs = $jobs->map(function ($job) {
-                if ($job->jobType) {
-                    foreach ($job->jobType as $jobType) {
-                        $jobType->service_cat_name = $jobType->serviceCat->name;
-                        unset($jobType->serviceCat); // Remove the serviceCat object if needed
-                    }
+        $modifiedJobs = $jobs->map(function ($job) {
+            if ($job->jobType) {
+                foreach ($job->jobType as $jobType) {
+                    $jobType->service_cat_name = $jobType->serviceCat->name;
+                    unset($jobType->serviceCat); // Remove the serviceCat object if needed
                 }
-                return $job;
-            });
-
+            }
+            return $job;
+        });
 	    return response()->json([
             'status' => 200,
 	        'success' => true,
 	        'message' => 'Records retrieved successfully.',
-	        'data' => $modifiedJobs,
+	        'data' => $jobs,
 	    ], 200);
     }
 
