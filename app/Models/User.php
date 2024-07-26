@@ -32,6 +32,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'city_id',
         'phone_no',
         'user_address',
+        'pro_pic_url',
     ];
 
     /**

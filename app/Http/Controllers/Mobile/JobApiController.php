@@ -168,7 +168,13 @@ class JobApiController extends Controller
             $jobs->worker_name = "Not Assigned";
         }
 
-        $jobs->complaint_status = $jobs->complaint->status;
+        // Add complaint status to the job data
+        if ($jobs->complaint != null) {
+            $jobs->complaint_status = $jobs->complaint->status;
+
+        } else {
+            $jobs->complaint_status = 0;
+        }
 
         unset($jobs->worker);
         unset($jobs->complaint);
