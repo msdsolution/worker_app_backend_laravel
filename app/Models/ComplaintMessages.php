@@ -11,14 +11,14 @@ class ComplaintMessages extends Model
     protected $table = 'complaint_messages';
 
     protected $fillable = [
-        'complaint_id',
+        'job_id',
         'user_id',
         'message',
     ];
 
     public function jobComplaint()
     {
-        return $this->belongsTo(JobComplaint::class, 'complaint_id', 'id');
+        return $this->belongsTo(Job::class, 'job_id', 'id');
     }
 
     public function attachments()

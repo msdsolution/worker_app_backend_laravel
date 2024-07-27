@@ -12,7 +12,7 @@ class ComplaintAttachment extends Model
 
     protected $fillable = [
         'img_url',
-        'complaint_id',
+        'job_id',
         'complaint_message_id',
     ];
 

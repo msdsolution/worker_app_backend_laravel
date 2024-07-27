@@ -12,7 +12,6 @@ use App\Models\TimeHours;
 use App\Models\RefferalRates;
 use App\Models\WokerRates;
 use App\Models\SriLankaDistricts;
-use App\Models\JobComplaint;
 use App\Models\ComplaintMessages;
 use App\Models\ComplaintAttachment;
 use Illuminate\Support\Facades\Http;
@@ -229,56 +228,143 @@ class JobApiController extends Controller
         ], 200);
     }
 
+    // public function submitJobComplaint(Request $request)
+    // {
+    //     $userId = Auth::id();
+
+    //     $request->validate([
+    //         'job_id' => 'required',
+    //         'message' => 'required',
+    //         'files.*' => 'file|mimes:jpeg,png,gif|max:20000',
+    //     ]);
+
+    //     // try {
+    //     //     DB::beginTransaction();
+
+    //         $job = Job::findOrFail($request->job_id);
+
+    //         if ($job && $job->is_complaint == 0) {
+    //             $job->is_complaint = 1;
+    //             $job->complaint_status = 0;
+    //             $job->save();
+    //         }
+
+    //         $complaint_message = ComplaintMessages::create([
+    //             'job_id' => $job->id,
+    //             'user_id' => $userId,
+    //             'message' => $request->message,
+    //         ]);
+
+    //         //return $request->hasFile('files');
+
+    //         // Handle file uploads
+    //         if ($request->hasFile('files')) {
+    //             foreach ($request->file('files') as $file) {
+    //                 // Ensure the directory exists or create it
+    //                 $directory = 'complaintAttachment';
+    //                 if (!Storage::exists($directory)) {
+    //                     Storage::makeDirectory($directory);
+    //                 }
+
+    //                 // Store the file in the specified directory
+    //                 $path = $file->store($directory);
+
+    //                 // Save file path to database
+    //                 ComplaintAttachment::create([
+    //                     'job_id' => $job->id,
+    //                     'img_url' => $path,
+    //                     'complaint_message_id' => $complaint_message->id,
+    //                 ]);
+    //             }
+    //         }
+
+    //         return response()->json([
+    //             'status' => 200,
+    //             'success' => true,
+    //             'message' => 'Complaint created successfully',
+    //             'complaint' => $complaint_message,
+    //         ], 201);
+
+    //     // } catch (\Exception $e) {
+    //     //     DB::rollBack();
+
+    //     //     return response()->json([
+    //     //         'status' => 500,
+    //     //         'success' => false,
+    //     //         'message' => 'Failed to create complaint: ' . $e->getMessage(),
+    //     //     ], 500);
+    //     // }
+    // }
+
     public function submitJobComplaint(Request $request)
     {
         $userId = Auth::id();
 
+        // Custom validation rule to ensure at least one of 'message' or 'files' is present
         $request->validate([
-            'job_id' => 'required',
-            'message' => 'required',
-            //'files.*' => 'file|mimes:jpeg,png,gif|max:20000',
+            'job_id' => 'required|exists:job,id',
+            'message' => 'nullable|string',
+            'files.*' => 'nullable|file|mimes:jpeg,png,gif|max:20000',
+        ], [
+            'message.required_without' => 'The message field is required when no files are uploaded.',
+            'files.required_without' => 'At least one file is required when no message is provided.',
         ]);
+        // Check if either 'message' or 'files' is present
+        if (!$request->filled('message') && !$request->hasFile('files')) {
+            return response()->json([
+                'status' => 422,
+                'success' => false,
+                'message' => 'At least one of message or file must be provided.',
+            ], 422);
+        }
 
-        // try {
-        //     DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-            $jobComplaint = JobComplaint::where('job_id', $request->job_id)->first();
+            // Find the job
+            $job = Job::findOrFail($request->job_id);
 
-            if (!$jobComplaint) {
-                $jobComplaint = JobComplaint::create([
-                    'job_id' => $request->job_id,
-                    'status' => 0,
+            if ($job && $job->is_complaint == 0) {
+                $job->is_complaint = 1;
+                $job->complaint_status = 0;
+                $job->save();
+            }
+
+            // Create the complaint message if 'message' is provided
+            $complaint_message = null;
+            if ($request->filled('message')) {
+                $complaint_message = ComplaintMessages::create([
+                    'job_id' => $job->id,
+                    'user_id' => $userId,
+                    'message' => $request->message,
                 ]);
             }
 
-            $complaint_message = ComplaintMessages::create([
-                'complaint_id' => $jobComplaint->id,
-                'user_id' => $userId,
-                'message' => $request->message,
-            ]);
-
-            //return $request->hasFile('files');
-
-            // Handle file uploads
+            // Handle file uploads if 'files' are provided
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
-                    // Ensure the directory exists or create it
-                    $directory = 'complaintAttachment';
-                    if (!Storage::exists($directory)) {
-                        Storage::makeDirectory($directory);
+                    if ($file->isValid()) {
+                        // Store the file in the specified directory
+                        $path = $file->store('complaintAttachment', 'public');
+
+                        // Save file path to database
+                        ComplaintAttachment::create([
+                            'job_id' => $job->id,
+                            'img_url' => $path,
+                            'complaint_message_id' => $complaint_message ? $complaint_message->id : null,
+                        ]);
+                    } else {
+                        // Handle invalid file situation
+                        return response()->json([
+                            'status' => 422,
+                            'success' => false,
+                            'message' => 'One or more files are invalid.',
+                        ], 422);
                     }
-
-                    // Store the file in the specified directory
-                    $path = $file->store($directory);
-
-                    // Save file path to database
-                    ComplaintAttachment::create([
-                        'complaint_id' => $jobComplaint->id,
-                        'img_url' => $path,
-                        'complaint_message_id' => $complaint_message->id,
-                    ]);
                 }
             }
+
+            DB::commit();
 
             return response()->json([
                 'status' => 200,
@@ -286,24 +372,24 @@ class JobApiController extends Controller
                 'message' => 'Complaint created successfully',
                 'complaint' => $complaint_message,
             ], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
 
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-
-        //     return response()->json([
-        //         'status' => 500,
-        //         'success' => false,
-        //         'message' => 'Failed to create complaint: ' . $e->getMessage(),
-        //     ], 500);
-        // }
+            return response()->json([
+                'status' => 500,
+                'success' => false,
+                'message' => 'Failed to create complaint: ' . $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     public function getAllJobComplaintsWithMessages($jobId)
     {
-        $jobComplaints = JobComplaint::leftJoin('complaint_messages', 'job_complaint.id', '=', 'complaint_messages.complaint_id')
+        $jobComplaints = Job::leftJoin('complaint_messages', 'job.id', '=', 'complaint_messages.job_id')
                 ->leftJoin('complaint_attachments', 'complaint_messages.id', '=', 'complaint_attachments.complaint_message_id')
-             ->where('job_complaint.job_id', $jobId)
-             ->select('job_complaint.*',
+             ->where('job.id', $jobId)
+             ->select('job.id','job.is_complaint','job.complaint_status',
                 'complaint_messages.id as message_id',
                 'complaint_messages.user_id',
                 'complaint_messages.message',

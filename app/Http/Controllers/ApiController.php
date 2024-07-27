@@ -464,7 +464,6 @@ class ApiController extends Controller
     }
 
     public function editProfilePic(Request $request){
-
         $userId = Auth::id();
 
         $request->validate([
@@ -473,19 +472,12 @@ class ApiController extends Controller
 
         $user = User::findOrFail($userId);
 
-
-        /// Handle file upload
+        // Handle file upload
         if ($request->hasFile('file')) {
             $file = $request->file('file');
 
-            // Ensure the directory exists or create it
-            $directory = 'profileAttachment';
-            if (!Storage::exists($directory)) {
-                Storage::makeDirectory($directory);
-            }
-
-            // Store the file in the specified directory
-            $path = $file->store($directory);
+            // Store the file in the 'public' directory
+            $path = $file->store('profileAttachment', 'public');
 
             // Save file path to database
             $user->pro_pic_url = $path;
@@ -496,9 +488,8 @@ class ApiController extends Controller
             'status' => 200,
             'success' => true,
             'message' => 'Profile image changed successfully',
-            'proPicUrl' => 'https://ratamithuro.com/' . $user->pro_pic_url,
+            'proPicUrl' => url('storage/' . $user->pro_pic_url),
         ], 200);
-
     }
 
     public function changePassword(Request $request){

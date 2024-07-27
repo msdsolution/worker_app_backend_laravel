@@ -70,8 +70,13 @@ class WorkerJobApiController extends Controller
         $perPage = $request->query('per_page', 10); // Number of items per page
         $page = $request->query('page', 1); // Current page
 
-        $query = Job::where('worker_id', $user->id)
-                      ->where('status', 4);
+        // $query = Job::where('worker_id', $user->id)
+        //               ->where('status', 4);
+
+        $query = Job::leftJoin('worker_payment', 'job.id', '=', 'worker_payment.job_id')
+            ->where('job.status', 4)  // Filter jobs with status 4
+            ->where('job.worker_id', $user->id)  // Ensure worker_id matches
+            ->select('job.*', 'worker_payment.status as worker_payment_status');
 
         // Search query
         if ($request->filled('search')) {
