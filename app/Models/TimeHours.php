@@ -5,15 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Worker_rate extends Model
+class TimeHours extends Model
 {
     use HasFactory;
 
-    protected $table = 'worker_rates';
+    protected $table = 'time_hours';
 
     protected $fillable = [
-    	'id',
-        'amount',
-        'day',
+        'name',
     ];
 }

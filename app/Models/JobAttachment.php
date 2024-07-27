@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Worker_rate extends Model
+class JobAttachment extends Model
 {
     use HasFactory;
-
-    protected $table = 'worker_rates';
+    protected $table = 'job_attachments';
 
     protected $fillable = [
-    	'id',
-        'amount',
-        'day',
+        'img_url',
+        'job_id',
     ];
+
 }

@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Worker_rate extends Model
+class SriLankaCities extends Model
 {
     use HasFactory;
 
-    protected $table = 'worker_rates';
+    protected $table = 'cities';
 
     protected $fillable = [
-    	'id',
-        'amount',
-        'day',
+        'name_en',
+        'name_si',
+        'name_ta',
     ];
 }

@@ -15,6 +15,8 @@ class Service_Category extends Model
         'name',
         'description',
     ];
+
+   
     public function jobServiceCat()
     {
         return $this->hasMany(Job_Service_Cat::class, 'service_cat_id', 'id');
