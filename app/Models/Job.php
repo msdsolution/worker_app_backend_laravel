@@ -26,6 +26,8 @@ class Job extends Model
         'job_no',
         'is_extended',
         'extended_hrs',
+        'is_complaint',
+        'complaint_status',
     ];
 
     public function jobType()
@@ -56,5 +58,10 @@ class Job extends Model
     public function workerFeedback()
     {
         return $this->hasMany(worker_feedback::class, 'job_id', 'id');
+    }
+
+    public function complaintMessages()
+    {
+        return $this->hasMany(ComplaintMessage::class, 'job_id', 'id');
     }
 }
