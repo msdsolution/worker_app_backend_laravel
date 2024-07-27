@@ -388,10 +388,10 @@ class ApiController extends Controller
              ]);
         } else {
             return response()->json([
-                'status' => 401,
-                'success' => false,
+                'status' => 200,
+                'success' => true,
                 'message' => "User is not verified",
-             ], 401);
+             ], 200);
         }
    
     }
