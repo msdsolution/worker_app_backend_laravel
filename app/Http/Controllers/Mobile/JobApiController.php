@@ -149,7 +149,21 @@ class JobApiController extends Controller
             'status' => 200,
 	        'success' => true,
 	        'message' => 'Records retrieved successfully.',
-	        'data' => $jobs,
+	        'data' => [
+                'current_page' => $jobs->currentPage(),
+                'jobs' => $modifiedJobs,
+                'first_page_url' => $jobs->url(1),
+                'from' => $jobs->firstItem(),
+                'last_page' => $jobs->lastPage(),
+                'last_page_url' => $jobs->url($jobs->lastPage()),
+                'links' => $jobs->linkCollection()->toArray(),
+                'next_page_url' => $jobs->nextPageUrl(),
+                'path' => $jobs->path(),
+                'per_page' => $jobs->perPage(),
+                'prev_page_url' => $jobs->previousPageUrl(),
+                'to' => $jobs->lastItem(),
+                'total' => $jobs->total(),
+            ],
 	    ], 200);
     }
 
@@ -168,7 +182,13 @@ class JobApiController extends Controller
             $jobs->worker_name = "Not Assigned";
         }
 
-        $jobs->complaint_status = $jobs->complaint->status;
+        // Add complaint status to the job data
+        if ($jobs->complaint != null) {
+            $jobs->complaint_status = $jobs->complaint->status;
+
+        } else {
+            $jobs->complaint_status = 0;
+        }
 
         unset($jobs->worker);
         unset($jobs->complaint);

@@ -388,10 +388,10 @@ class ApiController extends Controller
              ]);
         } else {
             return response()->json([
-                'status' => 401,
-                'success' => false,
+                'status' => 200,
+                'success' => true,
                 'message' => "User is not verified",
-             ], 401);
+             ], 200);
         }
    
     }
@@ -444,7 +444,7 @@ class ApiController extends Controller
 
         // Check weekend (Saturday or Sunday)
         if ($carbonInstance->isWeekend()) {
-            $refferal_rate = RefferalRates::where('day', 'Weekend')->whereNull('deleted_at')->first();
+            $refferal_rate = RefferalRates::where('day', 'Saturday and Sunday')->whereNull('deleted_at')->first();
             $data = [
                 'id' => $refferal_rate->id,
                 'amount' => $refferal_rate->amount,
@@ -454,7 +454,7 @@ class ApiController extends Controller
         }
 
         // Check weekday
-        $refferal_rate = RefferalRates::where('day', 'Weekday')->whereNull('deleted_at')->first();
+        $refferal_rate = RefferalRates::where('day', 'Monday to Friday')->whereNull('deleted_at')->first();
         $data = [
             'id' => $refferal_rate->id,
             'amount' => $refferal_rate->amount,
