@@ -42,7 +42,7 @@ class Job extends Model
 
     public function complaint()
     {
-        return $this->hasOne(Job::class, 'job_id');
+        return $this->hasOne(Job::class, 'id');
     }
 
     //  public function jobServices()
