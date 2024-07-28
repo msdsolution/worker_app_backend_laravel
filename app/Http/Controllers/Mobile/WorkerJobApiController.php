@@ -168,14 +168,8 @@ class WorkerJobApiController extends Controller
         //Handle file uploads
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
-                // Ensure the directory exists or create it
-                $directory = 'jobAttachment';
-                if (!Storage::exists($directory)) {
-                    Storage::makeDirectory($directory);
-                }
 
-                // Store the file in the specified directory
-                $path = $file->store($directory);
+                $path = $file->store('jobAttachment', 'public');
 
                 // Save file path to database
                 JobAttachment::create([

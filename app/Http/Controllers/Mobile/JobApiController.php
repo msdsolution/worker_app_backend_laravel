@@ -170,7 +170,7 @@ class JobApiController extends Controller
     {
         $user = auth()->user();
 
-        $jobs = Job::with(['jobType.serviceCat', 'worker', 'complaint'])->findOrFail($id);
+        $jobs = Job::with(['jobType.serviceCat', 'worker', 'complaint', 'jobAttachments'])->findOrFail($id);
 
         
         // Add worker_name to the job data
@@ -393,7 +393,7 @@ class JobApiController extends Controller
                 'complaint_messages.id as message_id',
                 'complaint_messages.user_id',
                 'complaint_messages.message',
-                DB::raw("CONCAT('https://ratamithuro.com/', complaint_attachments.img_url) as full_img_url"))
+                DB::raw('CONCAT("' . url('storage') . '/", complaint_attachments.img_url) as full_img_url'))
              ->get();
 
         return response()->json([
