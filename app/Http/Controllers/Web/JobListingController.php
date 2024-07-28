@@ -71,13 +71,16 @@ class JobListingController extends Controller
         ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
         ->leftJoin('cities', 'job.city_id', '=', 'cities.id')
         ->orderByRaw('CASE WHEN job.status = 6 THEN 0 ELSE 1 END, job.id')
+       // ->paginate(10); 
         ->get();
 
     return view('admin.joblisting.index', compact('jobDetails'));
     }
     public function assign($jobId)
     {
-    $workers = User::where('user_type', 3)->get();
+        $workers = User::where('user_type', 3)
+        ->where('status', 1) // Add this line to filter by status
+        ->get();
         $job = DB::table('job')
         ->select(
             'job.id as jobId',

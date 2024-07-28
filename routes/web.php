@@ -5,6 +5,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Web\EmployeeController;
 use App\Http\Controllers\Web\ClientController;
 use App\Http\Controllers\Web\ClientRateController;
+use App\Http\Controllers\Web\ComplaintController;
 use App\Http\Controllers\Web\DashBoardController;
 use App\Http\Controllers\Web\extendedhourController;
 use App\Http\Controllers\Web\InvoiceController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\Web\PaymentworkerController;
 use App\Http\Controllers\Web\ServicecategoryController;
 use App\Http\Controllers\Web\WorkerFeedbackController;
 use App\Http\Controllers\Web\workerRateController;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -29,7 +32,8 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
-Route::prefix('admin')->group(function(){
+// Route::prefix('admin')->group(function(){
+    Route::prefix('admin')->middleware(['auth', 'isAdmin'])->group(function() {
 
 Route::get('/dashboard',[DashBoardController::class,'index']);
 Route::get('client',[ClientController::class,'index']);
@@ -117,8 +121,23 @@ Route::get('view-pdf/{jobId}', [InvoiceController::class, 'view'])->name('view-p
 Route::get('extended-hour', [extendedhourController::class, 'index']);
 Route::get('add-extdhour', [extendedhourController::class, 'create']);
 Route::post('add-extdhour',[extendedhourController::class,'store']);
+
+Route::post('send-invoice', [InvoiceController::class, 'sendInvoice']);
+// In routes/web.php
+Route::get('complaints', [ComplaintController::class, 'index']);
+// Route::get('get-chat-messages/{jobId}', [ComplaintController::class, 'getChatMessages']);
+Route::get('get-chat-messages/{jobId}', [ComplaintController::class, 'getChatMessages'])->name('get-chat-messages');
+
+Route::post('send-message', [ComplaintController::class, 'sendMessage'])->name('send-message');
+
+Route::post('update-complaint-status', [ComplaintController::class, 'updateComplaintStatus']);
+
 // Route::get('/joblisting/{jobServiceCat}', 'Web\JobListingController@index')->name('joblisting.index');
 //ManooDev
+
+Route::get('edit-extendex-hour/{extd_hri_d}',[extendedhourController::class,'edit']);
+Route::put('update-extendex-hour/{extd_hri_d}',[extendedhourController::class,'update']);
+Route::get('delete-extendex-hour/{extd_hri_d}',[extendedhourController::class,'destroy']);
 
 
 

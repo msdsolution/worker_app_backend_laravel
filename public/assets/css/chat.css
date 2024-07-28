@@ -1,0 +1,145 @@
+.chat-view {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    height: calc(100vh - 80px); /* Adjust height as needed */
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chat-header .btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.chat-header .btn:hover {
+    background-color: #5a6268;
+}
+
+.chat-messages {
+    padding: 10px;
+    flex: 1; /* Take up available space */
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    max-width: 75%;
+    flex-direction: column;
+}
+
+.chat-message.admin {
+    margin-left: auto;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.chat-message.user {
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.message-content {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #e1e1e1;
+    word-wrap: break-word;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.chat-message.admin .message-content {
+    background-color: #007bff; /* Blue for admin */
+    color: white;
+    align-items: flex-end;
+}
+
+.chat-message.user .message-content {
+    background-color: #e1ffc7; /* Green for users */
+}
+
+.message-img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.chat-input {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background-color: #fff;
+}
+
+.chat-input .input-group {
+    display: flex;
+    align-items: center;
+}
+
+.chat-input textarea {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.input-group-append {
+    display: flex;
+    align-items: center;
+}
+
+.input-group-append .btn {
+    margin-left: 10px; /* Space between the icon and the send button */
+}
+
+.attachment-label {
+    cursor: pointer;
+    font-size: 20px;
+    color: #007bff;
+}
+
+.attachment-label:hover {
+    color: #0056b3;
+}
+
+#fileList {
+    margin-top: 10px;
+}
+
+#fileList div {
+    margin-top: 5px;
+    background-color: #f1f1f1;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.message-text {
+    margin-bottom: 5px; /* Space between text and attachment */
+}
+.download-link {
+    color: white !important;
+}
