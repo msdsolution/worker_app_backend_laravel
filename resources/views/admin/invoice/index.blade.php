@@ -103,7 +103,7 @@
                                         No worker assigned
                                     @endif
                                 </td>
-                                <td>
+                                <td class="{{ $job->status == 4 ? 'text-danger' : '' }}">
                                     @if($job->status == 0)
                                         Pending
                                     @elseif($job->status == 1)

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Mail\InvoiceMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
 {
@@ -261,5 +263,98 @@ $pdf = Pdf::loadView('admin.invoice.invoice', [
 // Return the PDF as a stream to be viewed in the browser
 return $pdf->stream('invoice.pdf');
 }
+public function sendInvoice(Request $request)
+{
+    $jobId = $request->input('jobId');
+    $clientName = $request->input('clientName');
+    $clientEmail = $request->input('clientEmail');
+    $message = $request->input('message');
 
+    // Retrieve job details
+    $job = DB::table('job')
+        ->select(
+            'job.id as jobId',
+            'job_no',
+            'job.user_id',
+            'users.first_name as userFirstName',
+            'users.last_name as userLastName',
+            'users.email as Email',
+            'users.user_address as Address',
+            'users.phone_no as Phonenumber',
+            'job.description as jobDescription',
+            'job.city_id',
+            'cities.name_en as cityName',
+            'job.start_location',
+            'job.end_location',
+            'job.worker_id',
+            'workers.first_name as workerName',
+            'job.status',
+            'job.required_date',
+            'job.required_time',
+            'job.created_at',
+            'job.preferred_sex',
+            'job.is_extended',
+            'job.extended_hrs'
+        )
+        ->leftJoin('users', 'job.user_id', '=', 'users.id')
+        ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
+        ->leftJoin('cities', 'job.city_id', '=', 'cities.id')
+        ->where('job.id', $jobId)
+        ->first();
+
+    // Retrieve all service categories associated with the job
+    $serviceCategories = DB::table('job_service_cat')
+        ->join('service_cat', 'job_service_cat.service_cat_id', '=', 'service_cat.id')
+        ->select('service_cat.name')
+        ->where('job_service_cat.job_id', $jobId)
+        ->get();
+
+    // Concatenate service category names into a single string
+    $categoryNames = $serviceCategories->pluck('name')->implode(', ');
+
+    // Retrieve referral amount associated with the job
+    $referalAmount = DB::table('job_service_cat')
+        ->select('refferal_amount')
+        ->where('job_id', $jobId)
+        ->first();
+
+    // Initialize extended hour amount and extended status
+    $extendedHourAmount = 0;
+    $isExtended = $job->is_extended ? 'Yes' : 'No';
+
+    // If the job is extended, calculate the extended hour amount
+    if ($job->is_extended) {
+        // Get the amount for the extended hours
+        $extendedHourRate = DB::table('extended_hour')
+            ->select('amount')
+            ->first(); // Assuming amount is constant for all extended hours
+
+        // Calculate extended hour amount
+        if ($extendedHourRate) {
+            $extendedHourAmount = $extendedHourRate->amount * $job->extended_hrs;
+        }
+    }
+
+    // Calculate grand total
+    $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
+
+    // Generate the PDF
+    $pdf = Pdf::loadView('admin.invoice.invoice', [
+        'job' => $job,
+        'categoryNames' => $categoryNames,
+        'referalAmount' => $referalAmount,
+        'isExtended' => $isExtended,
+        'extendedHourAmount' => $extendedHourAmount,
+        'grandTotal' => $grandTotal
+    ]);
+
+    $pdfPath = storage_path('app/invoice.pdf');
+    $pdf->save($pdfPath);
+
+    // Send email
+    Mail::to($clientEmail)->send(new InvoiceMail($clientName, $message, $pdfPath));
+
+    // Optionally, you can return a response or redirect
+    return redirect()->back()->with('success', 'Invoice sent successfully!');
+}
 }

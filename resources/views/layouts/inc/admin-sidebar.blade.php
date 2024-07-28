@@ -88,6 +88,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-hourglass-half"></i></div>
                                Extended Hour Management
                             </a>
+                            <a class="nav-link {{ Request::is('admin/complaints') ? 'active':''}}" href="{{url('admin/complaints')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-comments"></i></div>
+                               Complaints
+                            </a>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">

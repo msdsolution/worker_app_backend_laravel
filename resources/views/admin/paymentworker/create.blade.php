@@ -50,13 +50,13 @@
 
                 <!-- Referral Amount -->
                 <div class="mb-3">
-                    <label for="referral_amount" class="form-label"><strong>Referral Amount:</strong></label>
+                    <label for="referral_amount" class="form-label"><strong>Total Job Amount.:</strong></label>
                     <input type="text" class="form-control" id="referral_amount" name="referral_amount" readonly>
                 </div>
 
                 <!-- Paid Amount -->
                 <div class="mb-3">
-                    <label for="paid_amount" class="form-label"><strong>Paid Amount:</strong></label>
+                    <label for="paid_amount" class="form-label"><strong>Paying Amount:</strong></label>
                     <input type="text" class="form-control" id="paid_amount" name="paid_amount">
                 </div>
 

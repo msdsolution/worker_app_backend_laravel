@@ -19,6 +19,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link href="{{asset('assets/css/styles.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/chat.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/custom.css')}}" rel="stylesheet">
 
     <link href="{{asset('assets/css/owl.carousel.min.css')}}" rel="stylesheet">
