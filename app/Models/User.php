@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
@@ -69,4 +70,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     {
         return $this->hasMany(worker_feedback::class, 'user_id', 'id');
     }
+
+    // Accessor for pro_pic_url
+    public function getProPicUrlAttribute()
+    {
+        return $this->attributes['pro_pic_url'] ? url('storage/' . $this->attributes['pro_pic_url']) : null;
+    }
+
 }

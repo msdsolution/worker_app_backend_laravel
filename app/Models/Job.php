@@ -64,4 +64,9 @@ class Job extends Model
     {
         return $this->hasMany(ComplaintMessage::class, 'job_id', 'id');
     }
+
+    public function jobAttachments()
+    {
+        return $this->hasMany(JobAttachment::class, 'job_id', 'id');
+    }
 }

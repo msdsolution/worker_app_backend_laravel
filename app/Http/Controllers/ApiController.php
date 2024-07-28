@@ -488,7 +488,7 @@ class ApiController extends Controller
             'status' => 200,
             'success' => true,
             'message' => 'Profile image changed successfully',
-            'proPicUrl' => url('storage/' . $user->pro_pic_url),
+            'proPicUrl' => $user->pro_pic_url,
         ], 200);
     }
 
