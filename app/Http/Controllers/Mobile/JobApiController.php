@@ -326,7 +326,7 @@ class JobApiController extends Controller
 
             if ($job && $job->is_complaint == 0) {
                 $job->is_complaint = 1;
-                $job->complaint_status = 0;
+                $job->complaint_status = 1;
                 $job->save();
             }
 
