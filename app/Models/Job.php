@@ -42,7 +42,7 @@ class Job extends Model
 
     public function complaint()
     {
-        return $this->hasOne(JobComplaint::class, 'job_id');
+        return $this->hasOne(Job::class, 'id');
     }
 
     //  public function jobServices()
@@ -63,5 +63,10 @@ class Job extends Model
     public function complaintMessages()
     {
         return $this->hasMany(ComplaintMessage::class, 'job_id', 'id');
+    }
+
+    public function jobAttachments()
+    {
+        return $this->hasMany(JobAttachment::class, 'job_id', 'id');
     }
 }

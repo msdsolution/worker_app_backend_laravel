@@ -22,7 +22,7 @@
                         </div>
                         @if($message->img_url)
                             @php
-                                $imgUrl = str_replace('storage/', '', $message->img_url);
+                                $imgUrl = $message->img_url;
                                 $fileExtension = pathinfo($message->img_url, PATHINFO_EXTENSION);
                             @endphp
                             @if($fileExtension == 'pdf')

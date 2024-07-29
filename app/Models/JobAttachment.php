@@ -15,4 +15,9 @@ class JobAttachment extends Model
         'job_id',
     ];
 
+    public function getImgUrlAttribute()
+    {
+        return $this->attributes['img_url']? url('storage/' . $this->attributes['img_url']) : null;
+    }
+
 }

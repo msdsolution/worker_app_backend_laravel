@@ -42,7 +42,7 @@ class ComplaintController extends Controller
     
         foreach ($messages as $message) {
             if ($message->img_url) {
-                $message->img_url = Storage::url($message->img_url);
+                $message->img_url = url('storage/' . $message->img_url);
             }
         }
     
@@ -80,9 +80,8 @@ class ComplaintController extends Controller
             $attachments = $request->file('attachments');
             foreach ($attachments as $attachment) {
                 // Generate a unique file name
-                $fileName = time() . '_' . $attachment->getClientOriginalName();
                 // Store the file in storage/app/complaint_attachments
-                $filePath = $attachment->storeAs('complaintAttachment', $fileName);
+                $filePath = $attachment->store('complaintAttachment', 'public');
                 // Save attachment info in the database
                 DB::table('complaint_attachments')->insert([
                     'complaint_message_id' => $messageId,
