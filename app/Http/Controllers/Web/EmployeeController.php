@@ -17,8 +17,11 @@ class EmployeeController extends Controller
         // return view('admin.employee.index',compact('employees'));
 
 
-        $employees = User::where('user_type', 3)->get();
+        $employees = User::where('user_type', 3)
+        ->orderBy('created_at', 'desc') 
+        ->get();
         return view('admin.employee.index', compact('employees'));
+
     }
     public function create()
     {

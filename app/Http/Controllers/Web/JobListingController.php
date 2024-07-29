@@ -71,7 +71,7 @@ class JobListingController extends Controller
         ->leftJoin('users', 'job.user_id', '=', 'users.id')
         ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
         ->leftJoin('cities', 'job.city_id', '=', 'cities.id')
-        ->orderByRaw('CASE WHEN job.status = 6 THEN 0 ELSE 1 END, job.id')
+        ->orderByRaw('CASE WHEN job.status = 6 THEN 0 ELSE 1 END, job.created_at DESC')
        // ->paginate(10); 
         ->get();
 
