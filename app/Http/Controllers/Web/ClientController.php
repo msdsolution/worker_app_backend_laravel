@@ -12,11 +12,16 @@ class ClientController extends Controller
 {
     public function index()
     {
-        $clients = User::where('user_type', 2)->get();
-        return view('admin.client.index', compact('clients'));
+        // $clients = User::where('user_type', 2)->get();
+        // return view('admin.client.index', compact('clients'));
         // $clients = User::all();
         // //return 'Hey';
         // return view('admin.client.index',compact('clients'));
+            $clients = User::where('user_type', 2)
+                   ->orderBy('created_at', 'desc') // Order by creation date
+                   ->get();
+    
+    return view('admin.client.index', compact('clients'));
     }
     public function create()
     {
