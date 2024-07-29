@@ -81,7 +81,7 @@ class ComplaintController extends Controller
                 // Generate a unique file name
                 $fileName = time() . '_' . $attachment->getClientOriginalName();
                 // Store the file in storage/app/complaint_attachments
-                $filePath = $attachment->storeAs('complaint_attachments', $fileName, 'local');
+                $filePath = $attachment->storeAs('complaintAttachment', $fileName);
                 // Save attachment info in the database
                 DB::table('complaint_attachments')->insert([
                     'complaint_message_id' => $messageId,

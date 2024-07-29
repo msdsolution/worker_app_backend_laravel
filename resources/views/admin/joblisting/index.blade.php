@@ -36,7 +36,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>ID</th>
+                            <th>Job Number</th>
                             <th>Referer Name</th>
                             <th>Service Name</th>
                             <th>Service Description</th>
@@ -53,7 +53,7 @@
                         @foreach($jobDetails as $index => $job)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $job->jobId }}</td>
+                                <td>{{ $job->job_no }}</td>
                                 <td>{{ $job->userFirstName }}</td>
                                 <td>{{ $job->serviceName }}</td>
                                 <td>{{ $job->serviceDescription }}</td>
