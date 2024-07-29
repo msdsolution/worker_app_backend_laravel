@@ -44,6 +44,7 @@ class ComplaintController extends Controller
             if ($message->img_url) {
                 $message->img_url = url('storage/' . $message->img_url);
             }
+            //dd($message->img_url );
         }
     
         // Retrieve the complaint_status for the job
