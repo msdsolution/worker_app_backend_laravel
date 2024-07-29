@@ -47,6 +47,7 @@ class JobListingController extends Controller
         ->select(
             'job.id as jobId',
             'job.user_id',
+            'job.job_no',
             'users.first_name as userFirstName',
             'job.description as jobDescription',
             'job.city_id',
