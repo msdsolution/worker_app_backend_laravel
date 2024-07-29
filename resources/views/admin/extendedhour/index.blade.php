@@ -43,7 +43,7 @@
     <table id="myDataTable" class="table table-bordered">
     <thead>
         <tr>
-            <th>ID</th>
+            <!-- <th>ID</th> -->
             <th>Hour Extended</th>
             <th>Amount</th>
             <th>Edit</th>
@@ -55,14 +55,14 @@
 
       
         <tr>
-            <td>{{$item -> Id}}</td>
+            <!-- <td>{{$item -> id}}</td> -->
             <td>{{$item -> hour_extended}}</td>
             <td>{{$item -> amount}}</td>
             <td>
-                <a href="{{url('admin/edit-workerrate/' .$item -> id )}}" class="btn btn-success">Edit</a>
+                <a href="{{url('admin/edit-extendex-hour/' .$item -> id )}}" class="btn btn-success">Edit</a>
             </td>
             <td>
-            <a href="{{url('admin/delete-workerrate/' .$item -> id )}}" class="btn btn-danger">Delete</a>
+            <a href="{{url('admin/delete-extendex-hour/' .$item -> id )}}" class="btn btn-danger">Delete</a>
             <!-- <button type="button" class="btn btn-danger deleteCategoryBtn" value="{{$item -> id}}">Delete</button> -->
             </td>
         </tr>

@@ -29,4 +29,25 @@ class extendedhourController extends Controller
         $exted_hr -> save();
         return redirect('admin/extended-hour') -> with('message','Client Rate Added Successfully');
     }
+    public function edit($extd_hri_d)
+    {
+        $exted_hr = extended_hour::find($extd_hri_d);
+        return view('admin.extendedhour.edit',compact('exted_hr'));
+    }
+    public function update(ExtendedhourFormRequest $request,$extd_hri_d)
+    {
+        $data = $request -> validated();
+
+        $exted_hr = extended_hour::find($extd_hri_d);
+        $exted_hr -> hour_extended = $data['hour_extended'];
+        $exted_hr -> amount = $data['amount'];
+        $exted_hr -> update();
+        return redirect('admin/extended-hour') -> with('message','Extended rates and hours Updated Successfully');
+    }
+    public function destroy($extd_hri_d)
+    {
+        $exted_hr = extended_hour::find($extd_hri_d);
+        $exted_hr -> delete();
+        return redirect('admin/extended-hour') -> with('message','Extended rates and hours Deleted Successfully');
+    }
 }

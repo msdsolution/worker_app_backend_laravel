@@ -32,7 +32,7 @@
     <div class="card-header">
 
     <h4>View Rates for Workers
-    <a href="{{ url('admin/add-worker_rate')}}" class="btn btn-primary btn-sm float-end">Add new rates for workers</a>
+    <!-- <a href="{{ url('admin/add-worker_rate')}}" class="btn btn-primary btn-sm float-end">Add new rates for workers</a> -->
     </h4>
     </div>
     <div class="card-body">

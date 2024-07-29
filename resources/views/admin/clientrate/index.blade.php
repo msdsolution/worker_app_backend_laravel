@@ -32,7 +32,7 @@
     <div class="card-header">
 
     <h4>View Rates for Client
-    <a href="{{ url('admin/add-client_rate')}}" class="btn btn-primary btn-sm float-end">Add new rates for Clients</a>
+    <!-- <a href="{{ url('admin/add-client_rate')}}" class="btn btn-primary btn-sm float-end">Add new rates for Clients</a> -->
     </h4>
     </div>
     <div class="card-body">
