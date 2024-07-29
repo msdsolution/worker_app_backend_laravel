@@ -120,7 +120,7 @@ class JobApiController extends Controller
        $perPage = $request->query('per_page', 10); // Number of items per page
         $page = $request->query('page', 1); // Current page
 
-        $jobs = Job::with('jobType.serviceCat')->where('user_id', $user->id);
+        $jobs = Job::with('jobType.serviceCat')->where('user_id', $user->id)->orderBy('job.created_at', 'desc');
 
         // Search query
         if ($request->filled('search')) {
@@ -401,5 +401,66 @@ class JobApiController extends Controller
             'success' => true,
             'data' => $jobComplaints,
         ]);
+    }
+
+    public function getJobPayment($jobId){
+        $user = auth()->user();
+
+        try {
+                $job = Job::with(['worker', 'jobServiceCat'])
+                    ->where('id', $jobId)
+                    ->where('status', 4)  // Filter by status 4
+                    ->first();
+
+                    // Check if job was found and has the correct status
+                if (!$job) {
+                    return response()->json([
+                        'status' => 404,
+                        'success' => false,
+                        'message' => 'Job not found or status is not 4.',
+                    ], 404);
+                }
+
+                $referalAmount = DB::table('job_service_cat')
+                ->select('refferal_amount')
+                ->where('job_id', $jobId)
+                ->first();
+
+                $extendedHourAmount = 0;
+                $job->extendedHrAmount = 0;
+
+                // If the job is extended, calculate the extended hour amount
+                if ($job->is_extended == 1) {
+                    // Get the amount for the extended hours
+                    $extendedHourRate = DB::table('extended_hour')
+                        ->select('amount')
+                        ->first(); // Assuming amount is constant for all extended hours
+                    
+                    // Calculate extended hour amount
+                    if ($extendedHourRate) {
+                        $extendedHourAmount = $extendedHourRate->amount * $job->extended_hrs;
+                        $job->extendedHrAmount = $extendedHourAmount ?? 0;
+                    }
+                }
+
+                // Calculate grand total
+                $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
+                $job->grandTotal = $grandTotal;
+
+                return response()->json([
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Records retrieved successfully.',
+                    'data' => $job,
+                ], 200);
+
+        } catch (\Exception $e) {
+            // Handle any other potential exceptions
+            return response()->json([
+                'status' => 500,
+                'success' => false,
+                'message' => 'An unexpected error occurred.'.$e,
+            ], 500);
+        }
     }
 }

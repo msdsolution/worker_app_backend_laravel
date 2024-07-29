@@ -33,6 +33,7 @@ class WorkerJobApiController extends Controller
 
        $job_history = Job::where('worker_id', $user->id)
        				  ->whereIn('status', $job_statuses)
+                      ->orderBy('job.created_at', 'desc');
         			  ->get();
 
 	    return response()->json([
@@ -52,6 +53,7 @@ class WorkerJobApiController extends Controller
 
        $job_history = Job::where('worker_id', $user->id)
                       ->whereIn('status', $job_statuses)
+                      ->orderBy('job.updated_at', 'desc')
                       ->get();
 
         return response()->json([
@@ -77,7 +79,8 @@ class WorkerJobApiController extends Controller
             ->leftJoin('worker_payment_attachment', 'worker_payment.id', '=', 'worker_payment_attachment.worker_payment_id')
             ->where('job.status', 4)  // Filter jobs with status 4
             ->where('job.worker_id', $user->id)  // Ensure worker_id matches
-            ->select('job.*',  DB::raw('CONCAT("' . url('storage') . '/", worker_payment_attachment.file_path) as worker_payment_attachment_url'), 'worker_payment.amount', DB::raw('COALESCE(worker_payment.status, 0) as worker_payment_status'));
+            ->select('job.*',  DB::raw('CONCAT("' . url('storage') . '/", worker_payment_attachment.file_path) as worker_payment_attachment_url'), 'worker_payment.amount', DB::raw('COALESCE(worker_payment.status, 0) as worker_payment_status'))
+            ->orderBy('job.created_at', 'desc');
 
         // Search query
         if ($request->filled('search')) {
@@ -157,7 +160,7 @@ class WorkerJobApiController extends Controller
         $request->validate([
             'job_id' => 'required',
             'finish_job_description',
-            //'files.*' => 'file|mimes:jpeg,png,gif|max:20000',
+            'files.*' => 'nullable|file|mimes:jpeg,png,gif|max:20000',
         ]);
 
         $job = Job::findOrFail($request->job_id);

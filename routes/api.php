@@ -49,6 +49,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::get('/getComplaints/{id}', [JobApiController::class, 'getAllJobComplaintsWithMessages']);
 	Route::post('/edit_pro_pic', [ApiController::class, 'editProfilePic']);
 	Route::post('/change_password', [ApiController::class, 'changePassword']);
+	Route::get('/getJobPayment/{id}', [JobApiController::class, 'getJobPayment']);
 
 	Route::get('/get_worker_job_history_list', [WorkerJobApiController::class, 'getWorkerJobList']);
 	Route::get('/getWorkerAcceptedAndStartedJobList', [WorkerJobApiController::class, 'getWorkerAcceptedAndStartedJobList']);
