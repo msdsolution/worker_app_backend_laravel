@@ -50,8 +50,8 @@
 
                 <!-- Referral Amount -->
                 <div class="mb-3">
-                    <label for="referral_amount" class="form-label"><strong>Total Job Amount.:</strong></label>
-                    <input type="text" class="form-control" id="referral_amount" name="referral_amount" readonly>
+                    <label for="worker_amount" class="form-label"><strong>Total Job Amount.:</strong></label>
+                    <input type="text" class="form-control" id="worker_amount" name="worker_amount" readonly>
                 </div>
 
                 <!-- Paid Amount -->
@@ -85,7 +85,7 @@
             
             // Clear existing checkboxes and message
             $('#jobs-checkboxes').empty();
-            $('#referral_amount').val('');
+            $('#worker_amount').val('');
             $('#paid_amount').val('');
             $('#validation_message').empty();
 
@@ -137,17 +137,17 @@
                     url: '{{ url('admin/get-referral-amount') }}/' + jobId,
                     type: 'GET',
                     success: function(response) {
-                        totalAmount += parseFloat(response.referral_amount);
+                        totalAmount += parseFloat(response.worker_amount);
 
                         // Update referral amount field
-                        $('#referral_amount').val(totalAmount.toFixed(2));
+                        $('#worker_amount').val(totalAmount.toFixed(2));
                         validatePaidAmount();
                     },
                     error: function(xhr, status, error) {
                         console.error('Error fetching referral amount: ' + error);
                         // Remove amount of unchecked jobs if error occurs
-                        totalAmount -= parseFloat(response.referral_amount);
-                        $('#referral_amount').val(totalAmount.toFixed(2));
+                        totalAmount -= parseFloat(response.worker_amount);
+                        $('#worker_amount').val(totalAmount.toFixed(2));
                     }
                 });
             });
@@ -160,7 +160,7 @@
 
         function validatePaidAmount() {
             var paidAmount = parseFloat($('#paid_amount').val());
-            var referralAmount = parseFloat($('#referral_amount').val());
+            var referralAmount = parseFloat($('#worker_amount').val());
 
             if (isNaN(paidAmount)) {
                 paidAmount = 0;
