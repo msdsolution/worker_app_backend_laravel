@@ -83,6 +83,14 @@
                     <label for="status" class="form-label">Status</label>
                     <input type="text" name="status" value="{{ getStatusText($job->status) }}" class="form-control" id="status" readonly>
                 </div>
+                <div class="mb-3">
+                    <label for="attachments" class="form-label">Attachments</label>
+                    <div>
+                        @foreach($attachments as $attachment)
+                            <img src="{{ asset('storage/' . $attachment->img_url) }}" alt="Attachment" width="200">
+                        @endforeach
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-md-6">

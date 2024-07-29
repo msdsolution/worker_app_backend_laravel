@@ -44,7 +44,7 @@ class InvoiceController extends Controller
         ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
         ->leftJoin('cities', 'job.city_id', '=', 'cities.id')
         ->whereIn('job.status', [4,5])
-        ->orderBy('job.id')
+        ->orderBy('job.created_at', 'desc')
         ->get();
         return view('admin.invoice.index', compact('InvDetails'));
     }

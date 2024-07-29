@@ -18,6 +18,7 @@ class ComplaintController extends Controller
         // ->pluck('job_no'); // Retrieve job numbers only
         $jobsWithComplaints = DB::table('job')
         ->where('is_complaint', 1)
+        ->orderBy('updated_at', 'desc') 
         ->get(['id', 'job_no', 'complaint_status']); // Fetch objects with both 'id' and 'job_no'
 
     return view('admin.complaint.index', ['jobs' => $jobsWithComplaints]);
@@ -43,6 +44,7 @@ class ComplaintController extends Controller
             if ($message->img_url) {
                 $message->img_url = url('storage/' . $message->img_url);
             }
+            //dd($message->img_url );
         }
     
         // Retrieve the complaint_status for the job

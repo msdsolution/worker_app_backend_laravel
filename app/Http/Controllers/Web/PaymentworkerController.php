@@ -65,6 +65,7 @@ class PaymentworkerController extends Controller
 
 // return response()->json(['jobs' => $jobs]);
 }
+//Ithu Worker amount Fucntion name apdiye vachitu fnction uluka change panitey
 public function getReferralAmount($jobId)
 {
     $jobServiceCat = DB::table('job_service_cat')
@@ -72,9 +73,9 @@ public function getReferralAmount($jobId)
         ->first();
 
     if ($jobServiceCat) {
-        return response()->json(['referral_amount' => $jobServiceCat->refferal_amount]);
+        return response()->json(['worker_amount' => $jobServiceCat->worker_amount]);
     } else {
-        return response()->json(['referral_amount' => 0]);
+        return response()->json(['worker_amount' => 0]);
     }
 }
 public function store(Request $request)
