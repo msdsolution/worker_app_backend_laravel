@@ -67,18 +67,19 @@
                     <label for="endLocation" class="form-label">End Location</label>
                     <input type="text" name="endLocation" value="{{ $job->end_location }}" class="form-control" id="endLocation" readonly>
                 </div>
+                
                 <div class="mb-3">
                     <label for="workerName" class="form-label">Worker Name</label>
-                    <!-- <select name="workerId" class="form-control" id="workerId"  onchange="updateSelectedWorkerId()"> -->
-                    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4,5])) disabled @endif>
-        <option value="">Select Worker</option>
-        @foreach($workers as $worker)
-            <!-- <option value="{{ $worker->id }}">{{ $worker->first_name }}</option> -->
-            <option value="{{ $worker->id }}" @if($job->worker_id == $worker->id) selected @endif>{{ $worker->first_name }}</option>
-        @endforeach
-    </select>
+                    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
+                        <option value="">Select Worker</option>
+                        @foreach($workers as $worker)
+                            <option value="{{ $worker->id }}" @if($job->status != 6 && $job->worker_id == $worker->id) selected @endif>{{ $worker->first_name }}</option>
+                        @endforeach
+                    </select>
                 </div>
+                
                 <input type="hidden" name="selectedWorkerId" id="selectedWorkerId">
+
                 <div class="mb-3">
                     <label for="status" class="form-label">Status</label>
                     <input type="text" name="status" value="{{ getStatusText($job->status) }}" class="form-control" id="status" readonly>
@@ -92,14 +93,21 @@
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    <label for="attachments" class="form-label">Attachments</label>
+                    <div>
+                        @foreach($attachments as $attachment)
+                            <img src="{{ asset('storage/' . $attachment->img_url) }}" alt="Attachment" width="200">
+                        @endforeach
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-md-6">
-                    <!-- <button type="submit" class="btn btn-primary">Edit</button> -->
-                    <!-- <button type="submit" class="btn btn-primary" @if(in_array($job->status, [1, 2, 3, 4])) disabled @endif>Edit</button> -->
-                    @if ($job->status === 0)
+                        @if ($job->status === 0)
                             <button type="submit" class="btn btn-primary">Assign</button>
                         @elseif ($job->status === 6)
-                            <button type="submit" class="btn btn-primary">Assign back</button>
+                            <button type="submit" class="btn btn-primary">Reassign</button>
                         @else
                             <button type="submit" class="btn btn-primary" disabled>Edit</button>
                         @endif
@@ -111,6 +119,7 @@
 </div>
 
 @endsection
+
 @php
     function getStatusText($status) {
         switch ($status) {
@@ -124,15 +133,16 @@
                 return 'Worker started';
             case 4:
                 return 'Worker finished';
-             case 5:
-                    return 'Paid';
-             case 6:
-                    return 'Worker Rejected';
+            case 5:
+                return 'Paid';
+            case 6:
+                return 'Worker Rejected';
             default:
                 return 'Unknown';
         }
     }
 @endphp
+
 @section('scripts')
 <script>
     function updateSelectedWorkerId() {
@@ -140,6 +150,7 @@
         document.getElementById('selectedWorkerId').value = selectedWorkerId;
         console.log(selectedWorkerId);
     }
+
     function validateForm() {
         var workerId = document.getElementById('workerId').value;
         if (workerId === "") {
