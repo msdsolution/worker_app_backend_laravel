@@ -33,7 +33,7 @@ class WorkerJobApiController extends Controller
 
        $job_history = Job::where('worker_id', $user->id)
        				  ->whereIn('status', $job_statuses)
-                      ->orderBy('job.created_at', 'desc');
+                      ->orderBy('job.created_at', 'desc')
         			  ->get();
 
 	    return response()->json([

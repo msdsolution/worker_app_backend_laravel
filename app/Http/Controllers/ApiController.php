@@ -313,7 +313,6 @@ class ApiController extends Controller
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
             'location' => 'required',
-            'city_id' => 'required',
             'password' => 'required|min:6',
             'user_type' => 'required',
             'phone_no' => 'required',

@@ -92,7 +92,6 @@
                         @endforeach
                     </div>
                 </div>
-
                 <div class="mb-3">
                     <label for="attachments" class="form-label">Attachments</label>
                     <div>
@@ -101,7 +100,6 @@
                         @endforeach
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         @if ($job->status === 0)
