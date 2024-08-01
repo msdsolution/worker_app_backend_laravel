@@ -324,7 +324,7 @@ class ApiController extends Controller
             'last_name' => $request->input('last_name'),
             'email' => $request->input('email'),
             'location' => $request->input('location'),
-            'city_id' => $request->input('city_id'),
+            'city_id' => $request->input('city_id') ?? 0,
             'password' => Hash::make($request->input('password')),
             'user_type' => $request->input('user_type'),
             'status' => $request->input('user_type') == 2 ? 1 : 0, // Default status is set to 0
