@@ -284,7 +284,7 @@ VBGYCZ5APiEyipPLiQIDAQAB
 
             $referalAmount = DB::table('job_service_cat')
                 ->select('refferal_amount')
-                ->where('job_id', $jobId)
+                ->where('job_id', $job->id)
                 ->first();
 
             $extendedHourAmount = 0;
