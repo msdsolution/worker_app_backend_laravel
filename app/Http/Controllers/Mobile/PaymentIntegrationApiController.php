@@ -327,79 +327,80 @@ VBGYCZ5APiEyipPLiQIDAQAB
             $job->save();
 
             $html = '<!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <title>Payment Success</title>
-                            <style>
-                                body {
-                                    font-family: Arial, sans-serif;
-                                    display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-                                    height: 100vh;
-                                    margin: 0;
-                                    background-color: #f0f0f0;
-                                }
-                                .dialog {
-                                    display: none;
-                                    background: white;
-                                    border-radius: 8px;
-                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                                    padding: 20px;
-                                    width: 300px;
-                                    text-align: center;
-                                }
-                                .dialog.show {
-                                    display: block;
-                                }
-                                .dialog h2 {
-                                    color: #4CAF50;
-                                }
-                                .dialog p {
-                                    margin: 15px 0;
-                                }
-                                .dialog button {
-                                    background-color: #4CAF50;
-                                    border: none;
-                                    color: white;
-                                    padding: 10px 20px;
-                                    text-align: center;
-                                    text-decoration: none;
-                                    display: inline-block;
-                                    font-size: 16px;
-                                    margin: 10px 2px;
-                                    cursor: pointer;
-                                    border-radius: 5px;
-                                }
-                            </style>
-                        </head>
-                        <body>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Payment Success</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        margin: 0;
+                        background-color: #f0f0f0;
+                    }
+                    .dialog {
+                        display: none;
+                        background: white;
+                        border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        padding: 20px;
+                        width: 300px;
+                        text-align: center;
+                    }
+                    .dialog.show {
+                        display: block;
+                    }
+                    .dialog h2 {
+                        color: #4CAF50;
+                    }
+                    .dialog p {
+                        margin: 15px 0;
+                    }
+                    .dialog button {
+                        background-color: #4CAF50;
+                        border: none;
+                        color: white;
+                        padding: 10px 20px;
+                        text-align: center;
+                        text-decoration: none;
+                        display: inline-block;
+                        font-size: 16px;
+                        margin: 10px 2px;
+                        cursor: pointer;
+                        border-radius: 5px;
+                    }
+                </style>
+            </head>
+            <body>
 
-                            <div class="dialog" id="paymentDialog">
-                                <h2>Payment Success</h2>
-                                <p>Your payment was processed successfully!</p>
-                                <button onclick="closeDialog()">Close</button>
-                            </div>
+                <div class="dialog" id="paymentDialog">
+                    <h2>Payment Success</h2>
+                    <p>Your payment was processed successfully!</p>
+                    <button onclick="closeDialog()">Close</button>
+                </div>
 
-                            <script>
-                                // Function to show the dialog
-                                function showDialog() {
-                                    document.getElementById('paymentDialog').classList.add('show');
-                                }
+                <script>
+                    // Function to show the dialog
+                    function showDialog() {
+                        document.getElementById("paymentDialog").classList.add("show");
+                    }
 
-                                // Function to close the dialog
-                                function closeDialog() {
-                                    document.getElementById('paymentDialog').classList.remove('show');
-                                }
+                    // Function to close the dialog
+                    function closeDialog() {
+                        document.getElementById("paymentDialog").classList.remove("show");
+                    }
 
-                                // Automatically show the dialog after 1 second (for demonstration purposes)
-                                setTimeout(showDialog, 1000);
-                            </script>
+                    // Automatically show the dialog after 1 second (for demonstration purposes)
+                    setTimeout(showDialog, 1000);
+                </script>
 
-                        </body>
-                        </html>'
+            </body>
+            </html>';
+
 
             return response($html, 200)->header('Content-Type', 'text/html');
             //display values
@@ -464,19 +465,19 @@ VBGYCZ5APiEyipPLiQIDAQAB
 
                             <div class="dialog" id="paymentDialog">
                                 <h2>Payment Success</h2>
-                                <p>Your payment was processed successfully!</p>
+                                <p>Your payment was Failed!</p>
                                 <button onclick="closeDialog()">Close</button>
                             </div>
 
                             <script>
                                 // Function to show the dialog
                                 function showDialog() {
-                                    document.getElementById('paymentDialog').classList.add('show');
+                                    document.getElementById("paymentDialog").classList.add("show");
                                 }
 
                                 // Function to close the dialog
                                 function closeDialog() {
-                                    document.getElementById('paymentDialog').classList.remove('show');
+                                    document.getElementById("paymentDialog").classList.remove("show");
                                 }
 
                                 // Automatically show the dialog after 1 second (for demonstration purposes)
@@ -484,7 +485,8 @@ VBGYCZ5APiEyipPLiQIDAQAB
                             </script>
 
                         </body>
-                        </html>'
+                        </html>';
+
                         return response($html, 200)->header('Content-Type', 'text/html');
             //return response()->json(['status' => 500, 'success' => true,'message' => 'Payment Failed'], 500);
             //dd('Error Validation'); 
