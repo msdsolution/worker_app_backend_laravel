@@ -14,6 +14,7 @@ use App\Models\WokerRates;
 use App\Models\SriLankaDistricts;
 use App\Models\ComplaintMessages;
 use App\Models\ComplaintAttachment;
+use App\Models\RefferalPayment;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
@@ -36,6 +37,15 @@ class PaymentIntegrationApiController extends Controller
             'unique_order_id' => 'required|string',
             'total_amount' => 'required|numeric',
         ]);
+
+        if ($request->input('tip_amount')) {
+            $job = Job::findOrFail($request->input('unique_order_id'));
+
+            $job->is_worker_tip = 1;
+            $job->worker_tip_amount = $request->input('tip_amount');
+
+            $job->save();
+        }
 
         $uniqueOrderId = $request->input('unique_order_id');
         $totalAmount = $request->input('total_amount');
@@ -270,15 +280,213 @@ VBGYCZ5APiEyipPLiQIDAQAB
 
         if($signature_status == true)
         {
+            $job = Job::findOrFail($responseVariables[0]);
+
+            $referalAmount = DB::table('job_service_cat')
+                ->select('refferal_amount')
+                ->where('job_id', $jobId)
+                ->first();
+
+            $extendedHourAmount = 0;
+
+            // If the job is extended, calculate the extended hour amount
+            if ($job->is_extended == 1) {
+                // Get the amount for the extended hours
+                $extendedHourRate = DB::table('extended_hour')
+                    ->select('amount')
+                    ->first(); // Assuming amount is constant for all extended hours
+                
+                // Calculate extended hour amount
+                if ($extendedHourRate) {
+                    $extendedHourAmount = $extendedHourRate->amount * $job->extended_hrs;
+                }
+            }
+
+            // Calculate grand total
+            $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
+
+            if ($responseVariables[6] > $grandTotal) {
+                $job->is_worker_tip = 1;
+                $job->worker_tip_amount = $responseVariables[6] - $grandTotal;
+                $job->save();
+            }
+
+            $refferalPayment = RefferalPayment::create([
+                'job_id' => $responseVariables[0],
+                'order_id' => $responseVariables[0],
+                'amount' => $responseVariables[6],
+                'status' => 1,
+                'order_refference_number' => $responseVariables[1],
+                'date_time_transaction' => $responseVariables[2],
+                'payment_gateway_used' => $responseVariables[3],
+                'status_code' => $responseVariables[4],
+                'comment' => $responseVariables[5],
+            ]);
+
+            $job->status = 5;
+            $job->save();
+
+            $html = '<!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Payment Success</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    height: 100vh;
+                                    margin: 0;
+                                    background-color: #f0f0f0;
+                                }
+                                .dialog {
+                                    display: none;
+                                    background: white;
+                                    border-radius: 8px;
+                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                    padding: 20px;
+                                    width: 300px;
+                                    text-align: center;
+                                }
+                                .dialog.show {
+                                    display: block;
+                                }
+                                .dialog h2 {
+                                    color: #4CAF50;
+                                }
+                                .dialog p {
+                                    margin: 15px 0;
+                                }
+                                .dialog button {
+                                    background-color: #4CAF50;
+                                    border: none;
+                                    color: white;
+                                    padding: 10px 20px;
+                                    text-align: center;
+                                    text-decoration: none;
+                                    display: inline-block;
+                                    font-size: 16px;
+                                    margin: 10px 2px;
+                                    cursor: pointer;
+                                    border-radius: 5px;
+                                }
+                            </style>
+                        </head>
+                        <body>
+
+                            <div class="dialog" id="paymentDialog">
+                                <h2>Payment Success</h2>
+                                <p>Your payment was processed successfully!</p>
+                                <button onclick="closeDialog()">Close</button>
+                            </div>
+
+                            <script>
+                                // Function to show the dialog
+                                function showDialog() {
+                                    document.getElementById('paymentDialog').classList.add('show');
+                                }
+
+                                // Function to close the dialog
+                                function closeDialog() {
+                                    document.getElementById('paymentDialog').classList.remove('show');
+                                }
+
+                                // Automatically show the dialog after 1 second (for demonstration purposes)
+                                setTimeout(showDialog, 1000);
+                            </script>
+
+                        </body>
+                        </html>'
+
+            return response($html, 200)->header('Content-Type', 'text/html');
             //display values
-            return response()->json(['status' => 200, 'success' => true,'message' => 'Payment made successfully', 'payment' => $responseVariables], 200);
+            // return response()->json(['status' => 200, 'success' => true,'message' => 'Payment made successfully', 'payment' => $responseVariables], 200);
             //dd($signature_status);
             //$custom_fields_varible = explode('|', $custom_fields);
             //dd($custom_fields_varible);
             //dd($responseVariables);
         }else
         {
-            return response()->json(['status' => 500, 'success' => true,'message' => 'Payment Failed'], 500);
+
+            $html = '<!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <title>Payment Failed</title>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    height: 100vh;
+                                    margin: 0;
+                                    background-color: #f0f0f0;
+                                }
+                                .dialog {
+                                    display: none;
+                                    background: white;
+                                    border-radius: 8px;
+                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                    padding: 20px;
+                                    width: 300px;
+                                    text-align: center;
+                                }
+                                .dialog.show {
+                                    display: block;
+                                }
+                                .dialog h2 {
+                                    color: #4CAF50;
+                                }
+                                .dialog p {
+                                    margin: 15px 0;
+                                }
+                                .dialog button {
+                                    background-color: #4CAF50;
+                                    border: none;
+                                    color: white;
+                                    padding: 10px 20px;
+                                    text-align: center;
+                                    text-decoration: none;
+                                    display: inline-block;
+                                    font-size: 16px;
+                                    margin: 10px 2px;
+                                    cursor: pointer;
+                                    border-radius: 5px;
+                                }
+                            </style>
+                        </head>
+                        <body>
+
+                            <div class="dialog" id="paymentDialog">
+                                <h2>Payment Success</h2>
+                                <p>Your payment was processed successfully!</p>
+                                <button onclick="closeDialog()">Close</button>
+                            </div>
+
+                            <script>
+                                // Function to show the dialog
+                                function showDialog() {
+                                    document.getElementById('paymentDialog').classList.add('show');
+                                }
+
+                                // Function to close the dialog
+                                function closeDialog() {
+                                    document.getElementById('paymentDialog').classList.remove('show');
+                                }
+
+                                // Automatically show the dialog after 1 second (for demonstration purposes)
+                                setTimeout(showDialog, 1000);
+                            </script>
+
+                        </body>
+                        </html>'
+                        return response($html, 200)->header('Content-Type', 'text/html');
+            //return response()->json(['status' => 500, 'success' => true,'message' => 'Payment Failed'], 500);
             //dd('Error Validation'); 
         }
     }
