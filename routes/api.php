@@ -42,6 +42,7 @@ Route::post('/register', [ApiController::class, 'register']);
 
 Route::get('/check_holiday/{date}', [ApiController::class, 'checkDateStatus']);
 Route::get('/redirect/{encodedData}', [PaymentIntegrationApiController::class, 'handleRedirect']);
+Route::post('/webxpayResponse', [ApiController::class, 'webxpayResponse']);
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('/user', [ApiController::class, 'user']);
