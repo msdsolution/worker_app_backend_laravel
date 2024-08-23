@@ -14,6 +14,7 @@ use App\Models\WokerRates;
 use App\Models\SriLankaDistricts;
 use App\Models\ComplaintMessages;
 use App\Models\ComplaintAttachment;
+use App\Models\worker_feedback;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
@@ -172,10 +173,14 @@ class JobApiController extends Controller
 
         $jobs = Job::with(['jobType.serviceCat', 'worker', 'complaint', 'jobAttachments'])->findOrFail($id);
 
+        $worker_feedback = null;
+
         
         // Add worker_name to the job data
         if ($jobs->worker_id != null) {
             $jobs->worker_name = $jobs->worker->first_name;
+
+            $worker_feedback = worker_feedback::where('user_id', $jobs->worker_id)->where('status', 1)->latest()->take(5)->get();
 
         } else {
             $jobs->worker_name = "Not Assigned";
@@ -187,6 +192,13 @@ class JobApiController extends Controller
 
         } else {
             $jobs->complaint_status = 0;
+        }
+
+        $jobs->worker_feedback = $worker_feedback;
+
+        // Include the referral name in the feedback
+        foreach ($jobs->worker_feedback as $feedback) {
+            $feedback->refferal_name = $feedback->refferal_id ? User::findOrFail($feedback->refferal_id)->first_name : null;
         }
 
         unset($jobs->worker);

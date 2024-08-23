@@ -12,6 +12,7 @@ use App\Models\TimeHours;
 use App\Models\RefferalRates;
 use App\Models\WokerRates;
 use App\Models\JobAttachment;
+use App\Models\worker_feedback;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
@@ -209,5 +210,32 @@ class WorkerJobApiController extends Controller
             // Handle any exceptions (e.g., job not found)
             return response()->json(['status' => 500, 'success' => false, 'message' => 'Failed to update extended status', 'error' => $e->getMessage()], 500);
         }
+    }
+
+    public function workerFeedback(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate([
+            'job_id' => 'required',
+            'message' => 'required',
+            'rating' => 'required',
+            'worker_id' => 'required',
+        ]);
+
+        worker_feedback::create([
+                    'job_id' => $request->job_id,
+                    'refferal_id' => $user->id,
+                    'user_id' => $request->worker_id,
+                    'message' => $request->message,
+                    'ratings' => $request->rating,
+                    'status' => 0,
+                ]);
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'Feedback Submitted successfully',
+        ], 200);
     }
 }

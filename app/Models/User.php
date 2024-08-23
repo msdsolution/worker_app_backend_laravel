@@ -46,6 +46,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'remember_token',
     ];
 
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new \App\Notifications\CustomVerifyEmailQueued);
+    }
+
     /**
      * The attributes that should be cast.
      *
