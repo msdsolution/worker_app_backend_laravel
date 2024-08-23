@@ -4,6 +4,7 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Auth\Notifications\VerifyEmail as DefaultVerifyEmail;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,13 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
+
+        // Override default email verification notification
+        DefaultVerifyEmail::toMailUsing(function ($notifiable, $url) {
+            return (new \Illuminate\Notifications\Messages\MailMessage)
+                ->line('Please click the button below to verify your email address.')
+                ->action('Verify Email Address', $url);
+        });
     }
 }

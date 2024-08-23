@@ -333,8 +333,8 @@ class ApiController extends Controller
         ]);
 
         // Send email verification link
-        //$user->notify(new VerifyEmail);
-        //event(new Registered($user));
+        $user->notify(new VerifyEmail);
+        event(new Registered($user));
 
         return response()->json(['status' => 201, 'success' => true,'message' => 'User registered successfully', 'user' => $user], 201);
     }

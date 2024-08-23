@@ -34,12 +34,19 @@ class VerifyEmail extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        // return (new MailMessage)
+        //             ->line('Rata Mithiro email confirmation.')
+        //             ->line('Click the button below to verify your email address.')
+        //             ->action('Verify Email Address', route('verification.verify', $notifiable->verification_token))
+        //             ->line('If you did not create an account, no further action is required.')
+        //             ->line('Thank you for using our application!');
         return (new MailMessage)
-                    ->line('Rata Mithiro email conformation.')
-                    ->line('Click the button below to verify your email address.')
-                    ->action('Verify Email Address', route('verification.verify', $notifiable->verification_token))
-                    ->line('If you did not create an account, no further action is required.')
-                    ->line('Thank you for using our application!');
+                ->line('Please verify your email address.')
+                ->action('Verify Email Address', url(route('verification.verify', [
+                    'id' => $notifiable->getKey(),
+                    'hash' => sha1($notifiable->getEmailForVerification()),
+                ], false)))
+                ->line('Thank you for using our application!');
     }
 
     /**
