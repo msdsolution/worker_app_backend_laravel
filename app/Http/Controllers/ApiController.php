@@ -327,14 +327,14 @@ class ApiController extends Controller
             'city_id' => $request->input('city_id') ?? 0,
             'password' => Hash::make($request->input('password')),
             'user_type' => $request->input('user_type'),
-            'status' => $request->input('user_type') == 2 ? 1 : 0, // Default status is set to 0
+            'status' => 0, // Default status is set to 0
             'phone_no' => $request->input('phone_no'),
             'user_address' => $request->input('user_address'),
         ]);
 
         // Send email verification link
         $user->notify(new VerifyEmail);
-        event(new Registered($user));
+       //event(new Registered($user));
 
         return response()->json(['status' => 201, 'success' => true,'message' => 'User registered successfully', 'user' => $user], 201);
     }
@@ -371,6 +371,15 @@ class ApiController extends Controller
                  'success' => false,
                  'message' => 'Could not create token.',
                 ], 500);
+        }
+
+        if (auth()->user() && !auth()->user()->hasVerifiedEmail()) {
+            //return redirect()->back()->with('error', 'Please verify your email address.');
+            return response()->json([
+                'status' => 401,
+                'success' => true,
+                'message' => "Please verify your email address.",
+             ]);
         }
   
         if (auth()->user()->status == 1 && (auth()->user()->user_type == 2 || auth()->user()->user_type == 3)) {

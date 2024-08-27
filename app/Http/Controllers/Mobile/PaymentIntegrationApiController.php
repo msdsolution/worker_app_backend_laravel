@@ -38,14 +38,12 @@ class PaymentIntegrationApiController extends Controller
             'total_amount' => 'required|numeric',
         ]);
 
-        if ($request->input('tip_amount')) {
-            $job = Job::findOrFail($request->input('unique_order_id'));
-
-            $job->is_worker_tip = 1;
-            $job->worker_tip_amount = $request->input('tip_amount');
-
-            $job->save();
-        }
+        // if ($request->input('tip_amount')) {
+        //     $job = Job::findOrFail($request->input('unique_order_id'));
+        //     $job->is_worker_tip = 1;
+        //     $job->worker_tip_amount = $request->input('tip_amount');
+        //     $job->save();
+        // }
 
         $uniqueOrderId = $request->input('unique_order_id');
         $totalAmount = $request->input('total_amount');
@@ -380,6 +378,7 @@ VBGYCZ5APiEyipPLiQIDAQAB
                 <div class="dialog" id="paymentDialog">
                     <h2>Payment Success</h2>
                     <p>Your payment was processed successfully!</p>
+                    <p>Please close the browser and open Ratamithuro app</p>
                     <button onclick="closeDialog()">Close</button>
                 </div>
 
@@ -411,6 +410,15 @@ VBGYCZ5APiEyipPLiQIDAQAB
             //dd($responseVariables);
         }else
         {
+
+            // if ($request->input('tip_amount')) {
+            //     $job = Job::findOrFail($request->input('unique_order_id'));
+
+            //     $job->is_worker_tip = 1;
+            //     $job->worker_tip_amount = $request->input('tip_amount');
+
+            //     $job->save();
+            // }
 
             $html = '<!DOCTYPE html>
                         <html lang="en">
@@ -464,8 +472,9 @@ VBGYCZ5APiEyipPLiQIDAQAB
                         <body>
 
                             <div class="dialog" id="paymentDialog">
-                                <h2>Payment Success</h2>
+                                <h2>Payment Failed</h2>
                                 <p>Your payment was Failed!</p>
+                                <p>Close the browser and try again through Ratamithuro app.</p>
                                 <button onclick="closeDialog()">Close</button>
                             </div>
 

@@ -2,28 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Requests\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Verified;
+
 
 class VerificationController extends Controller
 {
     public function verify(EmailVerificationRequest $request)
     {
-    	dd("test");
-    	// $user = User::findOrFail($id);
+    
+    	// Retrieve the user by ID
+        $user = User::find($request->id);
 
-     //    if (! hash_equals($user->email_verification_hash, $hash)) {
-     //        return Redirect::route('verification.notice')->withErrors(['message' => 'Invalid verification link']);
-     //    }
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User not found.'], 404);
+        }
 
-     //    $user->markEmailAsVerified();
-     //    return Redirect::route('home')->with('status', 'Email verified successfully');
-    	
-        // $request->fulfill();
+        //dd($request->hash);
 
-        // // Optionally, add any additional logic or redirections here
-        // return response()->json(['message' => 'Email verified successfully'], 200);
+        // Check the verification hash
+        if (! sha1($user->getEmailForVerification()) === $request->hash) {
+            return response()->json(['success' => false, 'message' => 'Invalid verification link.'], 400);
+        }
+
+        
+
+        // Check if the email is already verified
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['success' => false, 'message' => 'Email already verified.'], 400);
+        }
+
+        // Mark the email as verified
+        if ($user->markEmailAsVerified()) {
+            event(new Verified($user));
+            return response()->json(['success' => true, 'message' => 'Email verified successfully!'], 200);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Email could not be verified.'], 500);
     }
 }

@@ -28,6 +28,7 @@ class Job extends Model
         'extended_hrs',
         'is_complaint',
         'complaint_status',
+        'finishJobDescription',
         'is_worker_tip',
         'worker_tip_amount',
     ];
