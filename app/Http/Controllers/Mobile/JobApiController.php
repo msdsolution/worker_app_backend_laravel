@@ -178,7 +178,8 @@ class JobApiController extends Controller
         
         // Add worker_name to the job data
         if ($jobs->worker_id != null) {
-            $jobs->worker_name = $jobs->worker->first_name;
+            $jobs->worker_name = $jobs->worker->first_name.' '.$jobs->worker->last_name;
+            $jobs->worker_pro_pic = $jobs->worker->pro_pic_url;
 
             $worker_feedback = worker_feedback::where('user_id', $jobs->worker_id)->where('status', 1)->latest()->take(5)->get();
 
@@ -198,7 +199,7 @@ class JobApiController extends Controller
 
         // Include the referral name in the feedback
         foreach ($jobs->worker_feedback as $feedback) {
-            $feedback->refferal_name = $feedback->refferal_id ? User::findOrFail($feedback->refferal_id)->first_name : null;
+            $feedback->refferal_name = $feedback->refferal_id ? User::findOrFail($feedback->refferal_id)->first_name.' '.User::findOrFail($feedback->refferal_id)->last_name : null;
         }
 
         unset($jobs->worker);
@@ -419,9 +420,11 @@ class JobApiController extends Controller
         $user = auth()->user();
 
         try {
+
+                $job_statuses = [4, 5];
                 $job = Job::with(['worker', 'jobServiceCat'])
                     ->where('id', $jobId)
-                    ->where('status', 4)  // Filter by status 4
+                    ->whereIn('status', $job_statuses)  // Filter by status 4 and 5
                     ->first();
 
                     // Check if job was found and has the correct status
