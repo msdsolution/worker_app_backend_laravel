@@ -9,6 +9,7 @@ use App\Models\Job_Service_Cat;
 use App\Models\Holiday;
 use App\Models\RefferalRates;
 use App\Models\SriLankaDistricts;
+use App\Models\UserDocuments;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -422,7 +423,7 @@ class ApiController extends Controller
 
     public function user()
     {
-        return response()->json(Auth::user());
+        return response()->json(Auth::user()->load('userDocs'));
     }
 
     public function logout(Request $request)
@@ -520,6 +521,38 @@ class ApiController extends Controller
             'status' => 200,
             'success' => true,
             'message' => 'Password changed successfully',
+        ], 200);
+    }
+
+    public function addUserDoc(Request $request){
+        $userId = Auth::id();
+
+        $request->validate([
+            'doc_id' => 'required',
+            'file' => 'required|file|mimes:jpeg,png,gif|max:20000',
+        ]);
+
+        $user = User::findOrFail($userId);
+
+        // Handle file upload
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            // Store the file in the 'public' directory
+            $path = $file->store('userDocAttachment', 'public');
+
+            // Save file path to database
+            $userDoc = UserDocuments::create([
+                'user_id' => $userId,
+                'doc_id' => $request->input('doc_id'),
+                'doc_url' => $path,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'User document added successfully',
         ], 200);
     }
 }

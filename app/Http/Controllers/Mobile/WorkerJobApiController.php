@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mobile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Mobile\FCMApiController;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Job;
@@ -24,6 +25,13 @@ use Illuminate\Pagination\Paginator;
 
 class WorkerJobApiController extends Controller
 {
+
+    protected $fcmservice;
+
+    public function __construct(FCMApiController $fcmservice)
+    {
+        $this->fcmservice = $fcmservice;
+    }
 
 	public function getWorkerJobList(Request $request)
     {
@@ -109,6 +117,14 @@ class WorkerJobApiController extends Controller
         $job->status = 2;
         $job->save();
 
+        $refferal_user = User::findOrFail($job->user_id);
+
+        $data = ['device_token' => $refferal_user->fcm_token,
+                'title' => 'Accepted',
+                'body' => 'Worker Accepted the job.'
+                ];
+        $this->fcmservice->sendPushNotification($data);
+
         return response()->json([
         	'status' => 200,
 	        'success' => true,
@@ -121,6 +137,14 @@ class WorkerJobApiController extends Controller
         $job = Job::findOrFail($id);
         $job->status = 6;
         $job->save();
+
+        $refferal_user = User::findOrFail($job->user_id);
+
+        $data = ['device_token' => $refferal_user->fcm_token,
+                'title' => 'Rejected',
+                'body' => 'Worker rejected the job. Will assign new worker.'
+                ];
+        $this->fcmservice->sendPushNotification($data);
 
         return response()->json([
         	'status' => 200,
@@ -147,6 +171,14 @@ class WorkerJobApiController extends Controller
             $job->status = 3;
             $job->save();
 
+            $refferal_user = User::findOrFail($job->user_id);
+
+            $data = ['device_token' => $refferal_user->fcm_token,
+                    'title' => 'Started',
+                    'body' => 'Worker started the job.'
+                    ];
+            $this->fcmservice->sendPushNotification($data);
+
             return response()->json([
                 'status' => 200,
                 'success' => true,
@@ -168,6 +200,14 @@ class WorkerJobApiController extends Controller
         $job->finishJobDescription = $request->finish_job_description;
         $job->status = 4;
         $job->save();
+
+        $refferal_user = User::findOrFail($job->user_id);
+
+        $data = ['device_token' => $refferal_user->fcm_token,
+                'title' => 'Finished',
+                'body' => 'Worker finished the job.'
+                ];
+        $this->fcmservice->sendPushNotification($data);
 
         //Handle file uploads
         if ($request->hasFile('files')) {
@@ -203,6 +243,14 @@ class WorkerJobApiController extends Controller
             $job->is_extended = 1;
             $job->extended_hrs = $request->extended_hr;
             $job->save();
+
+            $refferal_user = User::findOrFail($job->user_id);
+
+            $data = ['device_token' => $refferal_user->fcm_token,
+                    'title' => 'Extended',
+                    'body' => 'Worker extended the job.'
+                    ];
+            $this->fcmservice->sendPushNotification($data);
 
             return response()->json(['status' => 200, 'success' => true, 'message' => 'Job extended successfully'], 200);
 

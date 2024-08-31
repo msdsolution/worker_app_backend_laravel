@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Mobile\JobApiController;
 use App\Http\Controllers\Mobile\WorkerJobApiController;
 use App\Http\Controllers\Mobile\PaymentIntegrationApiController;
+use App\Http\Controllers\Mobile\FCMApiController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
@@ -27,11 +28,6 @@ Route::post('/refresh-token', [ApiController::class, 'refreshToken']);
 
 Route::get('/get_signup_form_data', [ApiController::class, 'getSignupFormData']);
 Route::post('/register', [ApiController::class, 'register']);
-// Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-//     $request->fulfill();
-//     return response()->json(['message' => 'Email verified successfully'], 200);
-// })->name('verification.verify');
-// Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
 Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
     ->name('verification.verify')->middleware('signed');
 Route::post('email/resend', function (Request $request) {
@@ -59,6 +55,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::get('/getJobPayment/{id}', [JobApiController::class, 'getJobPayment']);
 	Route::post('/createPayment', [PaymentIntegrationApiController::class, 'createPayment']);
 
+	Route::post('/addUserDoc', [ApiController::class, 'addUserDoc']);
+
 	Route::get('/get_worker_job_history_list', [WorkerJobApiController::class, 'getWorkerJobList']);
 	Route::get('/getWorkerAcceptedAndStartedJobList', [WorkerJobApiController::class, 'getWorkerAcceptedAndStartedJobList']);
 	Route::get('/getWorkerFinishedJobList', [WorkerJobApiController::class, 'getWorkerFinishedJobList']);
@@ -68,4 +66,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::post('/job_finish', [WorkerJobApiController::class, 'finishJob']);
 	Route::put('/job/{job_id}/job_extend', [WorkerJobApiController::class, 'extendJob']);
 	Route::post('/worker_feedback', [WorkerJobApiController::class, 'workerFeedback']);
+
+	Route::put('update_device_token', [FCMApiController::class, 'updateDeviceToken']);
 });
