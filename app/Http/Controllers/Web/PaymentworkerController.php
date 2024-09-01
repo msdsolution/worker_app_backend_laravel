@@ -111,13 +111,14 @@ public function store(Request $request)
         'jobs' => 'required|array',
         'jobs.*' => 'exists:job,id',
         'paid_amount' => 'required|numeric',
-        'attachments.*' => 'file|mimes:pdf,jpeg,bmp,png,gif,svg', // Adjust file validation rules as needed
+        'attachments.*' => '|file|mimes:pdf,jpeg,bmp,png,gif,svg', // Adjust file validation rules as needed
     ]);
 
     $jobs = $validatedData['jobs'];
     $paidAmount = $validatedData['paid_amount'];
     $status = 3; // Assuming status is always 3 for new payments
 
+    
     try {
         // Insert into worker_payment table
         $workerPaymentIds = [];

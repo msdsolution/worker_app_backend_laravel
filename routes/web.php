@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\DashBoardController;
 use App\Http\Controllers\Web\extendedhourController;
 use App\Http\Controllers\Web\InvoiceController;
 use App\Http\Controllers\Web\JobListingController;
+use App\Http\Controllers\Web\PaymentRefferalController;
 use App\Http\Controllers\Web\PaymentworkerController;
 use App\Http\Controllers\Web\ServicecategoryController;
 use App\Http\Controllers\Web\WorkerFeedbackController;
@@ -153,6 +154,7 @@ Route::get('restore-service/{id}', [ServicecategoryController::class, 'restore']
 Route::get('changeStatusemp', [ClientController::class, 'changeStatusemp'])->name('changeStatusemp');
 
 Route::get('assign-job/get-workers-by-district/{districtId}', [JobListingController::class, 'getWorkersByDistrict']);
+Route::get('payment_refferal',[PaymentRefferalController::class,'index']);
 
 
 

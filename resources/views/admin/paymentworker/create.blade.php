@@ -287,6 +287,24 @@
             this.value = ''; // Clear the selected files
         }
     });
+      // Form submission validation
+      $('form').on('submit', function(event) {
+            var paidAmount = parseFloat($('#paid_amount').val());
+            var referralAmount = parseFloat($('#worker_amount').val());
+            var hasAttachment = $('#attachments').val();
+
+            if (paidAmount !== referralAmount) {
+                event.preventDefault(); // Prevent form submission
+                $('#validation_message').html('<div class="alert alert-danger">Paid amount must match the total job amount.</div>');
+                return; // Exit the function to avoid further checks
+            }
+                // Check if an attachment is provided
+                if (!hasAttachment) {
+                event.preventDefault(); // Prevent form submission
+                $('#validation_message').html('<div class="alert alert-danger">Please upload an attachment.</div>');
+                return; // Exit the function to avoid further checks
+            }
+        });
 });
 
 </script>

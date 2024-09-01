@@ -77,7 +77,7 @@
                             <div class="collapse {{Request::is('admin/payment_worker') ||  Request::is('admin/payment_client') || Request::is('admin/payment_worker/*')  ? 'show' : ''}}" id="collapsePost3" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link {{ Request::is('admin/payment_worker') ? 'active':''}}" href="{{url('admin/payment_worker')}}">Payement for Worker</a>
-                                    <a class="nav-link {{ Request::is('admin/payment_client') ? 'active':''}}" href="{{url('admin/payment_client')}}">Payement for Client</a>
+                                    <a class="nav-link {{ Request::is('admin/payment_refferal') ? 'active':''}}" href="{{url('admin/payment_refferal')}}">Payement for Client</a>
                                 </nav>
                             </div>
                             <a class="nav-link {{ Request::is('admin/Invoice') ? 'active':''}}" href="{{url('admin/Invoice')}}">
