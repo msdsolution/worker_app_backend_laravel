@@ -83,10 +83,10 @@ class WorkerJobApiController extends Controller
 
         // $query = Job::where('worker_id', $user->id)
         //               ->where('status', 4);
-
+        $job_statuses = [4, 5];
         $query = Job::leftJoin('worker_payment', 'job.id', '=', 'worker_payment.job_id')
             ->leftJoin('worker_payment_attachment', 'worker_payment.id', '=', 'worker_payment_attachment.worker_payment_id')
-            ->where('job.status', 4)  // Filter jobs with status 4
+            ->where('job.status', $job_statuses)  // Filter jobs with status 4
             ->where('job.worker_id', $user->id)  // Ensure worker_id matches
             ->select('job.*',  DB::raw('CONCAT("' . url('storage') . '/", worker_payment_attachment.file_path) as worker_payment_attachment_url'), 'worker_payment.amount', DB::raw('COALESCE(worker_payment.status, 0) as worker_payment_status'))
             ->orderBy('job.created_at', 'desc');
