@@ -197,9 +197,11 @@ class JobApiController extends Controller
 
         $jobs->worker_feedback = $worker_feedback;
 
-        // Include the referral name in the feedback
-        foreach ($jobs->worker_feedback as $feedback) {
-            $feedback->refferal_name = $feedback->refferal_id ? User::findOrFail($feedback->refferal_id)->first_name.' '.User::findOrFail($feedback->refferal_id)->last_name : null;
+        if ($worker_feedback) {
+            // Include the referral name in the feedback
+            foreach ($jobs->worker_feedback as $feedback) {
+                $feedback->refferal_name = $feedback->refferal_id ? User::findOrFail($feedback->refferal_id)->first_name.' '.User::findOrFail($feedback->refferal_id)->last_name : null;
+            }
         }
 
         unset($jobs->worker);
