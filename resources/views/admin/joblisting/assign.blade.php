@@ -62,7 +62,7 @@
 
                 <div class="mb-3">
                     <label for="cityName" class="form-label">City Name</label>
-                    <input type="text" name="cityName" value="{{ $job->cityName }}" class="form-control" id="cityName" readonly>
+                    <input type="text" name="cityName" value="{{ $job->cityName }} ({{ $district->districtName }})" class="form-control" id="cityName" readonly>
                 </div>
 
                 <div class="mb-3">
@@ -101,7 +101,7 @@
 
 
 <div class="mb-3">
-    <label for="district" class="form-label">Select Area</label>
+    <label for="district" class="form-label">Select Worker Area</label>
     <select name="district" class="form-control" id="district_id" onchange="updateWorkers()"
     @if(!in_array($job->status, [0, 6])) disabled @endif>
         <option value="">Select District</option>
