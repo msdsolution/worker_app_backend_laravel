@@ -10,6 +10,8 @@ use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
+use App\Models\UserDocuments;
+use App\Models\worker_feedback;
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
@@ -47,6 +49,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'remember_token',
     ];
 
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new \App\Notifications\CustomVerifyEmailQueued);
+    }
+
     /**
      * The attributes that should be cast.
      *
@@ -76,6 +83,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function getProPicUrlAttribute()
     {
         return $this->attributes['pro_pic_url'] ? url('storage/' . $this->attributes['pro_pic_url']) : null;
+    }
+
+    public function userDocs()
+    {
+        return $this->hasMany(UserDocuments::class, 'user_id');
     }
 
 }

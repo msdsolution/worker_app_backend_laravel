@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\VerifiesEmails;
+use App\Models\User;
 
 class VerificationController extends Controller
 {
@@ -25,7 +26,7 @@ class VerificationController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    //protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -37,5 +38,34 @@ class VerificationController extends Controller
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+    }
+
+    public function verify(EmailVerificationRequest $request)
+    {
+        // if ($request->user()->hasVerifiedEmail()) {
+        //     return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
+        // }
+
+        // if ($request->user()->markEmailAsVerified()) {
+        //     event(new Verified($request->user()));
+        // }
+
+        // return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
+
+        //dd("Test");
+
+        // $user = User::findOrFail($id);
+
+        // if (! hash_equals($user->email_verification_hash, $hash)) {
+        //     return Redirect::route('verification.notice')->withErrors(['message' => 'Invalid verification link']);
+        // }
+
+        // $user->markEmailAsVerified();
+        // return Redirect::route('home')->with('status', 'Email verified successfully');
+
+        //$request->fulfill();
+
+        // Optionally, add any additional logic or redirections here
+        return response()->json(['message' => 'Email verified successfully'], 200);
     }
 }

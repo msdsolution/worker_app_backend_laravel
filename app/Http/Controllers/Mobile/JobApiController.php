@@ -14,6 +14,7 @@ use App\Models\WokerRates;
 use App\Models\SriLankaDistricts;
 use App\Models\ComplaintMessages;
 use App\Models\ComplaintAttachment;
+use App\Models\worker_feedback;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
@@ -120,7 +121,7 @@ class JobApiController extends Controller
        $perPage = $request->query('per_page', 10); // Number of items per page
         $page = $request->query('page', 1); // Current page
 
-        $jobs = Job::with('jobType.serviceCat')->where('user_id', $user->id);
+        $jobs = Job::with('jobType.serviceCat')->where('user_id', $user->id)->orderBy('job.created_at', 'desc');
 
         // Search query
         if ($request->filled('search')) {
@@ -172,10 +173,15 @@ class JobApiController extends Controller
 
         $jobs = Job::with(['jobType.serviceCat', 'worker', 'complaint', 'jobAttachments'])->findOrFail($id);
 
+        $worker_feedback = null;
+
         
         // Add worker_name to the job data
         if ($jobs->worker_id != null) {
-            $jobs->worker_name = $jobs->worker->first_name;
+            $jobs->worker_name = $jobs->worker->first_name.' '.$jobs->worker->last_name;
+            $jobs->worker_pro_pic = $jobs->worker->pro_pic_url;
+
+            $worker_feedback = worker_feedback::where('user_id', $jobs->worker_id)->where('status', 1)->latest()->take(5)->get();
 
         } else {
             $jobs->worker_name = "Not Assigned";
@@ -187,6 +193,15 @@ class JobApiController extends Controller
 
         } else {
             $jobs->complaint_status = 0;
+        }
+
+        $jobs->worker_feedback = $worker_feedback;
+
+        if ($worker_feedback) {
+            // Include the referral name in the feedback
+            foreach ($jobs->worker_feedback as $feedback) {
+                $feedback->refferal_name = $feedback->refferal_id ? User::findOrFail($feedback->refferal_id)->first_name.' '.User::findOrFail($feedback->refferal_id)->last_name : null;
+            }
         }
 
         unset($jobs->worker);
@@ -326,7 +341,7 @@ class JobApiController extends Controller
 
             if ($job && $job->is_complaint == 0) {
                 $job->is_complaint = 1;
-                $job->complaint_status = 0;
+                $job->complaint_status = 1;
                 $job->save();
             }
 
@@ -401,5 +416,68 @@ class JobApiController extends Controller
             'success' => true,
             'data' => $jobComplaints,
         ]);
+    }
+
+    public function getJobPayment($jobId){
+        $user = auth()->user();
+
+        try {
+
+                $job_statuses = [4, 5];
+                $job = Job::with(['worker', 'jobServiceCat'])
+                    ->where('id', $jobId)
+                    ->whereIn('status', $job_statuses)  // Filter by status 4 and 5
+                    ->first();
+
+                    // Check if job was found and has the correct status
+                if (!$job) {
+                    return response()->json([
+                        'status' => 404,
+                        'success' => false,
+                        'message' => 'Job not found or status is not 4.',
+                    ], 404);
+                }
+
+                $referalAmount = DB::table('job_service_cat')
+                ->select('refferal_amount')
+                ->where('job_id', $jobId)
+                ->first();
+
+                $extendedHourAmount = 0;
+                $job->extendedHrAmount = 0;
+
+                // If the job is extended, calculate the extended hour amount
+                if ($job->is_extended == 1) {
+                    // Get the amount for the extended hours
+                    $extendedHourRate = DB::table('extended_hour')
+                        ->select('amount')
+                        ->first(); // Assuming amount is constant for all extended hours
+                    
+                    // Calculate extended hour amount
+                    if ($extendedHourRate) {
+                        $extendedHourAmount = $extendedHourRate->amount * $job->extended_hrs;
+                        $job->extendedHrAmount = $extendedHourAmount ?? 0;
+                    }
+                }
+
+                // Calculate grand total
+                $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
+                $job->grandTotal = $grandTotal;
+
+                return response()->json([
+                    'status' => 200,
+                    'success' => true,
+                    'message' => 'Records retrieved successfully.',
+                    'data' => $job,
+                ], 200);
+
+        } catch (\Exception $e) {
+            // Handle any other potential exceptions
+            return response()->json([
+                'status' => 500,
+                'success' => false,
+                'message' => 'An unexpected error occurred.'.$e,
+            ], 500);
+        }
     }
 }

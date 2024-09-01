@@ -6,6 +6,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 
 class VerifyEmail extends Notification
 {
@@ -32,14 +35,26 @@ class VerifyEmail extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Rata Mithiro email conformation.')
-                    ->line('Click the button below to verify your email address.')
-                    ->action('Verify Email Address', route('verification.verify', $notifiable->verification_token))
+                    ->line('Please verify your email address.')
+                    ->action('Verify Email Address', $this->hashUrl($notifiable))
                     ->line('If you did not create an account, no further action is required.')
                     ->line('Thank you for using our application!');
+    }
+
+    protected function hashUrl($notifiable)
+    {
+        $url = URL::signedRoute(
+            'verification.verify',
+            [
+                'id' => $notifiable->getKey(),
+                'hash' => sha1($notifiable->getEmailForVerification()),
+            ]
+        );
+
+        return $url;
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Models\Job_Service_Cat;
 use App\Models\Holiday;
 use App\Models\RefferalRates;
 use App\Models\SriLankaDistricts;
+use App\Models\UserDocuments;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -313,7 +314,6 @@ class ApiController extends Controller
             'last_name' => 'required',
             'email' => 'required|email|unique:users',
             'location' => 'required',
-            'city_id' => 'required',
             'password' => 'required|min:6',
             'user_type' => 'required',
             'phone_no' => 'required',
@@ -325,17 +325,17 @@ class ApiController extends Controller
             'last_name' => $request->input('last_name'),
             'email' => $request->input('email'),
             'location' => $request->input('location'),
-            'city_id' => $request->input('city_id'),
+            'city_id' => $request->input('city_id') ?? 0,
             'password' => Hash::make($request->input('password')),
             'user_type' => $request->input('user_type'),
-            'status' => $request->input('user_type') == 2 ? 1 : 0, // Default status is set to 0
+            'status' => 0, // Default status is set to 0
             'phone_no' => $request->input('phone_no'),
             'user_address' => $request->input('user_address'),
         ]);
 
         // Send email verification link
-        //$user->notify(new VerifyEmail);
-        //event(new Registered($user));
+        $user->notify(new VerifyEmail);
+       //event(new Registered($user));
 
         return response()->json(['status' => 201, 'success' => true,'message' => 'User registered successfully', 'user' => $user], 201);
     }
@@ -372,6 +372,15 @@ class ApiController extends Controller
                  'success' => false,
                  'message' => 'Could not create token.',
                 ], 500);
+        }
+
+        if (auth()->user() && !auth()->user()->hasVerifiedEmail()) {
+            //return redirect()->back()->with('error', 'Please verify your email address.');
+            return response()->json([
+                'status' => 200,
+                'success' => false,
+                'message' => "Please verify your email address.",
+             ]);
         }
   
         if (auth()->user()->status == 1 && (auth()->user()->user_type == 2 || auth()->user()->user_type == 3)) {
@@ -414,7 +423,7 @@ class ApiController extends Controller
 
     public function user()
     {
-        return response()->json(Auth::user());
+        return response()->json(Auth::user()->load('userDocs'));
     }
 
     public function logout(Request $request)
@@ -512,6 +521,38 @@ class ApiController extends Controller
             'status' => 200,
             'success' => true,
             'message' => 'Password changed successfully',
+        ], 200);
+    }
+
+    public function addUserDoc(Request $request){
+        $userId = Auth::id();
+
+        $request->validate([
+            'doc_id' => 'required',
+            'file' => 'required|file|mimes:jpeg,png,gif|max:20000',
+        ]);
+
+        $user = User::findOrFail($userId);
+
+        // Handle file upload
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+
+            // Store the file in the 'public' directory
+            $path = $file->store('userDocAttachment', 'public');
+
+            // Save file path to database
+            $userDoc = UserDocuments::create([
+                'user_id' => $userId,
+                'doc_id' => $request->input('doc_id'),
+                'doc_url' => $path,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'message' => 'User document added successfully',
         ], 200);
     }
 }
