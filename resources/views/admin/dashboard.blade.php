@@ -27,7 +27,7 @@
                     <p class="card-text">Assigned Work(Current month)</p>
                 </div>
                 <div class="card-footer text-center font-weight-bold">
-                    <a href="{{url('admin/joblisting')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
+                    <a href="{{url('admin/assignedwokr')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
                     <p class="card-text">Pending Work</p>
                 </div>
                 <div class="card-footer text-center font-weight-bold">
-                    <a href="{{url('admin/joblisting')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
+                    <a href="{{url('admin/pendingwork')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
                     <p class="card-text">Rejected Work</p>
                 </div>
                 <div class="card-footer text-center font-weight-bold">
-                    <a href="{{url('admin/joblisting')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
+                    <a href="{{url('admin/rejectedwork')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
                 </div>
             </div>
         </div>
@@ -63,10 +63,11 @@
                     <p class="card-text">Completed works <strong>Unpaid</strong></p>
                 </div>
                 <div class="card-footer text-center font-weight-bold">
-                    <a href="{{url('admin/joblisting')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
+                    <a href="{{url('admin/completedworkunpaid')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
                 </div>
             </div>
         </div>
+        
         <div class="col-12 col-lg-4 mb-3 mb-lg-0">
             <div class="card bg-info text-white text-center">
                 <div class="card-body">
@@ -74,7 +75,21 @@
                     <p class="card-text">Completed works <strong>Paid</strong></p>
                 </div>
                 <div class="card-footer text-center font-weight-bold">
-                    <a href="{{url('admin/joblisting')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
+                    <a href="{{url('admin/completedworkpaid')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row mt-lg-3 ">
+        <div class="col-12 col-lg-4 mb-3 mb-lg-0" >
+            <div class="card text-white text-center" style="background-color: #A9A9A9;">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-size: 44px;">{{$UnresolvedJobcomplaints}}</h5>
+                    <p class="card-text">Un resolved Complaints</p>
+                </div>
+                <div class="card-footer text-center font-weight-bold">
+                    <a href="{{url('admin/Unresolvedcomplaint')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
                 </div>
             </div>
         </div>

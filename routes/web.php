@@ -14,6 +14,7 @@ use App\Http\Controllers\Web\PaymentworkerController;
 use App\Http\Controllers\Web\ServicecategoryController;
 use App\Http\Controllers\Web\WorkerFeedbackController;
 use App\Http\Controllers\Web\workerRateController;
+use App\Models\Service_Category;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -138,6 +139,23 @@ Route::post('update-complaint-status', [ComplaintController::class, 'updateCompl
 Route::get('edit-extendex-hour/{extd_hri_d}',[extendedhourController::class,'edit']);
 Route::put('update-extendex-hour/{extd_hri_d}',[extendedhourController::class,'update']);
 Route::get('delete-extendex-hour/{extd_hri_d}',[extendedhourController::class,'destroy']);
+
+Route::get('assignedwokr', [DashBoardController::class, 'assignedwokr']);
+Route::get('pendingwork', [DashBoardController::class, 'pendingwork']);
+Route::get('rejectedwork', [DashBoardController::class, 'rejectedwork']);
+Route::get('completedworkunpaid', [DashBoardController::class, 'completedworkunpaid']);
+Route::get('completedworkpaid', [DashBoardController::class, 'completedworkpaid']);
+Route::get('Unresolvedcomplaint', [DashBoardController::class, 'Unresolvedcomplaint']);
+Route::get('restore-client/{id}', [ClientController::class, 'restore'])->name('client.restore');
+Route::get('restore-employee/{id}', [EmployeeController::class, 'restore'])->name('employee.restore');
+Route::get('restore-service/{id}', [ServicecategoryController::class, 'restore'])->name('servicecategory.restore');
+
+Route::get('changeStatusemp', [ClientController::class, 'changeStatusemp'])->name('changeStatusemp');
+
+Route::get('assign-job/get-workers-by-district/{districtId}', [JobListingController::class, 'getWorkersByDistrict']);
+
+
+
 
 
 

@@ -41,11 +41,55 @@
                     <label >Password</label>
                     <input type="password" name="password" value="{{$employee -> password}}" class="form-control">
                 </div>
-
                 <div class="mb-3">
                     <label >Location</label>
                     <input type="text" name="location" value="{{$employee -> location}}" class="form-control">
                 </div>
+
+                <div class="mb-3">
+                    <label>User Address</label>
+                    <input type="text" name="user_address" value="{{ $employee->user_address }}" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone_no" value="{{ $employee->phone_no }}" class="form-control">
+                </div>
+
+                @foreach($documentMap as $fieldName => $docId)
+                @php
+                    $document = $documents->firstWhere('doc_id', $docId);
+                    $docUrl = $document ? asset('storage/' . $document->doc_url) : null;
+                    $isPdf = $document && strtolower(pathinfo($document->doc_url, PATHINFO_EXTENSION)) === 'pdf';
+                @endphp
+                <div class="mb-3">
+                    <label>
+                        @switch($docId)
+                            @case(1) Identity Card @break
+                            @case(2) Police Clearance Certificate @break
+                            @case(3) Gramasewaka Certificate @break
+                            @case(4) Driving License @break
+                            @case(5) Vehicle Insurance @break
+                            @case(6) Passport @break
+                        @endswitch
+                    </label>
+                    <input type="file" class="form-control" name="{{ $fieldName }}">
+                    @if($docUrl)
+                        @if($isPdf)
+                            <div class="mt-2">
+                                <a href="{{ $docUrl }}" target="_blank">View Current PDF</a>
+                            </div>
+                        @else
+                            <div class="mt-2">
+                                <img src="{{ $docUrl }}" alt="Current File" style="max-width: 200px; max-height: 200px;">
+                            </div>
+                        @endif
+                    @endif
+                </div>
+                @endforeach
+
+
+
                 <div class="row">
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-primary">Update Employee</button>

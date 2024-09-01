@@ -11,9 +11,19 @@ class ServicecategoryController extends Controller
 {
     public function index()
     {
-        $Service_Category = Service_Category::all();
+      //  $Service_Category = Service_Category::all();
+        $Service_Category = Service_Category::withTrashed()->get();
         //return 'Hey';
         return view('admin.servicecategory.index',compact('Service_Category'));
+
+
+
+
+        //     $employees = User::withTrashed()
+        // ->where('user_type', 3)
+        // ->orderBy('created_at', 'desc') 
+        // ->get();
+        // return view('admin.employee.index', compact('employees'));
     }
     public function create()
     {
@@ -64,5 +74,14 @@ class ServicecategoryController extends Controller
         $Service_Category = Service_Category::find($Service_Category_id);
         $Service_Category -> delete();
         return redirect('admin/servicecategory') -> with('message','Service Deleted Successfully');
+    }
+    public function restore($id)
+    {
+        $Service_Category = Service_Category::withTrashed()->find($id);
+        if ($Service_Category) {
+            $Service_Category->restore();
+            return redirect()->back()->with('message', 'Service category restored successfully');
+        }
+        return redirect()->back()->with('error', 'Service category not found');
     }
 }

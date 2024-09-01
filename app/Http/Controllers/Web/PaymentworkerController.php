@@ -50,7 +50,7 @@ class PaymentworkerController extends Controller
     $jobs = DB::table('job')
         ->select('id', 'job_no')
         ->where('worker_id', $workerId)
-        ->where('status', 4)
+        ->whereIn('status', [4, 5])
         ->whereNotIn('id', $excludedJobIds)
         ->get();
 
