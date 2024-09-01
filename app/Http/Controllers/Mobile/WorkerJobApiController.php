@@ -26,12 +26,12 @@ use Illuminate\Pagination\Paginator;
 class WorkerJobApiController extends Controller
 {
 
-    protected $fcmservice;
+    // protected $fcmservice;
 
-    public function __construct(FCMApiController $fcmservice)
-    {
-        $this->fcmservice = $fcmservice;
-    }
+    // public function __construct(FCMApiController $fcmservice)
+    // {
+    //     $this->fcmservice = $fcmservice;
+    // }
 
 	public function getWorkerJobList(Request $request)
     {
@@ -123,7 +123,7 @@ class WorkerJobApiController extends Controller
                 'title' => 'Accepted',
                 'body' => 'Worker Accepted the job.'
                 ];
-        $this->fcmservice->sendPushNotification($data);
+        //$this->fcmservice->sendPushNotification($data);
 
         return response()->json([
         	'status' => 200,
@@ -144,7 +144,7 @@ class WorkerJobApiController extends Controller
                 'title' => 'Rejected',
                 'body' => 'Worker rejected the job. Will assign new worker.'
                 ];
-        $this->fcmservice->sendPushNotification($data);
+        //$this->fcmservice->sendPushNotification($data);
 
         return response()->json([
         	'status' => 200,
@@ -177,7 +177,7 @@ class WorkerJobApiController extends Controller
                     'title' => 'Started',
                     'body' => 'Worker started the job.'
                     ];
-            $this->fcmservice->sendPushNotification($data);
+            //$this->fcmservice->sendPushNotification($data);
 
             return response()->json([
                 'status' => 200,
@@ -207,7 +207,7 @@ class WorkerJobApiController extends Controller
                 'title' => 'Finished',
                 'body' => 'Worker finished the job.'
                 ];
-        $this->fcmservice->sendPushNotification($data);
+        //$this->fcmservice->sendPushNotification($data);
 
         //Handle file uploads
         if ($request->hasFile('files')) {
@@ -250,7 +250,7 @@ class WorkerJobApiController extends Controller
                     'title' => 'Extended',
                     'body' => 'Worker extended the job.'
                     ];
-            $this->fcmservice->sendPushNotification($data);
+            //$this->fcmservice->sendPushNotification($data);
 
             return response()->json(['status' => 200, 'success' => true, 'message' => 'Job extended successfully'], 200);
 
