@@ -47,7 +47,7 @@
             <th>Amount</th>
             <th>Day</th>
             <th>Edit</th>
-            <th>Delete</th>
+            <!-- <th>Delete</th> -->
         </tr>
     </thead>
     <tbody>
@@ -61,10 +61,10 @@
             <td>
                 <a href="{{url('admin/edit-clientrate/' .$item -> id )}}" class="btn btn-success">Edit</a>
             </td>
-            <td>
-            <a href="{{url('admin/delete-clientrate/' .$item -> id )}}" class="btn btn-danger">Delete</a>
+            <!-- <td>
+            <a href="{{url('admin/delete-clientrate/' .$item -> id )}}" class="btn btn-danger">Delete</a> -->
             <!-- <button type="button" class="btn btn-danger deleteCategoryBtn" value="{{$item -> id}}">Delete</button> -->
-            </td>
+            <!-- </td> -->
         </tr>
         @endforeach
     </tbody>

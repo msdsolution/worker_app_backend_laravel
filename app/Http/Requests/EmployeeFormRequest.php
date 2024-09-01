@@ -44,6 +44,45 @@ class EmployeeFormRequest extends FormRequest
                 'required',
                 'string'
             ],
+            'user_address' =>[
+                'required',
+                'string'
+            ],
+            'phone_no' => [
+                'required',
+                'string',
+                'regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/',
+            ],
+            'identity_card' => [
+                'file',
+                'mimes:jpeg,png,pdf',
+                'max:2048', // Maximum file size in kilobytes
+            ],
+            'police_clearance' => [
+                'file',
+                'mimes:jpeg,png,pdf',
+                'max:2048',
+            ],
+            'gramasevaka_certificate' => [
+                'file',
+                'mimes:jpeg,png,pdf',
+                'max:2048',
+            ],
+            'driver_license' => [
+                'file',
+                'mimes:jpeg,png,pdf',
+                'max:2048',
+            ],
+            'vehicle_insurance' => [
+                'file',
+                'mimes:jpeg,png,pdf',
+                'max:2048',
+            ],
+            'passport' => [
+                'file',
+                'mimes:jpeg,png,pdf',
+                'max:2048',
+            ],
         ];
         return $rules;
     }

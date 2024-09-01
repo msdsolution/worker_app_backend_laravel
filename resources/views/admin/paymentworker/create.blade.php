@@ -56,7 +56,7 @@
 
                 <!-- Paid Amount -->
                 <div class="mb-3">
-                    <label for="paid_amount" class="form-label"><strong>Paying Amount:</strong></label>
+                    <label for="paid_amount" class="form-label"><strong>Paid Amount:</strong></label>
                     <input type="text" class="form-control" id="paid_amount" name="paid_amount">
                 </div>
 
@@ -78,7 +78,7 @@
 @endsection
 
 @section('scripts')
-<script>
+<!-- <script>
     $(document).ready(function() {
         $('#worker').change(function() {
             var workerId = $(this).val();
@@ -183,5 +183,111 @@
             }
         });
     });
+</script> -->
+<script>
+    $(document).ready(function() {
+    $('#worker').change(function() {
+        var workerId = $(this).val();
+        
+        // Clear existing checkboxes and message
+        $('#jobs-checkboxes').empty();
+        $('#worker_amount').val('');
+        $('#paid_amount').val('');
+        $('#validation_message').empty();
+
+        // Fetch jobs for the selected worker via AJAX
+        $.ajax({
+            url: '{{ url('admin/get-worker-jobs') }}/' + workerId,
+            type: 'GET',
+            success: function(response) {
+                var jobs = response.jobs;
+
+                if (jobs.length > 0) {
+                    // Populate jobs as checkboxes with job numbers only
+                    $.each(jobs, function(index, job) {
+                        $('#jobs-checkboxes').append(`
+                            <div class="form-check">
+                                <input class="form-check-input job-checkbox" type="checkbox" value="${job.id}" id="job${job.id}" name="jobs[]">
+                                <label class="form-check-label" for="job${job.id}">
+                                    Job No: ${job.job_no}
+                                </label>
+                            </div>
+                        `);
+                    });
+                } else {
+                    // Display a message if there are no jobs
+                    $('#jobs-checkboxes').append(`
+                        <p class="text-muted">No jobs available for this worker currently.</p>
+                    `);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching jobs: ' + error);
+                $('#jobs-checkboxes').append(`
+                    <p class="text-danger">Error fetching jobs. Please try again later.</p>
+                `);
+            }
+        });
+    });
+
+    // Handle checkbox change
+    $(document).on('change', '.job-checkbox', function() {
+        var totalAmount = 0;
+
+        // Recalculate the total amount based on the checked jobs
+        $('.job-checkbox:checked').each(function() {
+            var jobId = $(this).val();
+            
+            $.ajax({
+                url: '{{ url('admin/get-referral-amount') }}/' + jobId,
+                type: 'GET',
+                async: false, // Make the request synchronous to ensure the amounts are added correctly
+                success: function(response) {
+                    totalAmount += parseFloat(response.worker_amount);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching referral amount: ' + error);
+                }
+            });
+        });
+
+        // Update the total amount field
+        $('#worker_amount').val(totalAmount.toFixed(2));
+
+        // Validate the paid amount
+        validatePaidAmount();
+    });
+
+    // Validate paid amount while typing
+    $('#paid_amount').on('input', function() {
+        validatePaidAmount();
+    });
+
+    function validatePaidAmount() {
+        var paidAmount = parseFloat($('#paid_amount').val());
+        var referralAmount = parseFloat($('#worker_amount').val());
+
+        if (isNaN(paidAmount)) {
+            paidAmount = 0;
+        }
+
+        if (paidAmount !== referralAmount) {
+            // Display error message
+            $('#validation_message').html('<div class="alert alert-danger">Paid amount does not match referral amount.</div>');
+        } else {
+            // Clear error message
+            $('#validation_message').empty();
+        }
+    }
+
+    // Validate single file selection
+    $('#attachments').change(function() {
+        if (this.files.length > 1) {
+            alert('You can only upload one file.');
+            this.value = ''; // Clear the selected files
+        }
+    });
+});
+
 </script>
 @endsection

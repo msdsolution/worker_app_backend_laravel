@@ -149,6 +149,12 @@
                         <td>{{ $job->extended_hrs }}</td>
                     </tr>
                     @endif
+                    @if($job->is_worker_tip == 1)
+                    <tr>
+                        <td colspan="3" class="text-right">Worker Tip</td>
+                        <td>{{ $workerTipAmount }}</td>
+                    </tr>
+                    @endif
                     <tr>
                         <td colspan="3" class="text-right">Grand Total</td>
                         <td>{{ $grandTotal }}</td>

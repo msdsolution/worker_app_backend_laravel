@@ -48,6 +48,7 @@ class InvoiceController extends Controller
         ->get();
         return view('admin.invoice.index', compact('InvDetails'));
     }
+    
     public function download($jobId) {
         // Retrieve job details
         $job = DB::table('job')
@@ -72,8 +73,10 @@ class InvoiceController extends Controller
             'job.required_time',
             'job.created_at',
             'job.preferred_sex',
-                 'job.is_extended',
-               'job.extended_hrs'
+            'job.is_extended',
+            'job.extended_hrs',
+            'job.is_worker_tip',
+            'job.worker_tip_amount'
         )
         ->leftJoin('users', 'job.user_id', '=', 'users.id')
         ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
@@ -97,6 +100,8 @@ class InvoiceController extends Controller
         ->where('job_id', $jobId)
         ->first();
         $extendedHourAmount = 0;
+        $workerTipAmount = 0; 
+
 $isExtended = $job->is_extended ? 'Yes' : 'No';
 
 // If the job is extended, calculate the extended hour amount
@@ -112,8 +117,13 @@ if ($job->is_extended) {
     }
 }
 
+
+if ($job->is_worker_tip == 1) {
+    $workerTipAmount = $job->worker_tip_amount;
+}
+
 // Calculate grand total
-$grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
+$grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount +  $workerTipAmount;
 
     // Pass data to the view and generate the PDF
     $pdf = Pdf::loadView('admin.invoice.invoice', [
@@ -122,6 +132,7 @@ $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
         'referalAmount' => $referalAmount,
         'isExtended' => $isExtended,
         'extendedHourAmount' => $extendedHourAmount,
+        'workerTipAmount' => $workerTipAmount,
         'grandTotal' => $grandTotal
     ]);
     return $pdf->download('invoice.pdf');
@@ -206,7 +217,9 @@ $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
         'job.created_at',
         'job.preferred_sex',
         'job.is_extended',
-        'job.extended_hrs'
+        'job.extended_hrs',
+            'job.is_worker_tip',
+            'job.worker_tip_amount'
     )
     ->leftJoin('users', 'job.user_id', '=', 'users.id')
     ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
@@ -232,6 +245,8 @@ $referalAmount = DB::table('job_service_cat')
 
 // Initialize extended hour amount and extended status
 $extendedHourAmount = 0;
+$workerTipAmount = 0; 
+
 $isExtended = $job->is_extended ? 'Yes' : 'No';
 
 // If the job is extended, calculate the extended hour amount
@@ -247,8 +262,12 @@ if ($job->is_extended) {
     }
 }
 
+
+if ($job->is_worker_tip == 1) {
+    $workerTipAmount = $job->worker_tip_amount;
+}
 // Calculate grand total
-$grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
+$grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount +   $workerTipAmount ;
 
 // Generate the PDF view
 $pdf = Pdf::loadView('admin.invoice.invoice', [
@@ -257,6 +276,7 @@ $pdf = Pdf::loadView('admin.invoice.invoice', [
     'referalAmount' => $referalAmount,
     'isExtended' => $isExtended,
     'extendedHourAmount' => $extendedHourAmount,
+    'workerTipAmount' => $workerTipAmount,
     'grandTotal' => $grandTotal
 ]);
 
@@ -294,7 +314,9 @@ public function sendInvoice(Request $request)
             'job.created_at',
             'job.preferred_sex',
             'job.is_extended',
-            'job.extended_hrs'
+            'job.extended_hrs',
+            'job.is_worker_tip',
+            'job.worker_tip_amount'
         )
         ->leftJoin('users', 'job.user_id', '=', 'users.id')
         ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
@@ -320,6 +342,7 @@ public function sendInvoice(Request $request)
 
     // Initialize extended hour amount and extended status
     $extendedHourAmount = 0;
+    $workerTipAmount = 0; 
     $isExtended = $job->is_extended ? 'Yes' : 'No';
 
     // If the job is extended, calculate the extended hour amount
@@ -335,8 +358,11 @@ public function sendInvoice(Request $request)
         }
     }
 
+    if ($job->is_worker_tip == 1) {
+        $workerTipAmount = $job->worker_tip_amount;
+    }
     // Calculate grand total
-    $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
+    $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount + $workerTipAmount;
 
     // Generate the PDF
     $pdf = Pdf::loadView('admin.invoice.invoice', [
@@ -345,6 +371,7 @@ public function sendInvoice(Request $request)
         'referalAmount' => $referalAmount,
         'isExtended' => $isExtended,
         'extendedHourAmount' => $extendedHourAmount,
+        'workerTipAmount' => $workerTipAmount,
         'grandTotal' => $grandTotal
     ]);
 

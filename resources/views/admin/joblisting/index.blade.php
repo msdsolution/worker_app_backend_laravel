@@ -37,14 +37,16 @@
                         <tr>
                             <th>No</th>
                             <th>Job Number</th>
-                            <th>Referer Name</th>
-                            <th>Service Name</th>
-                            <th>Service Description</th>
+                            <th>Referer First Name</th>
+                            <th>Referer Last Name</th>
+                            <!-- <th>Service Name</th>
+                            <th>Service Description</th> -->
                             <th>Required Date</th>
                             <th>Required Time</th>
                             <th>Preferred Sex</th>
                             <th>City name</th>
-                            <th>Worker name</th>
+                            <th>Worker First Name</th>
+                            <th>Worker Last Name</th>
                             <th>Status</th>
                             <th>Assign</th>
                         </tr>
@@ -54,20 +56,32 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $job->job_no }}</td>
-                                <td>{{ $job->userFirstName }}</td>
-                                <td>{{ $job->serviceName }}</td>
-                                <td>{{ $job->serviceDescription }}</td>
+                                <td>{{ $job->ClientFirstName }}</td>
+                                <td>{{ $job->ClientLastName }}</td>
+                                <!-- <td>{{ $job->serviceName }}</td>
+                                <td>{{ $job->serviceDescription }}</td> -->
                                 <td>{{ $job->required_date }}</td>
                                 <td>{{ $job->required_time }}</td>
                                 <td>{{ $job->preferred_sex }}</td>
                                 <td>{{ $job->cityName }}</td>
                                 <td>
                                     @if($job->worker_id && $job->status == 1)
-                                        {{ $job->workerName }}
+                                        {{ $job->workerFirstName }}
                                     @elseif(!$job->worker_id && $job->status == 0)
                                         No worker assigned
                                     @elseif($job->worker_id && in_array($job->status, [2, 3, 4,5]))
-                                        {{ $job->workerName }}
+                                        {{ $job->workerFirstName }}
+                                    @elseif($job->worker_id && $job->status == 6)
+                                        Worker Rejected
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($job->worker_id && $job->status == 1)
+                                        {{ $job->workerLastName }}
+                                    @elseif(!$job->worker_id && $job->status == 0)
+                                        No worker assigned
+                                    @elseif($job->worker_id && in_array($job->status, [2, 3, 4,5]))
+                                        {{ $job->workerLastName }}
                                     @elseif($job->worker_id && $job->status == 6)
                                         Worker Rejected
                                     @endif

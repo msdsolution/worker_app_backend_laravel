@@ -23,7 +23,14 @@
             <form action="{{ route('assigning-job', ['jobId' => $job->jobId]) }}"  method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                 @csrf
                 @method('PUT')
-
+                <div class="mb-3">
+                    <label for="RefererFirstName" class="form-label">Referer First Name</label>
+                    <input type="text" name="RefererFirstName" value="{{ $job->userFirstName }}" class="form-control" id="RefererFirstName" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="RefererLastName" class="form-label">Referer Last Name</label>
+                    <input type="text" name="RefererLastName" value="{{ $job->userLasttName }}" class="form-control" id="RefererLastName" readonly>
+                </div>
                 <div class="mb-3">
                     <label for="serviceName" class="form-label">Service Name</label>
                     <input type="text" name="serviceName" value="{{ $job->serviceName }}" class="form-control" id="serviceName" readonly>
@@ -67,16 +74,97 @@
                     <label for="endLocation" class="form-label">End Location</label>
                     <input type="text" name="endLocation" value="{{ $job->end_location }}" class="form-control" id="endLocation" readonly>
                 </div>
-                
-                <div class="mb-3">
-                    <label for="workerName" class="form-label">Worker Name</label>
-                    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
-                        <option value="">Select Worker</option>
-                        @foreach($workers as $worker)
-                            <option value="{{ $worker->id }}" @if($job->status != 6 && $job->worker_id == $worker->id) selected @endif>{{ $worker->first_name }}</option>
+
+                <!-- <div class="mb-3">
+                    <label for="district" class="form-label">Select Area</label>
+                    <select name="district" class="form-control" id="district_id" onchange="updateWorkers()"@if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
+                        <option value="">Select District</option>
+                        @foreach($districts as $district)
+                            <option value="{{ $district->id }}">{{ $district->name_en }}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> -->
+
+                
+                <!-- <div class="mb-3">
+    <label for="district" class="form-label">Select Area</label>
+    <select name="district" class="form-control" id="district_id" onchange="updateWorkers()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
+        <option value="">Select District</option>
+        @foreach($districts as $district)
+            <option value="{{ $district->id }}" @if($district->id == $job->worker_area_id) selected @endif>
+                {{ $district->name_en }}
+            </option>
+        @endforeach
+    </select>
+</div> -->
+
+
+
+<div class="mb-3">
+    <label for="district" class="form-label">Select Area</label>
+    <select name="district" class="form-control" id="district_id" onchange="updateWorkers()"
+    @if(!in_array($job->status, [0, 6])) disabled @endif>
+        <option value="">Select District</option>
+        @foreach($districts as $district)
+            <option value="{{ $district->id }}"
+                @if($job->status !== 6 && $district->id == $job->worker_area_id) selected @endif>
+                {{ $district->name_en }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+
+
+
+    <!-- Space here--- -->
+                <!-- <div class="mb-3">
+    <label for="workerName" class="form-label">Worker Full Name (First Name and Last Name)</label>
+    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
+        <option value="">Select Worker</option> -->
+        <!-- Options will be added here via AJAX -->
+        <!-- @if($job->worker_id) -->
+            <!-- Display the assigned worker if a worker is assigned -->
+            <!-- @foreach($workers as $worker)
+                @if($job->worker_id == $worker->id) -->
+                    <!-- <option value="{{ $worker->id }}" selected>{{ $worker->first_name }} {{ $worker->last_name }}</option> -->
+                    <!-- <option value="{{ $worker->id }}" @if($job->status != 6 && $job->worker_id == $worker->id) selected @endif>{{ $worker->first_name }} {{ $worker->last_name }}</option>
+                @endif
+            @endforeach
+        @endif
+    </select>
+</div> -->
+
+
+
+<!-- Space here ---- -->
+<div class="mb-3">
+    <label for="workerName" class="form-label">Worker Full Name (First Name and Last Name)</label>
+    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
+        <option value="">Select Worker</option>
+        @if($job->status != 6 && $job->worker_id)
+            <!-- Display the assigned worker if a worker is assigned and job status is not 6 -->
+            @foreach($workers as $worker)
+                @if($job->worker_id == $worker->id)
+                    <option value="{{ $worker->id }}" selected>{{ $worker->first_name }} {{ $worker->last_name }}</option>
+                @endif
+            @endforeach
+        @endif
+        <!-- Options will be added here via AJAX -->
+    </select>
+</div>
+
+
+<!-- <div class="mb-3">
+    <label for="workerName" class="form-label">Worker Full Name (First Name and Last Name)</label>
+    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
+                        <option value="">Select Worker</option>
+                        @foreach($workers as $worker)
+                            <option value="{{ $worker->id }}" @if($job->status != 6 && $job->worker_id == $worker->id) selected @endif>{{ $worker->first_name }} {{ $worker->last_name }}</option>
+                        @endforeach
+                    </select>
+
+</div> -->
                 
                 <input type="hidden" name="selectedWorkerId" id="selectedWorkerId">
 
@@ -84,8 +172,12 @@
                     <label for="status" class="form-label">Status</label>
                     <input type="text" name="status" value="{{ getStatusText($job->status) }}" class="form-control" id="status" readonly>
                 </div>
-
-                <div class="mb-3">
+                @if ($job->status == 4)
+                    <div class="mb-3">
+                        <label for="finishJobDescription" class="form-label">Finish Job Description by Client</label>
+                        <input type="text" name="finishJobDescription" value="{{ $job->finishJobDescription }}" class="form-control" id="finishJobDescription" readonly>
+                    </div>
+                    <div class="mb-3">
                     <label for="attachments" class="form-label">Attachments</label>
                     <div>
                         @foreach($attachments as $attachment)
@@ -93,6 +185,8 @@
                         @endforeach
                     </div>
                 </div>
+                @endif
+           
 
                 <div class="row">
                     <div class="col-md-6">
@@ -109,7 +203,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @php
@@ -151,5 +244,28 @@
         }
         return true;
     }
+    function updateWorkers() {
+        var districtId = document.getElementById('district_id').value;
+        var workerDropdown = document.getElementById('workerId');
+       
+        // Clear existing options
+        workerDropdown.innerHTML = '<option value="">Select Worker</option>';
+        if (districtId) {
+            // Fetch workers for the selected district via AJAX
+            fetch('get-workers-by-district/' + districtId)
+                .then(response => response.json())
+                .then(data => {
+                    data.workers.forEach(worker => {
+                        var option = document.createElement('option');
+                        option.value = worker.id;
+                        option.text = worker.first_name + ' ' + worker.last_name;
+                        workerDropdown.add(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching workers:', error));
+        }
+    }
 </script>
 @endsection
+
+
