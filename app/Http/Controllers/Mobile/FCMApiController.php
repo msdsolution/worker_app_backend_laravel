@@ -98,7 +98,7 @@ class FCMApiController extends Controller
         }
 
 	    // Example payload for sending a notification
-        $message = CloudMessage::withTarget('token', $data->device_token))
+        $message = CloudMessage::withTarget('token', $data->device_token)
             ->withNotification(Notification::create($data->title, $data->body));
 
 
