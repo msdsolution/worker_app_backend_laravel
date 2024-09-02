@@ -59,12 +59,15 @@ class EmployeeController extends Controller
 
 
         $documentMap = [
-            'identity_card' => 1,
+            'identity_card_front' => 1,
             'police_clearance' => 2,
             'gramasevaka_certificate' => 3,
             'driver_license' => 4,
-            'vehicle_insurance' => 5,
+            'vehicle_insurance_front' => 5,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         // Loop through each document field
@@ -90,12 +93,15 @@ class EmployeeController extends Controller
         $employee = User::find($employee_id);
 
         $documentMap = [
-            'identity_card' => 1,
+            'identity_card_front' => 1,
             'police_clearance' => 2,
             'gramasevaka_certificate' => 3,
             'driver_license' => 4,
-            'vehicle_insurance' => 5,
+            'vehicle_insurance_front' => 5,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         $documents = DB::table('user_documents')
@@ -119,17 +125,22 @@ class EmployeeController extends Controller
         $employee -> last_name = $data['last_name'];
         $employee -> email = $data['email'];
         $employee -> password = Hash::make($data['password']);
-        $employee -> location = $data['location'];
+       $employee -> location = $data['location']; 
+       $employee -> user_address = $data['user_address']; 
+       $employee -> phone_no = $data['phone_no']; 
 
         $employee -> update();
 
         $documentMap = [
-            'identity_card' => 1,
+            'identity_card_front' => 1,
             'police_clearance' => 2,
             'gramasevaka_certificate' => 3,
             'driver_license' => 4,
-            'vehicle_insurance' => 5,
+            'vehicle_insurance_front' => 5,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         // Loop through each document field
@@ -167,10 +178,6 @@ class EmployeeController extends Controller
         }
 
 
-
-
-
-
         return redirect('admin/employees') -> with('message','Employee Updated Successfully');
     }
     public function destroy($employee_id)
@@ -195,4 +202,46 @@ class EmployeeController extends Controller
         }
         return redirect()->back()->with('error', 'Employee not found');
     }
+
+
+
+//     public function deleteDocument($documentId)
+// {
+//     // Retrieve the document from the database
+//     $document = DB::table('user_documents')->where('id', $documentId)->first();
+
+//     if ($document) {
+//         // Delete the file from storage
+//         if (Storage::disk('public')->exists($document->doc_url)) {
+//             Storage::disk('public')->delete($document->doc_url);
+//         }
+
+//         // Delete the record from the database
+//         DB::table('user_documents')->where('id', $documentId)->delete();
+
+//         return redirect()->back()->with('message', 'Document deleted successfully');
+//     }
+
+//     return redirect()->back()->with('error', 'Document not found');
+// }
+public function deleteDocument($documentId)
+{
+    // $document = DB::table('user_documents')->where('id', $documentId)->first();
+    // if ($document) {
+    //     Storage::delete('public/' . $document->doc_url); // Deletes the file from storage
+    //     $document->delete(); // Deletes the record from the database
+    //     return response()->json(['success' => 'Document deleted successfully.']);
+    // }
+
+    // return response()->json(['error' => 'Document not found.'], 404);
+    $document = DB::table('user_documents')->where('id', $documentId)->first();
+    if ($document) {
+        Storage::delete('public/' . $document->doc_url); // Deletes the file from storage
+        DB::table('user_documents')->where('id', $documentId)->delete(); // Deletes the record from the database
+        return response()->json(['success' => 'Document deleted successfully.']);
+    }
+
+    return response()->json(['error' => 'Document not found.'], 404);
+}
+
 }
