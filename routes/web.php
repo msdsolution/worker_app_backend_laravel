@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Storage;
 // });
 
 Route::get('/', function () {
-    return view('/login');
+    return view('login');
 })->middleware('auth','isAdmin');
 
 Route::get('privacy-policy', [App\Http\Controllers\HomeController::class, 'privacy_policy'])->name('privacy-policy');
