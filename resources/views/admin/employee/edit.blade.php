@@ -65,12 +65,15 @@
                 <div class="mb-3">
                     <label>
                         @switch($docId)
-                            @case(1) Identity Card @break
-                            @case(2) Police Clearance Certificate @break
-                            @case(3) Gramasewaka Certificate @break
-                            @case(4) Driving License @break
-                            @case(5) Vehicle Insurance @break
-                            @case(6) Passport @break
+                        @case(1) Identity Card Front @break
+                             @case(2) Identity Card Back  @break
+                            @case(3) Police Clearance Certificate @break
+                            @case(4) Gramasewaka Certificate @break
+                            @case(5) Driving License @break
+                            @case(6) Driving License back  @break
+                            @case(7) Vehicle Insurance Front @break
+                            @case(8)  Vehicle Insurance Back @break
+                            @case(9) Passport @break
                         @endswitch
                     </label>
                     <input type="file" class="form-control" name="{{ $fieldName }}">
@@ -82,13 +85,17 @@
                         @else
                             <div class="mt-2">
                                 <img src="{{ $docUrl }}" alt="Current File" style="max-width: 200px; max-height: 200px;">
+                                <div>
+                                    <a href="{{ $docUrl }}" target="_blank">View Full Image</a>
+                                </div>
+
                             </div>
                         @endif
+                        <button type="button" class="btn btn-danger btn-sm mt-2 delete-document" data-id="{{ $document->id }}">Delete</button>
                     @endif
+                    
                 </div>
                 @endforeach
-
-
 
                 <div class="row">
                     <div class="col-md-6">
@@ -96,8 +103,41 @@
                     </div>
                 </div>
             </form>
+
+            
         </div>
     </div>
 </div>
+
+@endsection
+
+@section('scripts')
+<script>
+    $(document).on('click', '.delete-document', function() {
+        var docId = $(this).data('id');
+        var token = '{{ csrf_token() }}';
+
+        if (confirm('Are you sure you want to delete this document?')) {
+            $.ajax({
+                url: 'delete-document/' + docId,
+                type: 'DELETE',
+                data: {
+                    "_token": token,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Document deleted successfully.');
+                        location.reload(); // Reload the page or remove the document section dynamically
+                    } else {
+                        alert('Failed to delete the document.');
+                    }
+                },
+                error: function(response) {
+                    alert('Error occurred while deleting the document.');
+                }
+            });
+        }
+    });
+</script>
 
 @endsection

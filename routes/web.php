@@ -159,6 +159,13 @@ Route::get('assign-job/get-workers-by-district/{districtId}', [JobListingControl
 Route::get('payment_refferal',[PaymentRefferalController::class,'index']);
 
 
+//Route::put('delete-document/{id}', [EmployeeController::class, 'deleteDocument'])->name('delete-document');
+Route::delete('edit-employee/delete-document/{id}', [EmployeeController::class, 'deleteDocument'])->name('delete-document');
+Route::delete('client/delete-document/{id}', [ClientController::class, 'deleteDocument'])->name('delete-document');
+
+
+
+
 
 
 

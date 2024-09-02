@@ -50,8 +50,12 @@
                     <input type="text" name="phone_no" class="form-control">
                 </div>
                 <div class="mb-3">
-                    <label for="attachments" class="form-label">Attachments: Identity card</label>
-                    <input type="file" class="form-control" id="identity_card" name="identity_card">
+                    <label for="attachments" class="form-label">Attachments: Identity card Front</label>
+                    <input type="file" class="form-control" id="identity_card_front" name="identity_card_front">
+                </div>
+                <div class="mb-3">
+                    <label for="attachments" class="form-label">Attachments: Identity card Back</label>
+                    <input type="file" class="form-control" id="identity_card_back" name="identity_card_back">
                 </div>
                 <div class="mb-3">
                     <label for="attachments" class="form-label">Attachments: Police Clearance certificate</label>
@@ -62,12 +66,20 @@
                     <input type="file" class="form-control" id="gramasevaka_certificate" name="gramasevaka_certificate">
                 </div>
                 <div class="mb-3">
-                    <label for="attachments" class="form-label">Attachments: Driving license</label>
+                    <label for="attachments" class="form-label">Attachments: Driving license Front</label>
                     <input type="file" class="form-control" id="driver_license" name="driver_license">
                 </div>
                 <div class="mb-3">
-                    <label for="attachments" class="form-label">Attachments: Vehicle insurance</label>
-                    <input type="file" class="form-control" id="vehicle_insurance" name="vehicle_insurance">
+                    <label for="attachments" class="form-label">Attachments: Driving license Back</label>
+                    <input type="file" class="form-control" id="driver_license_back" name="driver_license_back">
+                </div>
+                <div class="mb-3">
+                    <label for="attachments" class="form-label">Attachments: Vehicle insurance Front</label>
+                    <input type="file" class="form-control" id="vehicle_insurance_front" name="vehicle_insurance_front">
+                </div>
+                <div class="mb-3">
+                    <label for="attachments" class="form-label">Attachments: Vehicle insurance Back</label>
+                    <input type="file" class="form-control" id="vehicle_insurance_back" name="vehicle_insurance_back">
                 </div>
                 <div class="mb-3">
                     <label for="attachments" class="form-label">Attachments: Passport</label>

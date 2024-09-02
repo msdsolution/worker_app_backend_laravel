@@ -46,12 +46,15 @@ class ClientController extends Controller
         $client -> save();
 
         $documentMap = [
-            'identity_card' => 1,
+            'identity_card_front' => 1,
             'police_clearance' => 2,
             'gramasevaka_certificate' => 3,
             'driver_license' => 4,
-            'vehicle_insurance' => 5,
+            'vehicle_insurance_front' => 5,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         // Loop through each document field
@@ -78,12 +81,15 @@ class ClientController extends Controller
 
 
         $documentMap = [
-            'identity_card' => 1,
+            'identity_card_front' => 1,
             'police_clearance' => 2,
             'gramasevaka_certificate' => 3,
             'driver_license' => 4,
-            'vehicle_insurance' => 5,
+            'vehicle_insurance_front' => 5,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         $documents = DB::table('user_documents')
@@ -113,12 +119,15 @@ class ClientController extends Controller
 
 
         $documentMap = [
-            'identity_card' => 1,
+            'identity_card_front' => 1,
             'police_clearance' => 2,
             'gramasevaka_certificate' => 3,
             'driver_license' => 4,
-            'vehicle_insurance' => 5,
+            'vehicle_insurance_front' => 5,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         // Loop through each document field
@@ -182,5 +191,26 @@ public function changeStatusemp(Request $request) {
     $client->status = $request->status;
     $client->save();
     return response()->json(['success' => 'Status Changed Successfully']);
+}
+
+
+public function deleteDocument($documentId)
+{
+    // $document = DB::table('user_documents')->where('id', $documentId)->first();
+    // if ($document) {
+    //     Storage::delete('public/' . $document->doc_url); // Deletes the file from storage
+    //     $document->delete(); // Deletes the record from the database
+    //     return response()->json(['success' => 'Document deleted successfully.']);
+    // }
+
+    // return response()->json(['error' => 'Document not found.'], 404);
+    $document = DB::table('user_documents')->where('id', $documentId)->first();
+    if ($document) {
+        Storage::delete('public/' . $document->doc_url); // Deletes the file from storage
+        DB::table('user_documents')->where('id', $documentId)->delete(); // Deletes the record from the database
+        return response()->json(['success' => 'Document deleted successfully.']);
+    }
+
+    return response()->json(['error' => 'Document not found.'], 404);
 }
 }
