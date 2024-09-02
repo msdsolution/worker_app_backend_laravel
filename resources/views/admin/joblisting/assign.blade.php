@@ -172,7 +172,7 @@
                     <label for="status" class="form-label">Status</label>
                     <input type="text" name="status" value="{{ getStatusText($job->status) }}" class="form-control" id="status" readonly>
                 </div>
-                @if ($job->status == 4)
+                @if ($job->status == 4 || $job->status == 5)
                     <div class="mb-3">
                         <label for="finishJobDescription" class="form-label">Finish Job Description by Client</label>
                         <input type="text" name="finishJobDescription" value="{{ $job->finishJobDescription }}" class="form-control" id="finishJobDescription" readonly>
