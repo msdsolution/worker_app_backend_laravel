@@ -94,10 +94,13 @@ class EmployeeController extends Controller
 
         $documentMap = [
             'identity_card_front' => 1,
+            'identity_card_back' => 7,
             'police_clearance' => 2,
             'gramasevaka_certificate' => 3,
             'driver_license' => 4,
+            'driver_license_back' => 8,
             'vehicle_insurance_front' => 5,
+            'vehicle_insurance_back' => 9,
             'passport' => 6,
             'identity_card_back' => 7,
             'driver_license_back' => 8,
@@ -133,10 +136,13 @@ class EmployeeController extends Controller
 
         $documentMap = [
             'identity_card_front' => 1,
+            'identity_card_back' => 7,
             'police_clearance' => 2,
             'gramasevaka_certificate' => 3,
             'driver_license' => 4,
+            'driver_license_back' => 8,
             'vehicle_insurance_front' => 5,
+            'vehicle_insurance_back' => 9,
             'passport' => 6,
             'identity_card_back' => 7,
             'driver_license_back' => 8,
