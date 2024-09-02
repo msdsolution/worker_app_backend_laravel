@@ -67,16 +67,8 @@
                 <div class="mb-3">
                     <label>
                         @switch($docId)
-                             @case(1) Identity Card Front @break
-                             @case(2) Identity Card Back  @break
-                            @case(3) Police Clearance Certificate @break
-                            @case(4) Gramasewaka Certificate @break
-                            @case(5) Driving License @break
-                            @case(6) Driving License back  @break
-                            @case(7) Vehicle Insurance Front @break
-                            @case(8)  Vehicle Insurance Back @break
-                            @case(9) Passport @break
-                            <!-- @case(1) Identity Card Front @break
+                            
+                            @case(1) Identity Card Front @break
                             @case(2) Police Clearance Certificate @break
                             @case(3) Gramasewaka Certificate @break
                             @case(4) Driving License @break
@@ -84,7 +76,7 @@
                             @case(6) Passport @break
                             @case(7) Identity Card Back  @break
                             @case(8) Driving License back  @break
-                            @case(9)  Vehicle Insurance Back @break -->
+                            @case(9)  Vehicle Insurance Back @break
                         @endswitch
                     </label>
                     <input type="file" class="form-control" name="{{ $fieldName }}">
