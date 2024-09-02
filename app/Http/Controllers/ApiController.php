@@ -37,6 +37,16 @@ class ApiController extends Controller
         return response()->json($data);
     }
 
+    public function privacy_policy()
+    {
+        return view('privacy_policy');
+    }
+
+    public function terms_and_condition()
+    {
+        return view('terms_and_condition');
+    }
+
     public function getSignupFormData(Request $request)
     {
         $country_list = [
