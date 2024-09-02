@@ -68,15 +68,41 @@ class PaymentworkerController extends Controller
 //Ithu Worker amount Fucntion name apdiye vachitu fnction uluka change panitey
 public function getReferralAmount($jobId)
 {
-    $jobServiceCat = DB::table('job_service_cat')
+
+   /*  Method without adding the Tip amount */
+    // $jobServiceCat = DB::table('job_service_cat')
+    //     ->where('job_id', $jobId)
+    //     ->first();
+
+        
+
+    // if ($jobServiceCat) {
+    //     return response()->json(['worker_amount' => $jobServiceCat->worker_amount]);
+    // } else {
+    //     return response()->json(['worker_amount' => 0]);
+    // }
+
+
+   /* Ends here */
+
+        // Retrieve the job details, including the status and tip information
+        $jobServiceCat = DB::table('job_service_cat')
         ->where('job_id', $jobId)
         ->first();
 
-    if ($jobServiceCat) {
-        return response()->json(['worker_amount' => $jobServiceCat->worker_amount]);
-    } else {
-        return response()->json(['worker_amount' => 0]);
+    $jobDetails = DB::table('job')
+        ->where('id', $jobId)
+        ->select('status', 'is_worker_tip', 'worker_tip_amount')
+        ->first();
+
+    $workerAmount = $jobServiceCat ? $jobServiceCat->worker_amount : 0;
+
+    // If job status is 5 and is_worker_tip is 1, add the worker_tip_amount to the worker_amount
+    if ($jobDetails && $jobDetails->status == 5 && $jobDetails->is_worker_tip == 1) {
+        $workerAmount += $jobDetails->worker_tip_amount;
     }
+
+    return response()->json(['worker_amount' => $workerAmount]);
 }
 public function store(Request $request)
 {
@@ -85,13 +111,14 @@ public function store(Request $request)
         'jobs' => 'required|array',
         'jobs.*' => 'exists:job,id',
         'paid_amount' => 'required|numeric',
-        'attachments.*' => 'file|mimes:pdf,jpeg,bmp,png,gif,svg', // Adjust file validation rules as needed
+        'attachments.*' => '|file|mimes:pdf,jpeg,bmp,png,gif,svg', // Adjust file validation rules as needed
     ]);
 
     $jobs = $validatedData['jobs'];
     $paidAmount = $validatedData['paid_amount'];
     $status = 3; // Assuming status is always 3 for new payments
 
+    
     try {
         // Insert into worker_payment table
         $workerPaymentIds = [];

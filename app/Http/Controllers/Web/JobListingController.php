@@ -122,7 +122,11 @@ class JobListingController extends Controller
         ->where('job.id', $jobId)
         ->first();
 
-
+        $district = DB::table('cities')
+        ->leftJoin('districts', 'cities.district_id', '=', 'districts.id')
+        ->where('cities.id', $job->city_id)
+        ->select('districts.name_en as districtName')
+        ->first();
 
         $attachments = DB::table('job_attachments')
         ->where('job_id', $jobId)
@@ -131,7 +135,7 @@ class JobListingController extends Controller
 
         $selectedWorker = User::find($job->worker_id);
 
-    return view('admin.joblisting.assign', compact('job','workers','attachments','districts','selectedWorker'));
+    return view('admin.joblisting.assign', compact('job','workers','attachments','districts','selectedWorker','district'));
     }
     // public function update(Request $request, $jobId)
     // {
