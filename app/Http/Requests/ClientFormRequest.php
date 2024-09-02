@@ -51,7 +51,7 @@ class ClientFormRequest extends FormRequest
             'phone_no' => [
                 'required',
                 'string',
-                'regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/',
+                'regex:/^(\+?\d{1,4}[\s-]?)?(\(?\d{1,5}\)?[\s-]?)?\d{1,5}[\s-]?\d{1,5}[\s-]?\d{1,5}$/',
             ],
             'identity_card' => [
                 'file',
