@@ -387,10 +387,10 @@ class ApiController extends Controller
         if (auth()->user() && !auth()->user()->hasVerifiedEmail()) {
             //return redirect()->back()->with('error', 'Please verify your email address.');
             return response()->json([
-                'status' => 200,
+                'status' => 401,
                 'success' => false,
                 'message' => "Please verify your email address.",
-             ]);
+             ], 401);
         }
   
         if (auth()->user()->status == 1 && (auth()->user()->user_type == 2 || auth()->user()->user_type == 3)) {
