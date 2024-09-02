@@ -21,6 +21,9 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 |
 */
 
+Route::get('/privacy-policy', [App\Http\Controllers\HomeController::class, 'privacy_policy'])->name('privacy-policy');
+Route::get('/terms_and_condition', [App\Http\Controllers\HomeController::class, 'terms_and_condition'])->name('terms-and-condition');
+
 Auth::routes(['verify' => true]);
 
 Route::post('/login', [ApiController::class, 'authenticate']);
