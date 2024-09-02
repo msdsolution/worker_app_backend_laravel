@@ -96,9 +96,10 @@
                 <h1 class="text-white">RataMithuro</h1>
             </div>
             <div class="company-details">
-                <p>Address Line 1</p>
-                <p>Address Line 2</p>
-                <p>+91 888555XXXX</p>
+                <p>950/4,T.C Garden Road,</p>
+                <p>Battaramulla, Colombo,</p>
+                <p>Sri Lanka.</p>
+                <p>+61 402 891 549</p>
             </div>
         </div>
 

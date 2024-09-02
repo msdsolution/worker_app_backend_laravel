@@ -25,4 +25,14 @@ class HomeController extends Controller
     {
         return view('home');
     }
+
+    public function privacy_policy()
+    {
+        return view('privacy_policy');
+    }
+
+    public function terms_and_condition()
+    {
+        return view('terms_and_condition');
+    }
 }

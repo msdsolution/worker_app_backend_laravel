@@ -32,6 +32,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/privacy-policy', [App\Http\Controllers\HomeController::class, 'privacy_policy'])->name('home');
+Route::get('/terms_and_condition', [App\Http\Controllers\HomeController::class, 'terms_and_condition'])->name('home');
 
 
 // Route::prefix('admin')->group(function(){
