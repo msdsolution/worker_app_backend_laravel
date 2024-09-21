@@ -7,6 +7,7 @@ use App\Mail\InvoiceMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
 class InvoiceController extends Controller
@@ -33,6 +34,7 @@ class InvoiceController extends Controller
             'service_cat.description as serviceDescription',
             'job.required_date',
             'job.required_time',
+            'job.updated_at',
             'job.preferred_sex'
         )
         ->leftJoin('job_service_cat', function ($join) {
@@ -46,6 +48,15 @@ class InvoiceController extends Controller
         ->whereIn('job.status', [4,5])
         ->orderBy('job.created_at', 'desc')
         ->get();
+
+        foreach ($InvDetails as $job) {
+            if ($job->status == 4) {
+                // Check if the updated_at date is within the last 7 days
+                $updatedAt = Carbon::parse($job->updated_at);
+                $job->isOverdue = $updatedAt->lt(Carbon::now()->subDays(7)); // True if it's overdue
+            }
+        }
+
         return view('admin.invoice.index', compact('InvDetails'));
     }
     
