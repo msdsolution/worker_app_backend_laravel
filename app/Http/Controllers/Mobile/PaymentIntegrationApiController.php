@@ -79,7 +79,7 @@ class PaymentIntegrationApiController extends Controller
             // Base64 encode the JSON string
             $base64String = base64_encode($jsonString);
 
-            $redirectUrl = 'https://ratamithuro.com/api/redirect/' . urlencode($base64String);
+            $redirectUrl = 'https://ratamithuro.com/admin/api/redirect/' . urlencode($base64String);
 
             return response()->json([
                 'status' => '200',
