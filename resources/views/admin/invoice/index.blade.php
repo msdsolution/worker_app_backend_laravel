@@ -113,7 +113,11 @@
                                     @elseif($job->status == 3)
                                         Worker started
                                     @elseif($job->status == 4)
+                                        @if($job -> isOverdue)
+                                        Over due
+                                        @else 
                                         Worker finished
+                                        @endif
                                     @elseif($job->status == 5)
                                         Paid
                                     @elseif($job->status == 6)
