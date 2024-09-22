@@ -47,6 +47,9 @@
         .company-details {
             text-align: right;
         }
+        .thank-you {
+            text-align: center;
+        }
         .body-section {
             padding: 20px;
             border: 1px solid gray;
@@ -54,12 +57,12 @@
             background-color: white;
         }
         .heading {
-            font-size: 20px;
+            font-size: 16px;
             margin-bottom: 10px;
         }
         .sub-heading {
             color: #262626;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         table {
             width: 100%;
@@ -75,6 +78,13 @@
             padding: 8px;
             text-align: center;
         }
+        table th {
+            font-size: 15px; /* Larger text for table headers */
+        }
+
+        table td {
+            font-size: 14px; /* Smaller text for table data */
+        }
         .table-bordered {
             box-shadow: 0px 0px 5px 0.5px gray;
         }
@@ -85,28 +95,49 @@
             width: 20%;
         }
         .float-right {
-            float: right;
+            f
+            loat: right;
+        }
+        .job-status {
+            text-align: right;
+        }
+        .status-success {
+            color: green;
+        }
+
+        .status-failure {
+            color: red;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="brand-section">
-            <div>
-                <h1 class="text-white">RataMithuro</h1>
+            <div class="heading">
+                <h2 class="text-white" style="text-align: center;">Rata Mithuro Support Services (Pvt) Ltd <br>(PV 00286715)</h2>
             </div>
             <div class="company-details">
                 <p>950/4,T.C Garden Road,</p>
                 <p>Battaramulla, Colombo,</p>
                 <p>Sri Lanka.</p>
                 <p>+61 402 891 549</p>
+                <p>info@ratamithuro.com</p>
             </div>
         </div>
 
         <div class="body-section">
+            @if($job->status == 5)
+            <div class="job-status status-success">
+                    <p class="heading">Status: {{ $job->status == 5 ? 'Paid' : 'Not Paid' }}</p>
+            </div>
+            @else
+            <div class="job-status status-failure">
+                    <p class="heading">Status: {{ $job->status == 5 ? 'Paid' : 'Not Paid' }}</p>
+            </div>
+            @endif
             <div class="row">
                 <div class="col-6">
-                    <h2 class="heading">Invoice No.: {{ $job->job_no ?? 'N/A' }}</h2>
+                    <h2 class="heading">Invoice No: {{ $job->job_no ?? 'N/A' }}</h2>
                     <p class="sub-heading">Created Date: {{ $job->created_at }}</p>
                     <p class="sub-heading">Email Address: {{ $job->Email }}</p>
                 </div>
@@ -119,27 +150,29 @@
         </div>
 
         <div class="body-section">
+            <h6 class="sub-heading text-right">Currency: LKR</h6>
             <h3 class="heading">Ordered Items</h3>
             <table class="table-bordered">
                 <thead>
                     <tr>
                         <th>Job Description</th>
                         <th class="w-20">Service Category</th>
-                        <th class="w-20">Price</th>
+                        <th class="w-20">Quantity</th>
                         <th class="w-20">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>{{ $job->jobDescription }}</td>
-                        <td>{{ $categoryNames }}</td>
-                        <td>{{ $referalAmount->refferal_amount }}</td>
+                        <td>{{ $categoryNames .' '. $job->required_date}}</td>
+                        <!-- <td>{{ $referalAmount->refferal_amount }}</td> -->
+                        <td>4 hours</td>
                         <td>{{ $referalAmount->refferal_amount}}</td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td colspan="3" class="text-right">Sub Total</td>
                         <td>{{ $referalAmount->refferal_amount }}</td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td colspan="3" class="text-right">Is hours extended</td>
                         <td>{{ $isExtended }}</td>
@@ -157,13 +190,27 @@
                     </tr>
                     @endif
                     <tr>
-                        <td colspan="3" class="text-right">Grand Total</td>
+                        <td colspan="3" class="text-right">Sub Total</td>
                         <td>{{ $grandTotal }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        <div class="body-section">
+            <h4 class="sub-heading">Direct deposit details</h4>
+
+            <p>Account name: Rata Mithuro Support Services Private Limited<br>
+            Current account number: 100100012023 (LKR)<br>
+            Bank code: 7162<br>
+            Branch code: 010 (Battaramulla)<br>
+            Swift code: NTBCLKLX</p>
+
+            <h4 class="sub-heading">Online - Via Payment Gateway</h4>
+
+            <h4 class="status-failure">Payment Terms: 7 days</h4>
+        </div>
+        <div class="thank-you">THANK YOU FOR YOUR BUSINESS</div>
         <div class="body-section">
             <p>&copy; 2024 Ratamithuro. All rights reserved.</p>
         </div>
