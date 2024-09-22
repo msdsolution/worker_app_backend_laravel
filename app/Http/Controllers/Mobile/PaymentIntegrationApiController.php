@@ -192,7 +192,7 @@ VBGYCZ5APiEyipPLiQIDAQAB
                             <h1>Checkout Form</h1>
                             <div class="form-group">
                                 <label for="first_name">First name:</label>
-                                <input type="text" id="first_name" name="first_name" value="' . htmlspecialchars($data['last_name']) . '" readonly>
+                                <input type="text" id="first_name" name="first_name" value="' . htmlspecialchars($data['first_name']) . '" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="last_name">Last name:</label>
