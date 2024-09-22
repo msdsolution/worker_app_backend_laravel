@@ -71,6 +71,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::put('/job/{job_id}/job_extend', [WorkerJobApiController::class, 'extendJob']);
 	Route::post('/worker_feedback', [WorkerJobApiController::class, 'workerFeedback']);
 
-	Route::put('/update_device_token', [FCMApiController::class, 'updateDeviceToken']);
+	Route::post('/update_device_token', [FCMApiController::class, 'updateDeviceToken']);
 	Route::post('/send_notification', [NotificationController::class, 'sendNotification']);
 });
