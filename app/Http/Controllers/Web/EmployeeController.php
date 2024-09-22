@@ -195,7 +195,7 @@ class EmployeeController extends Controller
     public function changeStatusemp(Request $request) {
 
         $employee = User::find($request ->id);
-        $employee->status = $request->status;
+        $employee->is_verified = $request->status;
         $employee->save();
         return response()->json(['success' => 'Status Changed Successfully']);
     }
