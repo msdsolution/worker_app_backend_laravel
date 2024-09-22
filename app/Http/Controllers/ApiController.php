@@ -338,7 +338,7 @@ class ApiController extends Controller
             'city_id' => $request->input('city_id') ?? 0,
             'password' => Hash::make($request->input('password')),
             'user_type' => $request->input('user_type'),
-            'status' => 0, // Default status is set to 0
+            'status' => 1, // Default status is set to 0
             'phone_no' => $request->input('phone_no'),
             'user_address' => $request->input('user_address'),
         ]);
@@ -461,13 +461,24 @@ class ApiController extends Controller
             return response()->json(['status' => 200, 'message' => 'success', 'data' => $data], 200);
         }
 
-        // Check weekend (Saturday or Sunday)
-        if ($carbonInstance->isWeekend()) {
-            $refferal_rate = RefferalRates::where('day', 'Saturday and Sunday')->whereNull('deleted_at')->first();
+        // Check weekend (Saturday)
+        if ($carbonInstance->isSaturday()) {
+            $refferal_rate = RefferalRates::where('day', 'Saturday')->whereNull('deleted_at')->first();
             $data = [
                 'id' => $refferal_rate->id,
                 'amount' => $refferal_rate->amount,
-                'day' => 'Weekend',
+                'day' => 'Saturday',
+            ];
+            return response()->json(['status' => 200, 'message' => 'success', 'data' => $data], 200);
+        }
+
+        // Check weekend (Sunday)
+        if ($carbonInstance->isSunday()) {
+            $refferal_rate = RefferalRates::where('day', 'Sunday')->whereNull('deleted_at')->first();
+            $data = [
+                'id' => $refferal_rate->id,
+                'amount' => $refferal_rate->amount,
+                'day' => 'Sunday',
             ];
             return response()->json(['status' => 200, 'message' => 'success', 'data' => $data], 200);
         }
