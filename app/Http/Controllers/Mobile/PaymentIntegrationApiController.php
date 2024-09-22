@@ -510,7 +510,7 @@ VBGYCZ5APiEyipPLiQIDAQAB
     public function sendInvoice(Job $job_data)
     {
         $refferal = User::findOrFail($job_data->user_id);
-        $clientName = $refferal->first_name+" "$refferal->last_name;
+        $clientName = $refferal->first_name." ".$refferal->last_name;
         $clientEmail = $refferal->email;
         $message = "Thank you for your payment.";
 
