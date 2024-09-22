@@ -26,31 +26,35 @@ use Illuminate\Pagination\Paginator;
 class WorkerJobApiController extends Controller
 {
 
-    // protected $fcmservice;
+    protected $fcmservice;
 
-    // public function __construct(FCMApiController $fcmservice)
-    // {
-    //     $this->fcmservice = $fcmservice;
-    // }
+    public function __construct(FCMApiController $fcmservice)
+    {
+        $this->fcmservice = $fcmservice;
+    }
 
 	public function getWorkerJobList(Request $request)
     {
         
        $user = auth()->user();
 
-       $job_statuses = [1];
+       if ($user->is_verified == 1) {
+            $job_statuses = [1];
 
-       $job_history = Job::where('worker_id', $user->id)
-       				  ->whereIn('status', $job_statuses)
-                      ->orderBy('job.created_at', 'desc')
-        			  ->get();
+           $job_history = Job::where('worker_id', $user->id)
+                          ->whereIn('status', $job_statuses)
+                          ->orderBy('job.created_at', 'desc')
+                          ->get();
 
-	    return response()->json([
-            'status' => 200,
-	        'success' => true,
-	        'message' => 'Records retrieved successfully.',
-	        'data' => $job_history,
-	    ], 200);
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Records retrieved successfully.',
+                'data' => $job_history,
+            ], 200);
+       } else {
+
+       }
     }
 
     public function getWorkerAcceptedAndStartedJobList(Request $request)
@@ -74,41 +78,67 @@ class WorkerJobApiController extends Controller
     }
 
     public function getWorkerFinishedJobList(Request $request)
-    {
-        
+    {        
        $user = auth()->user();
 
-        $perPage = $request->query('per_page', 10); // Number of items per page
-        $page = $request->query('page', 1); // Current page
+       if ($user->is_verified == 0) {
+            $perPage = $request->query('per_page', 10); // Number of items per page
+            $page = $request->query('page', 1); // Current page
 
-        // $query = Job::where('worker_id', $user->id)
-        //               ->where('status', 4);
-        $job_statuses = [4, 5];
-        $query = Job::leftJoin('worker_payment', 'job.id', '=', 'worker_payment.job_id')
-            ->leftJoin('worker_payment_attachment', 'worker_payment.id', '=', 'worker_payment_attachment.worker_payment_id')
-            ->whereIn('job.status', $job_statuses)  // Filter jobs with status 4
-            ->where('job.worker_id', $user->id)  // Ensure worker_id matches
-            ->select('job.*',  DB::raw('CONCAT("' . url('storage') . '/", worker_payment_attachment.file_path) as worker_payment_attachment_url'), 'worker_payment.amount', DB::raw('COALESCE(worker_payment.status, 0) as worker_payment_status'))
-            ->orderBy('job.created_at', 'desc');
+            // $query = Job::where('worker_id', $user->id)
+            //               ->where('status', 4);
+            //if ($user->is_verified == 1) {
+                 $job_statuses = [4, 5];
+                $query = Job::leftJoin('worker_payment', 'job.id', '=', 'worker_payment.job_id')
+                    ->leftJoin('worker_payment_attachment', 'worker_payment.id', '=', 'worker_payment_attachment.worker_payment_id')
+                    ->whereIn('job.status', $job_statuses)  // Filter jobs with status 4
+                    ->where('job.worker_id', $user->id)  // Ensure worker_id matches
+                    ->select('job.*',  DB::raw('CONCAT("' . url('storage') . '/", worker_payment_attachment.file_path) as worker_payment_attachment_url'), 'worker_payment.amount', DB::raw('COALESCE(worker_payment.status, 0) as worker_payment_status'))
+                    ->orderBy('job.created_at', 'desc');
+            // } else {
+            //     $query = [];
+            // }
 
-        // Search query
-        if ($request->filled('search')) {
-            $searchTerm = $request->query('search');
-            $query->where(function ($query) use ($searchTerm) {
-                $query->where('job_no', 'like', "%$searchTerm%")
-                      ->orWhere('description', 'like', "%$searchTerm%");
-            });
-        }
+            // Search query
+            if ($request->filled('search')) {
+                $searchTerm = $request->query('search');
+                $query->where(function ($query) use ($searchTerm) {
+                    $query->where('job_no', 'like', "%$searchTerm%")
+                          ->orWhere('description', 'like', "%$searchTerm%");
+                });
+            }
 
-        // Retrieve paginated results
-        $job_history = $query->paginate($perPage);
+            // Retrieve paginated results
+            $job_history = $query->paginate($perPage);
 
-        return response()->json([
-            'status' => 200,
-            'success' => true,
-            'message' => 'Records retrieved successfully.',
-            'data' => $job_history,
-        ], 200);
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Records retrieved successfully.',
+                'data' => $job_history,
+            ], 200);
+       } else {
+             return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Records retrieved successfully.',
+                'data' => [
+                    'current_page' => 1,
+                    'data' => [],
+                    'first_page_url' => "http://localhost/worker_app_backend_laravel/public/api/getWorkerFinishedJobList?page=1",
+                    'from' => null,
+                    'last_page' => 1,
+                    'last_page_url' => "http://localhost/worker_app_backend_laravel/public/api/getWorkerFinishedJobList?page=1",
+                    'links' => [],
+                    'next_page_url' => null,
+                    'path' => "http://localhost/worker_app_backend_laravel/public/api/getWorkerFinishedJobList",
+                    'per_page' => 10,
+                    'prev_page_url' => null,
+                    'to' => null,
+                    'total' => 0,
+                ],
+            ], 200);
+       }
     }
 
     public function acceptJob($id)
@@ -123,7 +153,7 @@ class WorkerJobApiController extends Controller
                 'title' => 'Accepted',
                 'body' => 'Worker Accepted the job.'
                 ];
-        //$this->fcmservice->sendPushNotification($data);
+        $this->fcmservice->sendPushNotification($data);
 
         return response()->json([
         	'status' => 200,

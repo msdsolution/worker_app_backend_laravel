@@ -66,6 +66,7 @@ class JobListingController extends Controller
             'service_cat.description as serviceDescription',
             'job.required_date',
             'job.required_time',
+            'job.created_at',
             'job.preferred_sex'
         )
         ->leftJoin('job_service_cat', function ($join) {
@@ -109,6 +110,7 @@ class JobListingController extends Controller
             'job.required_time',
             'job.preferred_sex',
             'job.finishJobDescription',
+            'job.created_at',
             'job.worker_area_id'
         )
         ->leftJoin('job_service_cat', function ($join) {

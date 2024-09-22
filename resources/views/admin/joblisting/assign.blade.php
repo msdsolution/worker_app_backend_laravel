@@ -44,7 +44,10 @@
                     <label for="Jobdescription" class="form-label">Job Description</label>
                     <textarea name="Jobdescription" class="form-control" id="Jobdescription" rows="3" readonly>{{ $job->jobDescription }}</textarea>
                 </div>
-
+                <div class="mb-3">
+                    <label for="Jobcreateddate" class="form-label">Job Created Date</label>
+                    <textarea name="job_createdat" class="form-control" id="job_createdat" rows="3" readonly>{{ $job->created_at }}</textarea>
+                </div>
                 <div class="mb-3">
                     <label for="requiredDate" class="form-label">Required Date</label>
                     <input type="text" name="requiredDate" value="{{ $job->required_date }}" class="form-control" id="requiredDate" readonly>
