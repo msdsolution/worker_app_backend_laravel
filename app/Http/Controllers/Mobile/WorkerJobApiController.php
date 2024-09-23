@@ -81,7 +81,7 @@ class WorkerJobApiController extends Controller
     {        
        $user = auth()->user();
 
-       if ($user->is_verified == 0) {
+       if ($user->is_verified == 1) {
             $perPage = $request->query('per_page', 10); // Number of items per page
             $page = $request->query('page', 1); // Current page
 
@@ -153,7 +153,7 @@ class WorkerJobApiController extends Controller
                 'title' => 'Accepted',
                 'body' => 'Worker Accepted the job.'
                 ];
-        $this->fcmservice->sendPushNotification($data);
+        //$this->fcmservice->sendPushNotification($data);
 
         return response()->json([
         	'status' => 200,

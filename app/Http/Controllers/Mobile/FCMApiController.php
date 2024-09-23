@@ -125,4 +125,18 @@ class FCMApiController extends Controller
 
         return response()->json($response);
 	}
+
+	public function sendFCMNotification(Request $request){
+		if (!$request['device_token']) {
+        	return response()->json(['message' => 'User does not have a device token'], 400);
+        }
+
+        $response = $this->notificationService->sendNotification(
+            $request['device_token'],
+            $request['title'],
+            $request['body']
+        );
+
+        return response()->json($response);
+	}
 }

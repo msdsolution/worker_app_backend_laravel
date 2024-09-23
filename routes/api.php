@@ -7,7 +7,6 @@ use App\Http\Controllers\Mobile\JobApiController;
 use App\Http\Controllers\Mobile\WorkerJobApiController;
 use App\Http\Controllers\Mobile\PaymentIntegrationApiController;
 use App\Http\Controllers\Mobile\FCMApiController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\VerificationController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
@@ -72,5 +71,5 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::post('/worker_feedback', [WorkerJobApiController::class, 'workerFeedback']);
 
 	Route::post('/update_device_token', [FCMApiController::class, 'updateDeviceToken']);
-	Route::post('/send_notification', [NotificationController::class, 'sendNotification']);
+	Route::post('/send_notification', [FCMApiController::class, 'sendFCMNotification']);
 });
