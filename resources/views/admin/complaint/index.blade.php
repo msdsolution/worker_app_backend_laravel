@@ -47,7 +47,7 @@ $(document).ready(function() {
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: '/admin/update-complaint-status',
+            url: '/admin/admin/update-complaint-status',
             data: {
                 '_token': '{{ csrf_token() }}',
                 'job_id': jobId,
