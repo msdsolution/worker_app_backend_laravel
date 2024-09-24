@@ -385,6 +385,12 @@ class JobApiController extends Controller
                     'user_id' => $userId,
                     'message' => $request->message,
                 ]);
+            }else{
+                $complaint_message = ComplaintMessages::create([
+                    'job_id' => $job->id,
+                    'user_id' => $userId,
+                    'message' => "Attachment",
+                ]);
             }
 
             // Handle file uploads if 'files' are provided
