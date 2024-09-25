@@ -39,9 +39,6 @@
                             <th>Job Number</th>
                             <th>Referer First Name</th>
                             <th>Referer Last Name</th>
-                            <!-- <th>Service Name</th>
-                            <th>Service Description</th> -->
-                            <!-- <th>Job created Date</th> -->
                             <th>Required Date</th>
                             <th>Required Time</th>
                             <th>Preferred Sex</th>
@@ -59,9 +56,6 @@
                                 <td>{{ $job->job_no }}</td>
                                 <td>{{ $job->ClientFirstName }}</td>
                                 <td>{{ $job->ClientLastName }}</td>
-                                <!-- <td>{{ $job->serviceName }}</td>
-                                <td>{{ $job->serviceDescription }}</td> -->
-                                <!-- <td>{{ $job->created_at }}</td> -->
                                 <td>{{ $job->required_date }}</td>
                                 <td>{{ $job->required_time }}</td>
                                 <td>{{ $job->preferred_sex }}</td>

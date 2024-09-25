@@ -44,4 +44,21 @@ class VerificationController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Email could not be verified.'], 500);
     }
+
+    public function resend(Request $request){
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user && !$user->hasVerifiedEmail()) {
+            // Send the verification email again
+            $user->sendEmailVerificationNotification();
+
+            return response()->json(['status' => true, 'message' => 'Verification link sent!'], 200);
+        }
+
+        return response()->json(['status' => true, 'message' => 'This email is not registered or is already verified.']);
+    }
 }
