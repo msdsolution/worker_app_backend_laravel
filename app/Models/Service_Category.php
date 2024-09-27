@@ -15,6 +15,7 @@ class Service_Category extends Model
     protected $fillable = [
         'name',
         'description',
+        'img_icon_url',
     ];
 
    

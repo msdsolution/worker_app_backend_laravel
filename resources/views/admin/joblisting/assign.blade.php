@@ -177,7 +177,7 @@
                 </div>
                 @if ($job->status == 4 || $job->status == 5)
                     <div class="mb-3">
-                        <label for="finishJobDescription" class="form-label">Finish Job Description by Client</label>
+                        <label for="finishJobDescription" class="form-label">Finish Job Description by Worker</label>
                         <input type="text" name="finishJobDescription" value="{{ $job->finishJobDescription }}" class="form-control" id="finishJobDescription" readonly>
                     </div>
                     <div class="mb-3">

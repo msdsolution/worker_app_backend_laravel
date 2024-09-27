@@ -66,6 +66,7 @@ Route::get('servicecategory',[ServicecategoryController::class,'index']);
 
 Route::get('add-service',[ServicecategoryController::class,'create']);
 Route::post('add-service',[ServicecategoryController::class,'store']);
+Route::delete('delete-icon/{id}', [ServicecategoryController::class, 'deleteIcon'])->name('delete-icon');
 
  Route::get('edit-service/{Service_Category_id}',[ServicecategoryController::class,'edit']);
  Route::put('update-service/{Service_Category_id}',[ServicecategoryController::class,'update']);

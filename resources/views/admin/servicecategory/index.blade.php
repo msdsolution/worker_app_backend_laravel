@@ -42,6 +42,7 @@
             <th>ID</th>
             <th>Name</th>
             <th>Description</th>
+            <th>Icon</th>
             <th>Edit</th>
             <th>Delete/Restore</th>
           </tr>
@@ -52,6 +53,15 @@
               <td>{{ $item->id }}</td>
               <td>{{ $item->name }}</td>
               <td>{{ $item->description }}</td>
+              @if($item->img_icon_url)
+                  @php
+                      $imgUrl = $item->img_icon_url;
+                      $fileExtension = pathinfo($item->img_icon_url, PATHINFO_EXTENSION);
+                  @endphp
+                      <td><img src="{{ asset( $item->img_icon_url) }}" alt="attachment" class="message-img"/> <button type="button" class="btn btn-danger btn-sm mt-2 delete-icon" data-id="{{ $item->id }}">Remove</button></td>
+              @else
+                <td>No Icon</td>
+              @endif
               <td>
                 @if($item->trashed())
                   <button class="btn btn-success" disabled>Edit</button>
@@ -86,5 +96,31 @@
       $('#deleteModal').modal('show');
     });
   });
+
+  $(document).on('click', '.delete-icon', function() {
+        var docId = $(this).data('id');
+        var token = '{{ csrf_token() }}';
+
+        if (confirm('Are you sure you want to remove this icon?')) {
+            $.ajax({
+                url: 'delete-icon/' + docId,
+                type: 'DELETE',
+                data: {
+                    "_token": token,
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Icon removed successfully.');
+                        location.reload(); // Reload the page or remove the document section dynamically
+                    } else {
+                        alert('Failed to remove the icon.');
+                    }
+                },
+                error: function(response) {
+                    alert('Error occurred while removing the icon.');
+                }
+            });
+        }
+    });
 </script>
 @endsection

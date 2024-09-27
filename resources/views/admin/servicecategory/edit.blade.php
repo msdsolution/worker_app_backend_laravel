@@ -7,7 +7,7 @@
 
     <div class="card mt-4">
         <div class="card-header">
-        <h4 class=""> Edit employee</h1>
+        <h4 class=""> Edit Service Category</h1>
         </div>
         <div class="card-body">
 
@@ -34,6 +34,13 @@
                     <textarea name="description" id="description" class="form-control"
                         rows="4">{{ $Service_Category->description }}</textarea>
                 </div>
+
+                <!-- File Upload -->
+                <div class="mb-3">
+                    <label for="attachments" class="form-label">Icon Image:</label>
+                    <input type="file" class="form-control" id="attachments" name="attachments[]">
+                </div>
+                
                 <div class="row">
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-primary">Update Services</button>

@@ -32,6 +32,12 @@
                     <textarea name="description" id="description" class="form-control" rows="4" required></textarea>
                 </div>
 
+                <!-- File Upload -->
+                <div class="mb-3">
+                    <label for="attachments" class="form-label">Icon Image:</label>
+                    <input type="file" class="form-control" id="attachments" name="attachments[]">
+                </div>
+
                 <div class="row">
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-primary">Save service</button>

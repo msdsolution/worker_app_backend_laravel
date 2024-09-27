@@ -75,6 +75,7 @@ return [
         public_path('complaint_attachments') => storage_path('app/complaint_attachments'),
         public_path('profileAttachment') => storage_path('app/profileAttachment'),
         public_path('profileAttachment') => storage_path('app/userDocAttachments'),
+        public_path('profileAttachment') => storage_path('app/servicecategoryIcons'),
     ],
 
 ];

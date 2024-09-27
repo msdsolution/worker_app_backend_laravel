@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceCategoryFormRequest;
 use App\Models\Service_Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ServicecategoryController extends Controller
 {
@@ -48,6 +50,20 @@ class ServicecategoryController extends Controller
         $Service_Category -> name = $data['name'];
         $Service_Category -> description = $data['description'];
         $Service_Category -> save();
+
+        // Handle file uploads
+        if ($request->hasFile('attachments')) {
+            $attachments = $request->file('attachments');
+            foreach ($attachments as $attachment) {
+                // Generate a unique file name
+                // Store the file in storage/app/complaint_attachments
+                $filePath = $attachment->store('servicecategoryIcons', 'public');
+                // Save attachment info in the database
+                $Service_Category->img_icon_url = $filePath; // Path relative to storage/app
+                $Service_Category->update();
+            }
+        }
+
         return redirect('admin/servicecategory') -> with('message','Service Added Successfully');
     }
     public function edit($Service_Category_id)
@@ -66,6 +82,19 @@ class ServicecategoryController extends Controller
         $Service_Category -> description = $data['description'];
         $Service_Category -> update();
 
+        // Handle file uploads
+        if ($request->hasFile('attachments')) {
+            $attachments = $request->file('attachments');
+            foreach ($attachments as $attachment) {
+                // Generate a unique file name
+                // Store the file in storage/app/complaint_attachments
+                $filePath = $attachment->store('servicecategoryIcons', 'public');
+                // Save attachment info in the database
+                $Service_Category->img_icon_url = $filePath; // Path relative to storage/app
+                $Service_Category->update();
+            }
+        }
+
         return redirect('admin/servicecategory') -> with('message','Service Updated Successfully');
     }
 
@@ -83,5 +112,18 @@ class ServicecategoryController extends Controller
             return redirect()->back()->with('message', 'Service category restored successfully');
         }
         return redirect()->back()->with('error', 'Service category not found');
+    }
+
+    public function deleteIcon($serviceCatId)
+    {
+        $servicecategory = Service_Category::find($serviceCatId);
+        if ($servicecategory) {
+            Storage::delete('public/' . $servicecategory->img_icon_url); // Deletes the file from storage
+            $servicecategory->img_icon_url = null; // null url
+            $servicecategory->update();
+            return response()->json(['success' => 'Icon removed successfully.']);
+        }
+
+        return response()->json(['error' => 'Icon not found.'], 404);
     }
 }

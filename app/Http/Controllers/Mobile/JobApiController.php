@@ -106,7 +106,7 @@ class JobApiController extends Controller
     {
         
         $service_list = Service_Category::whereNull('deleted_at')
-                        ->select('id', 'name', 'description')
+                        ->select('id', 'name', 'description', DB::raw('CONCAT("' . url('storage') . '/", img_icon_url) as full_img_url'))
                         ->get();
 
 	    return response()->json([
