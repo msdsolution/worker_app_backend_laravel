@@ -86,8 +86,13 @@ class ServicecategoryController extends Controller
         if ($request->hasFile('attachments')) {
             $attachments = $request->file('attachments');
             foreach ($attachments as $attachment) {
-                // Generate a unique file name
-                // Store the file in storage/app/complaint_attachments
+                // if icon exit then delete from eserver and update new icon
+                if ($Service_Category->img_icon_url) {
+                    Storage::delete('public/' . $Service_Category->img_icon_url); // Deletes the file from storage
+                    $Service_Category->img_icon_url = null; // Path relative to storage/app
+                    $Service_Category->update();
+                }
+                // Store the file in storage/app/servicecategoryIcons
                 $filePath = $attachment->store('servicecategoryIcons', 'public');
                 // Save attachment info in the database
                 $Service_Category->img_icon_url = $filePath; // Path relative to storage/app
