@@ -58,7 +58,7 @@
                       $imgUrl = $item->img_icon_url;
                       $fileExtension = pathinfo($item->img_icon_url, PATHINFO_EXTENSION);
                   @endphp
-                      <td><img src="{{ asset( $item->img_icon_url) }}" alt="attachment" class="message-img"/> <button type="button" class="btn btn-danger btn-sm mt-2 delete-icon" data-id="{{ $item->id }}">Remove</button></td>
+                      <td><img src="{{ asset('storage/' . $item->img_icon_url) }}" alt="attachment" class="message-img"/> <button type="button" class="btn btn-danger btn-sm mt-2 delete-icon" data-id="{{ $item->id }}">Remove</button></td>
               @else
                 <td>No Icon</td>
               @endif
