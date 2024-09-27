@@ -28,12 +28,12 @@
             font-size: 0.875em; /* 14px/16=0.875em */
         }
         .container {
-            width: 90%;
-            margin: 20px auto;
+            width: 95%;
+            margin: 15px auto;
         }
         .brand-section {
             background-color: #0d1033;
-            padding: 20px;
+            padding: 15px;
             color: white;
             display: flex;
             align-items: center;
@@ -60,13 +60,13 @@
             font-size: 0.700em;
         }
         .body-section {
-            padding: 20px;
+            padding: 15px;
             border: 1px solid gray;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             background-color: white;
         }
         .heading {
-            font-size: 15px;
+            font-size: 12px;
             margin-bottom: 10px;
         }
         .sub-heading {
@@ -88,11 +88,11 @@
             text-align: center;
         }
         table th {
-            font-size: 15px; /* Larger text for table headers */
+            font-size: 12px; /* Larger text for table headers */
         }
 
         table td {
-            font-size: 14px; /* Smaller text for table data */
+            font-size: 12px; /* Smaller text for table data */
         }
         .table-bordered {
             box-shadow: 0px 0px 5px 0.5px gray;
@@ -160,7 +160,7 @@
 
         <div class="body-section">
             <h6 class="sub-heading text-right">Currency: LKR</h6>
-            <h3 class="heading">Ordered Items</h3>
+            <h2 class="heading">Ordered Items</h2>
             <table class="table-bordered">
                 <thead>
                     <tr>
@@ -209,7 +209,7 @@
         </div>
 
         <div class="body-section">
-            <h4 class="sub-heading" style="font-size: 15px">Direct deposit details</h4>
+            <h4 class="sub-heading" style="font-size: 13px">Direct deposit details</h4>
 
             <p style="font-size: 12px">Account name: Rata Mithuro Support Services Private Limited<br>
             Current account number: 100100012023 (LKR)<br>
@@ -217,9 +217,9 @@
             Branch code: 010 (Battaramulla)<br>
             Swift code: NTBCLKLX</p>
 
-            <h4 class="sub-heading" style="font-size: 15px">Online - Via Payment Gateway</h4>
+            <h4 class="sub-heading" style="font-size: 13px">Online - Via Payment Gateway</h4>
 
-            <h4 class="status-failure" style="font-size: 15px">Payment Terms: 7 days</h4>
+            <h4 class="status-failure" style="font-size: 13px">Payment Terms: 7 days</h4>
         </div>
         <div class="thank-you" >THANK YOU FOR YOUR BUSINESS </div>
         
