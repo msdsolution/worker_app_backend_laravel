@@ -576,4 +576,32 @@ class ApiController extends Controller
             'message' => 'User document added successfully',
         ], 200);
     }
+
+    public function addUserDescription(Request $request){
+
+        $userId = Auth::id();
+
+        $request->validate([
+            'description' => 'required',
+        ]);
+
+        $user = User::findOrFail($userId);
+
+        if ($user) {
+            $user->description = $request->input('description');
+            $user->save();
+
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'User description added successfully',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 401,
+                'success' => false,
+                'message' => 'User not found',
+            ], 200);
+        }
+    }
 }

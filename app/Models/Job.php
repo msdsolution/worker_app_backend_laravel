@@ -31,6 +31,8 @@ class Job extends Model
         'finishJobDescription',
         'is_worker_tip',
         'worker_tip_amount',
+        'is_travelled',
+        'travelled_km',
     ];
 
     public function jobType()

@@ -39,6 +39,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'pro_pic_url',
         'is_verified',
         'fcm_token',
+        'description',
     ];
 
     /**
