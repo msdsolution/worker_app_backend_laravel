@@ -55,8 +55,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::post('/change_password', [ApiController::class, 'changePassword']);
 	Route::get('/getJobPayment/{id}', [JobApiController::class, 'getJobPayment']);
 	Route::post('/createPayment', [PaymentIntegrationApiController::class, 'createPayment']);
+	Route::post('/addBankTransferPayment', [JobApiController::class, 'addBankTransferPayment']);
 
 	Route::post('/addUserDoc', [ApiController::class, 'addUserDoc']);
+	Route::post('/addUserDes', [ApiController::class, 'addUserDescription']);
 
 	Route::get('/get_worker_job_history_list', [WorkerJobApiController::class, 'getWorkerJobList']);
 	Route::get('/getWorkerAcceptedAndStartedJobList', [WorkerJobApiController::class, 'getWorkerAcceptedAndStartedJobList']);
@@ -66,6 +68,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 	Route::put('/job/{id}/start', [WorkerJobApiController::class, 'startJob']);
 	Route::post('/job_finish', [WorkerJobApiController::class, 'finishJob']);
 	Route::put('/job/{job_id}/job_extend', [WorkerJobApiController::class, 'extendJob']);
+	Route::put('/job/{job_id}/add_travel_km', [WorkerJobApiController::class, 'addTravelledKM']);
 	Route::post('/worker_feedback', [WorkerJobApiController::class, 'workerFeedback']);
 
 	Route::post('/update_device_token', [FCMApiController::class, 'updateDeviceToken']);

@@ -15,6 +15,7 @@ use App\Models\SriLankaDistricts;
 use App\Models\ComplaintMessages;
 use App\Models\ComplaintAttachment;
 use App\Models\worker_feedback;
+use App\Models\BankTransferPaymetRefferal;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
@@ -436,7 +437,6 @@ class JobApiController extends Controller
         }
     }
 
-
     public function getAllJobComplaintsWithMessages($jobId)
     {
         $jobComplaints = Job::leftJoin('complaint_messages', 'job.id', '=', 'complaint_messages.job_id')
@@ -487,7 +487,7 @@ class JobApiController extends Controller
                 // If the job is extended, calculate the extended hour amount
                 if ($job->is_extended == 1) {
                     // Get the amount for the extended hours
-                    $extendedHourRate = DB::table('extended_hour')
+                    $extendedHourRate = DB::table('refferal_extended_hr_rate')
                         ->select('amount')
                         ->first(); // Assuming amount is constant for all extended hours
                     
@@ -517,5 +517,49 @@ class JobApiController extends Controller
                 'message' => 'An unexpected error occurred.'.$e,
             ], 500);
         }
+    }
+
+    public function addBankTransferPayment(Request $request){
+        $userId = Auth::id();
+
+        // Custom validation rule to ensure at least one of 'message' or 'files' is present
+        $request->validate([
+            'job_id' => 'required|exists:job,id',
+            'amount' => 'required',
+            'files.*' => 'required|file|mimes:jpeg,png,gif|max:20000',
+        ]);
+
+        $bankTransferPayment = BankTransferPaymetRefferal::create([
+                            'job_id' => $request->job_id,
+                            'amount' => $request->amount,
+                        ]);
+        // Handle file uploads if 'files' are provided
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                if ($file->isValid()) {
+                    // Store the file in the specified directory
+                    $path = $file->store('bankTransferAttachment', 'public');
+
+                    // Save file path to database
+                    $bankTransferPayment->attachment_url = $path;
+                    $bankTransferPayment->save();
+                    
+                } else {
+                    // Handle invalid file situation
+                    return response()->json([
+                        'status' => 422,
+                        'success' => false,
+                        'message' => 'One or more files are invalid.',
+                    ], 422);
+                }
+            }
+        }
+
+        return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Bank transfer added successfully',
+            ], 201);
+
     }
 }

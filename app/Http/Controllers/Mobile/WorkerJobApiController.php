@@ -262,8 +262,7 @@ class WorkerJobApiController extends Controller
 
     public function extendJob(Request $request, $job_id)
     {
-
-        $validatedData = $request->validate([
+        $request->validate([
             'extended_hr' => 'required|integer|min:1', // Example validation rules
         ]);
 
@@ -287,6 +286,36 @@ class WorkerJobApiController extends Controller
         } catch (\Exception $e) {
             // Handle any exceptions (e.g., job not found)
             return response()->json(['status' => 500, 'success' => false, 'message' => 'Failed to update extended status', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function addTravelledKM(Request $request, $job_id)
+    {
+        
+        $validatedData = $request->validate([
+            'km_travelled' => 'required', // Example validation rules
+        ]);
+
+        try {
+
+            $job = Job::findOrFail($job_id);
+            $job->is_travelled = 1;
+            $job->travelled_km = $request->km_travelled;
+            $job->save();
+
+            //$refferal_user = User::findOrFail($job->user_id);
+
+            // $data = ['device_token' => $refferal_user->fcm_token,
+            //         'title' => 'Extended',
+            //         'body' => 'Worker extended the job.'
+            //         ];
+            //$this->fcmservice->sendPushNotification($data);
+
+            return response()->json(['status' => 200, 'success' => true, 'message' => 'Travel allowance added successfully'], 200);
+
+        } catch (\Exception $e) {
+            // Handle any exceptions (e.g., job not found)
+            return response()->json(['status' => 500, 'success' => false, 'message' => 'Failed to update Travel status', 'error' => $e->getMessage()], 500);
         }
     }
 
