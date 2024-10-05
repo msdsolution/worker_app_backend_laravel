@@ -102,6 +102,9 @@ class EmployeeController extends Controller
             'vehicle_insurance_front' => 5,
             'vehicle_insurance_back' => 9,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         $documents = DB::table('user_documents')
@@ -141,6 +144,9 @@ class EmployeeController extends Controller
             'vehicle_insurance_front' => 5,
             'vehicle_insurance_back' => 9,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         // Loop through each document field
@@ -189,7 +195,7 @@ class EmployeeController extends Controller
     public function changeStatusemp(Request $request) {
 
         $employee = User::find($request ->id);
-        $employee->status = $request->status;
+        $employee->is_verified = $request->status;
         $employee->save();
         return response()->json(['success' => 'Status Changed Successfully']);
     }

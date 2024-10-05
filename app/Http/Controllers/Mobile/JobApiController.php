@@ -15,6 +15,7 @@ use App\Models\SriLankaDistricts;
 use App\Models\ComplaintMessages;
 use App\Models\ComplaintAttachment;
 use App\Models\worker_feedback;
+use App\Models\BankTransferPaymetRefferal;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
@@ -31,73 +32,82 @@ class JobApiController extends Controller
     {
         $userId = Auth::id();
 
-        $request->validate([
-            'description' => 'required',
-            'city_id' => 'required',
-            'start_location' => 'required',
-            'end_location' => 'required',
-            'required_date' => 'required',
-            'required_time' => 'required',
-            'preferred_sex' => 'required',
-            'job_categories' => 'required|array',
-            'job_categories.*.name' => 'required',
-            'job_categories.*.job_type_id' => 'required',
-            'job_categories.*.refferal_rate_id' => 'required',
-            'job_categories.*.refferal_amount' => 'required',
-        ]);
-
-        try {
-            $job = Job::create([
-                'user_id' => $userId,
-                'description' => $request->input('description'),
-                'city_id' => $request->input('city_id'),
-                'start_location' => $request->input('start_location'),
-                'end_location' => $request->input('end_location'),
-                'required_date' => $request->input('required_date'),
-                'required_time' => $request->input('required_time'),
-                'preferred_sex' => $request->input('preferred_sex'),
+        if (User::findOrFail($userId)->is_verified == 1) {
+            $request->validate([
+                'description' => 'required',
+                'city_id' => 'required',
+                'start_location' => 'required',
+                'end_location' => 'required',
+                'required_date' => 'required',
+                'required_time' => 'required',
+                'preferred_sex' => 'required',
+                'job_categories' => 'required|array',
+                'job_categories.*.name' => 'required',
+                'job_categories.*.job_type_id' => 'required',
+                'job_categories.*.refferal_rate_id' => 'required',
+                'job_categories.*.refferal_amount' => 'required',
             ]);
 
-            $jobId = $job->id;
-            $jobIdLength = strlen($jobId);
-
-            // Generate job number in format #00000 with job ID appended
-            if ($jobIdLength <= 5) {
-                $jobNumber = '#' . str_pad($jobId, 5, '0', STR_PAD_LEFT);
-                $job->job_no = $jobNumber;
-                $job->save();
-            } else {
-                $jobNumber = '#' . $jobId;
-                $job->job_no = $jobNumber;
-                $job->save();
-            }
-
-            // Save selected job categories
-            foreach ($request->input('job_categories') as $jobCategoryData) {
-                // return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $jobCategoryData], 201);
-                $worker_rate = WokerRates::find($jobCategoryData['refferal_rate_id']);
-                Job_Service_Cat::create([
-                    'service_cat_id' => $jobCategoryData['job_type_id'],
-                    'job_id' => $job->id,
-                    'refferal_rate_id' => $jobCategoryData['refferal_rate_id'],
-                    'refferal_amount' => $jobCategoryData['refferal_amount'],
-                    'woker_rate_id' => $worker_rate->id,
-                    'worker_amount' => $worker_rate->amount,
+            try {
+                $job = Job::create([
+                    'user_id' => $userId,
+                    'description' => $request->input('description'),
+                    'city_id' => $request->input('city_id'),
+                    'start_location' => $request->input('start_location'),
+                    'end_location' => $request->input('end_location'),
+                    'required_date' => $request->input('required_date'),
+                    'required_time' => $request->input('required_time'),
+                    'preferred_sex' => $request->input('preferred_sex'),
                 ]);
+
+                $jobId = $job->id;
+                $jobIdLength = strlen($jobId);
+
+                // Generate job number in format #00000 with job ID appended
+                if ($jobIdLength <= 5) {
+                    $jobNumber = '#' . str_pad($jobId, 5, '0', STR_PAD_LEFT);
+                    $job->job_no = $jobNumber;
+                    $job->save();
+                } else {
+                    $jobNumber = '#' . $jobId;
+                    $job->job_no = $jobNumber;
+                    $job->save();
+                }
+
+                // Save selected job categories
+                foreach ($request->input('job_categories') as $jobCategoryData) {
+                    // return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $jobCategoryData], 201);
+                    $worker_rate = WokerRates::find($jobCategoryData['refferal_rate_id']);
+                    Job_Service_Cat::create([
+                        'service_cat_id' => $jobCategoryData['job_type_id'],
+                        'job_id' => $job->id,
+                        'refferal_rate_id' => $jobCategoryData['refferal_rate_id'],
+                        'refferal_amount' => $jobCategoryData['refferal_amount'],
+                        'woker_rate_id' => $worker_rate->id,
+                        'worker_amount' => $worker_rate->amount,
+                    ]);
+                }
+
+                return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $job], 201);
+
+            } catch (\Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 400);
             }
-
-            return response()->json(['status' => 200, 'success' => true, 'message' => 'Job created successfully', 'job' => $job], 201);
-
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+        } else {
+            return response()->json([
+                'status' => 401,
+                'success' => false,
+                'message' => "User is not verified. Please contact admin.",
+             ], 401);
         }
+
     }
 
     public function getServiceList(Request $request)
     {
         
         $service_list = Service_Category::whereNull('deleted_at')
-                        ->select('id', 'name', 'description')
+                        ->select('id', 'name', 'description', DB::raw('CONCAT("' . url('storage') . '/", img_icon_url) as full_img_url'))
                         ->get();
 
 	    return response()->json([
@@ -113,58 +123,81 @@ class JobApiController extends Controller
         
        $user = auth()->user();
 
+       if ($user->is_verified == 1) {
+            $perPage = $request->query('per_page', 10); // Number of items per page
+            $page = $request->query('page', 1); // Current page
+
+            $jobs = Job::with('jobType.serviceCat')->where('user_id', $user->id)->orderBy('job.created_at', 'desc');
+
+            // Search query
+            if ($request->filled('search')) {
+                $searchTerm = $request->query('search');
+                $jobs->where(function ($jobs) use ($searchTerm) {
+                    $jobs->where('job_no', 'like', "%$searchTerm%")
+                          ->orWhere('description', 'like', "%$searchTerm%");
+                });
+            }
+
+            // Retrieve paginated results
+            $jobs = $jobs->paginate($perPage);
+
+            // Modify the structure of the data to append service_cat name inside job_type
+            $modifiedJobs = $jobs->map(function ($job) {
+                if ($job->jobType) {
+                    foreach ($job->jobType as $jobType) {
+                        $jobType->service_cat_name = $jobType->serviceCat->name;
+                        unset($jobType->serviceCat); // Remove the serviceCat object if needed
+                    }
+                }
+                return $job;
+            });
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Records retrieved successfully.',
+                'data' => [
+                    'current_page' => $jobs->currentPage(),
+                    'jobs' => $modifiedJobs,
+                    'first_page_url' => $jobs->url(1),
+                    'from' => $jobs->firstItem(),
+                    'last_page' => $jobs->lastPage(),
+                    'last_page_url' => $jobs->url($jobs->lastPage()),
+                    'links' => $jobs->linkCollection()->toArray(),
+                    'next_page_url' => $jobs->nextPageUrl(),
+                    'path' => $jobs->path(),
+                    'per_page' => $jobs->perPage(),
+                    'prev_page_url' => $jobs->previousPageUrl(),
+                    'to' => $jobs->lastItem(),
+                    'total' => $jobs->total(),
+                ],
+            ], 200);
+       } else {
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Records retrieved successfully.',
+                'data' => [
+                    'current_page' => 1,
+                    'jobs' => [],
+                    'first_page_url' => "https://ratamithuro.com/admin/api/get_job_history_list?page=1",
+                    'from' => null,
+                    'last_page' => 1,
+                    'last_page_url' => "https://ratamithuro.com/admin/api/get_job_history_list?page=1",
+                    'links' => [],
+                    'next_page_url' => null,
+                    'path' => "https://ratamithuro.com/admin/api/get_job_history_list",
+                    'per_page' => 10,
+                    'prev_page_url' => null,
+                    'to' => null,
+                    'total' => 0,
+                ],
+            ], 200);
+       }
+
 
        // $job_history = Job::with('jobType')
        // 	->where('user_id', $user->id)
        //  ->get();
-
-       $perPage = $request->query('per_page', 10); // Number of items per page
-        $page = $request->query('page', 1); // Current page
-
-        $jobs = Job::with('jobType.serviceCat')->where('user_id', $user->id)->orderBy('job.created_at', 'desc');
-
-        // Search query
-        if ($request->filled('search')) {
-            $searchTerm = $request->query('search');
-            $jobs->where(function ($jobs) use ($searchTerm) {
-                $jobs->where('job_no', 'like', "%$searchTerm%")
-                      ->orWhere('description', 'like', "%$searchTerm%");
-            });
-        }
-
-        // Retrieve paginated results
-        $jobs = $jobs->paginate($perPage);
-
-        // Modify the structure of the data to append service_cat name inside job_type
-        $modifiedJobs = $jobs->map(function ($job) {
-            if ($job->jobType) {
-                foreach ($job->jobType as $jobType) {
-                    $jobType->service_cat_name = $jobType->serviceCat->name;
-                    unset($jobType->serviceCat); // Remove the serviceCat object if needed
-                }
-            }
-            return $job;
-        });
-	    return response()->json([
-            'status' => 200,
-	        'success' => true,
-	        'message' => 'Records retrieved successfully.',
-	        'data' => [
-                'current_page' => $jobs->currentPage(),
-                'jobs' => $modifiedJobs,
-                'first_page_url' => $jobs->url(1),
-                'from' => $jobs->firstItem(),
-                'last_page' => $jobs->lastPage(),
-                'last_page_url' => $jobs->url($jobs->lastPage()),
-                'links' => $jobs->linkCollection()->toArray(),
-                'next_page_url' => $jobs->nextPageUrl(),
-                'path' => $jobs->path(),
-                'per_page' => $jobs->perPage(),
-                'prev_page_url' => $jobs->previousPageUrl(),
-                'to' => $jobs->lastItem(),
-                'total' => $jobs->total(),
-            ],
-	    ], 200);
     }
 
     public function getJobDetail($id)
@@ -353,6 +386,12 @@ class JobApiController extends Controller
                     'user_id' => $userId,
                     'message' => $request->message,
                 ]);
+            }else{
+                $complaint_message = ComplaintMessages::create([
+                    'job_id' => $job->id,
+                    'user_id' => $userId,
+                    'message' => "Attachment",
+                ]);
             }
 
             // Handle file uploads if 'files' are provided
@@ -397,7 +436,6 @@ class JobApiController extends Controller
             ], 500);
         }
     }
-
 
     public function getAllJobComplaintsWithMessages($jobId)
     {
@@ -449,7 +487,7 @@ class JobApiController extends Controller
                 // If the job is extended, calculate the extended hour amount
                 if ($job->is_extended == 1) {
                     // Get the amount for the extended hours
-                    $extendedHourRate = DB::table('extended_hour')
+                    $extendedHourRate = DB::table('refferal_extended_hr_rate')
                         ->select('amount')
                         ->first(); // Assuming amount is constant for all extended hours
                     
@@ -479,5 +517,49 @@ class JobApiController extends Controller
                 'message' => 'An unexpected error occurred.'.$e,
             ], 500);
         }
+    }
+
+    public function addBankTransferPayment(Request $request){
+        $userId = Auth::id();
+
+        // Custom validation rule to ensure at least one of 'message' or 'files' is present
+        $request->validate([
+            'job_id' => 'required|exists:job,id',
+            'amount' => 'required',
+            'files.*' => 'required|file|mimes:jpeg,png,gif|max:20000',
+        ]);
+
+        $bankTransferPayment = BankTransferPaymetRefferal::create([
+                            'job_id' => $request->job_id,
+                            'amount' => $request->amount,
+                        ]);
+        // Handle file uploads if 'files' are provided
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                if ($file->isValid()) {
+                    // Store the file in the specified directory
+                    $path = $file->store('bankTransferAttachment', 'public');
+
+                    // Save file path to database
+                    $bankTransferPayment->attachment_url = $path;
+                    $bankTransferPayment->save();
+                    
+                } else {
+                    // Handle invalid file situation
+                    return response()->json([
+                        'status' => 422,
+                        'success' => false,
+                        'message' => 'One or more files are invalid.',
+                    ], 422);
+                }
+            }
+        }
+
+        return response()->json([
+                'status' => 200,
+                'success' => true,
+                'message' => 'Bank transfer added successfully',
+            ], 201);
+
     }
 }

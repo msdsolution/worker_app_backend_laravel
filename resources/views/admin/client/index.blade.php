@@ -73,7 +73,7 @@
                   data-style="slow" 
                   data-on="Verified" 
                   data-off="Not Verified" 
-                  {{ $item->status == true ? 'checked' : '' }}
+                  {{ $item->is_verified == true ? 'checked' : '' }}
                   @if($item->trashed()) disabled @endif
                 >
               </td>

@@ -90,6 +90,9 @@ class ClientController extends Controller
             'vehicle_insurance_front' => 5,
             'vehicle_insurance_back' => 9,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         $documents = DB::table('user_documents')
@@ -128,6 +131,9 @@ class ClientController extends Controller
             'vehicle_insurance_front' => 5,
             'vehicle_insurance_back' => 9,
             'passport' => 6,
+            'identity_card_back' => 7,
+            'driver_license_back' => 8,
+            'vehicle_insurance_back' => 9,
         ];
     
         // Loop through each document field
@@ -177,40 +183,40 @@ class ClientController extends Controller
     }
 
     public function restore($id)
-{
-    $client = User::withTrashed()->find($id);
-    if ($client) {
-        $client->restore();
-        return redirect()->back()->with('message', 'Client restored successfully');
+    {
+        $client = User::withTrashed()->find($id);
+        if ($client) {
+            $client->restore();
+            return redirect()->back()->with('message', 'Client restored successfully');
+        }
+        return redirect()->back()->with('error', 'Client not found');
     }
-    return redirect()->back()->with('error', 'Client not found');
-}
-public function changeStatusemp(Request $request) {
+    public function changeStatusemp(Request $request) {
 
-    $client = User::find($request ->id);
-    $client->status = $request->status;
-    $client->save();
-    return response()->json(['success' => 'Status Changed Successfully']);
-}
-
-
-public function deleteDocument($documentId)
-{
-    // $document = DB::table('user_documents')->where('id', $documentId)->first();
-    // if ($document) {
-    //     Storage::delete('public/' . $document->doc_url); // Deletes the file from storage
-    //     $document->delete(); // Deletes the record from the database
-    //     return response()->json(['success' => 'Document deleted successfully.']);
-    // }
-
-    // return response()->json(['error' => 'Document not found.'], 404);
-    $document = DB::table('user_documents')->where('id', $documentId)->first();
-    if ($document) {
-        Storage::delete('public/' . $document->doc_url); // Deletes the file from storage
-        DB::table('user_documents')->where('id', $documentId)->delete(); // Deletes the record from the database
-        return response()->json(['success' => 'Document deleted successfully.']);
+        $client = User::find($request ->id);
+        $client->is_verified = $request->status;
+        $client->save();
+        return response()->json(['success' => 'Status Changed Successfully']);
     }
 
-    return response()->json(['error' => 'Document not found.'], 404);
-}
+
+    public function deleteDocument($documentId)
+    {
+        // $document = DB::table('user_documents')->where('id', $documentId)->first();
+        // if ($document) {
+        //     Storage::delete('public/' . $document->doc_url); // Deletes the file from storage
+        //     $document->delete(); // Deletes the record from the database
+        //     return response()->json(['success' => 'Document deleted successfully.']);
+        // }
+
+        // return response()->json(['error' => 'Document not found.'], 404);
+        $document = DB::table('user_documents')->where('id', $documentId)->first();
+        if ($document) {
+            Storage::delete('public/' . $document->doc_url); // Deletes the file from storage
+            DB::table('user_documents')->where('id', $documentId)->delete(); // Deletes the record from the database
+            return response()->json(['success' => 'Document deleted successfully.']);
+        }
+
+        return response()->json(['error' => 'Document not found.'], 404);
+    }
 }

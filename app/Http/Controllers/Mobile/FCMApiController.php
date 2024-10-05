@@ -9,24 +9,32 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 
 
 class FCMApiController extends Controller
 {
 
-	 protected $firebase;
+	 // protected $firebase;
 
-    public function __construct()
+  //   public function __construct()
+  //   {
+  //       // Path to the Firebase JSON file in the public directory
+  //       $firebaseJsonPath = json_decode(file_get_contents(config_path('firebase.php')), true);
+
+  //       // Initialize Firebase
+  //       $this->firebase = (new Factory)
+  //           ->withServiceAccount($firebaseJsonPath)
+  //           ->create();
+
+  //       $this->messaging = $this->firebase->getMessaging();
+  //   }
+
+	protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
     {
-        // Path to the Firebase JSON file in the public directory
-        $firebaseJsonPath = env('FIREBASE_CREDENTIALS_PATH');
-
-        // Initialize Firebase
-        $this->firebase = (new Factory)
-            ->withServiceAccount($firebaseJsonPath)
-            ->create();
-
-        $this->messaging = $this->firebase->getMessaging();
+        $this->notificationService = $notificationService;
     }
 
     public function updateDeviceToken(Request $request)
@@ -98,15 +106,37 @@ class FCMApiController extends Controller
         }
 
 	    // Example payload for sending a notification
-        $message = CloudMessage::withTarget('token', $data->device_token)
-            ->withNotification(Notification::create($data->title, $data->body));
+        // $message = CloudMessage::withTarget('token', $data->device_token)
+        //     ->withNotification(Notification::create($data->title, $data->body));
 
 
-        try {
-            $this->messaging->send($message);
-            return response()->json(['status' => 'success'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        // try {
+        //     $this->messaging->send($message);
+        //     return response()->json(['status' => 'success'], 200);
+        // } catch (\Exception $e) {
+        //     return response()->json(['error' => $e->getMessage()], 500);
+        // }
+
+        $response = $this->notificationService->sendNotification(
+            $data->device_token,
+            $data->title,
+            $data->body
+        );
+
+        return response()->json($response);
+	}
+
+	public function sendFCMNotification(Request $request){
+		if (!$request['device_token']) {
+        	return response()->json(['message' => 'User does not have a device token'], 400);
         }
+
+        $response = $this->notificationService->sendNotification(
+            $request['device_token'],
+            $request['title'],
+            $request['body']
+        );
+
+        return response()->json($response);
 	}
 }
