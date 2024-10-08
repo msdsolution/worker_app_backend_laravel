@@ -86,7 +86,9 @@ class InvoiceController extends Controller
             'job.is_extended',
             'job.extended_hrs',
             'job.is_worker_tip',
-            'job.worker_tip_amount'
+            'job.worker_tip_amount',
+            'job.is_travelled',
+            'job.travelled_km'
         )
         ->leftJoin('users', 'job.user_id', '=', 'users.id')
         ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
@@ -127,13 +129,30 @@ class InvoiceController extends Controller
             }
         }
 
+        $travelledAllowanceAmount = 0;
+        $job->travelledAllowanceAmount = 0;
+        $isTravelled = $job->is_travelled ? 'Yes' : 'No';
+
+        // If the job has travel allowance, calculate travelled allovance
+        if ($job->is_travelled == 1) {
+            //Get the amount for 1km travel allowance
+            $travelledAllowanceRate = DB::table('transpotation_km_rate')
+                ->select('amount')
+                ->first();
+
+            //Calculate travel allowance
+            if ($travelledAllowanceRate) {
+               $travelledAllowanceAmount = $travelledAllowanceRate->amount * $job->travelled_km;
+            }
+        }
+
 
         if ($job->is_worker_tip == 1) {
             $workerTipAmount = $job->worker_tip_amount;
         }
 
         // Calculate grand total
-        $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount +  $workerTipAmount;
+        $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount +  $workerTipAmount + $travelledAllowanceAmount;
 
         // Pass data to the view and generate the PDF
         $pdf = Pdf::loadView('admin.invoice.invoice', [
@@ -142,6 +161,8 @@ class InvoiceController extends Controller
             'referalAmount' => $referalAmount,
             'isExtended' => $isExtended,
             'extendedHourAmount' => $extendedHourAmount,
+            'isTravelled' => $isTravelled,
+            'travellAllowanceAmount' => $travelledAllowanceAmount,
             'workerTipAmount' => $workerTipAmount,
             'grandTotal' => $grandTotal
         ]);
@@ -228,8 +249,10 @@ class InvoiceController extends Controller
             'job.preferred_sex',
             'job.is_extended',
             'job.extended_hrs',
-                'job.is_worker_tip',
-                'job.worker_tip_amount'
+            'job.is_worker_tip',
+            'job.worker_tip_amount',
+            'job.is_travelled',
+            'job.travelled_km'
         )
         ->leftJoin('users', 'job.user_id', '=', 'users.id')
         ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
@@ -272,12 +295,31 @@ class InvoiceController extends Controller
             }
         }
 
+        $travelledAllowanceAmount = 0;
+        $job->travelledAllowanceAmount = 0;
+        $isTravelled = $job->is_travelled ? 'Yes' : 'No';
+        $perKmAmount = 0;
+
+        // If the job has travel allowance, calculate travelled allovance
+        if ($job->is_travelled == 1) {
+            //Get the amount for 1km travel allowance
+            $travelledAllowanceRate = DB::table('transpotation_km_rate')
+                ->select('amount')
+                ->first();
+
+            //Calculate travel allowance
+            if ($travelledAllowanceRate) {
+                $perKmAmount = $travelledAllowanceRate->amount;
+               $travelledAllowanceAmount = $travelledAllowanceRate->amount * $job->travelled_km;
+            }
+        }
+
 
         if ($job->is_worker_tip == 1) {
             $workerTipAmount = $job->worker_tip_amount;
         }
         // Calculate grand total
-        $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount +   $workerTipAmount ;
+        $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount +   $workerTipAmount + $travelledAllowanceAmount;
 
         // Generate the PDF view
         $pdf = Pdf::loadView('admin.invoice.invoice', [
@@ -286,6 +328,9 @@ class InvoiceController extends Controller
             'referalAmount' => $referalAmount,
             'isExtended' => $isExtended,
             'extendedHourAmount' => $extendedHourAmount,
+            'isTravelled' => $isTravelled,
+            'travellAllowanceAmount' => $travelledAllowanceAmount,
+            'perKmAmount' => $perKmAmount,
             'workerTipAmount' => $workerTipAmount,
             'grandTotal' => $grandTotal
         ]);
@@ -327,7 +372,9 @@ class InvoiceController extends Controller
                 'job.is_extended',
                 'job.extended_hrs',
                 'job.is_worker_tip',
-                'job.worker_tip_amount'
+                'job.worker_tip_amount',
+                'job.is_travelled',
+                'job.travelled_km'
             )
             ->leftJoin('users', 'job.user_id', '=', 'users.id')
             ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')
@@ -369,11 +416,28 @@ class InvoiceController extends Controller
             }
         }
 
+        $travelledAllowanceAmount = 0;
+        $job->travelledAllowanceAmount = 0;
+        $isTravelled = $job->is_travelled ? 'Yes' : 'No';
+
+        // If the job has travel allowance, calculate travelled allovance
+        if ($job->is_travelled == 1) {
+            //Get the amount for 1km travel allowance
+            $travelledAllowanceRate = DB::table('transpotation_km_rate')
+                ->select('amount')
+                ->first();
+
+            //Calculate travel allowance
+            if ($travelledAllowanceRate) {
+               $travelledAllowanceAmount = $travelledAllowanceRate->amount * $job->travelled_km;
+            }
+        }
+
         if ($job->is_worker_tip == 1) {
             $workerTipAmount = $job->worker_tip_amount;
         }
         // Calculate grand total
-        $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount + $workerTipAmount;
+        $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount + $workerTipAmount + $travelledAllowanceAmount;
 
         // Generate the PDF
         $pdf = Pdf::loadView('admin.invoice.invoice', [
@@ -382,6 +446,8 @@ class InvoiceController extends Controller
             'referalAmount' => $referalAmount,
             'isExtended' => $isExtended,
             'extendedHourAmount' => $extendedHourAmount,
+            'isTravelled' => $isTravelled,
+            'travellAllowanceAmount' => $travelledAllowanceAmount,
             'workerTipAmount' => $workerTipAmount,
             'grandTotal' => $grandTotal
         ]);

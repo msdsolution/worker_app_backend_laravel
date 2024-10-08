@@ -232,7 +232,6 @@ class JobApiController extends Controller
                     $documentType->doc_name = null; // Or you can skip this assignment
                 }
 
-// $worker_docs = $worker_docs_filtered;
                 // Optionally, unset the documentType object if you don't need it
                 unset($documentType->documentType);
 
@@ -530,8 +529,25 @@ class JobApiController extends Controller
                     }
                 }
 
+                $travelledAllowanceAmount = 0;
+                $job->travelledAllowanceAmount = 0;
+
+                // If the job has travel allowance, calculate travelled allovance
+                if ($job->is_travelled == 1) {
+                    //Get the amount for 1km travel allowance
+                    $travelledAllowanceRate = DB::table('transpotation_km_rate')
+                        ->select('amount')
+                        ->first();
+
+                    //Calculate travel allowance
+                    if ($travelledAllowanceRate) {
+                       $travelledAllowanceAmount = $travelledAllowanceRate * $job->travelled_km;
+                       $job->travelledAllowanceAmount = $travelledAllowanceAmount ?? 0;
+                    }
+                }
+
                 // Calculate grand total
-                $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
+                $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount + $travelledAllowanceAmount;
                 $job->grandTotal = $grandTotal;
 
                 return response()->json([
