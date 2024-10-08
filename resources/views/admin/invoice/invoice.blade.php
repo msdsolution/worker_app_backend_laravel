@@ -194,6 +194,16 @@
                         <td>{{ $job->extended_hrs }}</td>
                     </tr>
                     @endif
+                    <tr>
+                        <td colspan="4" class="text-right">Is Transpotation Used</td>
+                        <td>{{ $isTravelled }}</td>
+                    </tr>
+                    @if($job->is_travelled)
+                    <tr>
+                        <td colspan="4" class="text-right">Travelled Km (Rs. {{$perKmAmount}} per Km)</td>
+                        <td>{{ $job->travelled_km }}</td>
+                    </tr>
+                    @endif
                     @if($job->is_worker_tip == 1)
                     <tr>
                         <td colspan="4" class="text-right">Worker Tip</td>
