@@ -15,6 +15,7 @@ use App\Models\SriLankaDistricts;
 use App\Models\ComplaintMessages;
 use App\Models\ComplaintAttachment;
 use App\Models\worker_feedback;
+use App\Models\UserDocuments;
 use App\Models\BankTransferPaymetRefferal;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
@@ -207,6 +208,7 @@ class JobApiController extends Controller
         $jobs = Job::with(['jobType.serviceCat', 'worker', 'complaint', 'jobAttachments'])->findOrFail($id);
 
         $worker_feedback = null;
+        $worker_docs = null;
 
         
         // Add worker_name to the job data
@@ -215,6 +217,35 @@ class JobApiController extends Controller
             $jobs->worker_pro_pic = $jobs->worker->pro_pic_url;
 
             $worker_feedback = worker_feedback::where('user_id', $jobs->worker_id)->where('status', 1)->latest()->take(5)->get();
+            $worker_docs = UserDocuments::with(['documentType'])->where('user_id', $jobs->worker_id)->get();
+
+            // documentType IDs to ignore
+            $ignore_ids = [7,8,9]; // Replace with the IDs to ignore
+
+            foreach ($worker_docs as $documentType) {
+
+                if (!in_array($documentType->doc_id, $ignore_ids)) {
+                    // Assign doc_name if the ID is not ignored
+                    $documentType->doc_name = $documentType->documentType->doc_name;
+                } else {
+                    // Set doc_name to null if it's ignored or documentType doesn't exist
+                    $documentType->doc_name = null; // Or you can skip this assignment
+                }
+
+// $worker_docs = $worker_docs_filtered;
+                // Optionally, unset the documentType object if you don't need it
+                unset($documentType->documentType);
+
+                
+            }
+
+            // Filter out documents with doc_name as null
+             $worker_docs_filtered = $worker_docs->filter(function ($document) {
+                    return $document->doc_name !== null;
+                });
+
+                 // Convert to array and reset keys
+            $worker_docs = $worker_docs_filtered->values()->toArray();
 
         } else {
             $jobs->worker_name = "Not Assigned";
@@ -229,6 +260,7 @@ class JobApiController extends Controller
         }
 
         $jobs->worker_feedback = $worker_feedback;
+        $jobs->worker_docs = $worker_docs;
 
         if ($worker_feedback) {
             // Include the referral name in the feedback
