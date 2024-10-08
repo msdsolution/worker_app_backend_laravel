@@ -30,4 +30,9 @@ class UserDocuments extends Model
     //     return $this->belongsTo(User::class, 'id');
     // }
 
+    public function documentType()
+    {
+        return $this->belongsTo(DocumentsType::class, 'doc_id'); // Assuming doc_id is the foreign key
+    }
+
 }
