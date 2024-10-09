@@ -253,7 +253,7 @@ class WorkerJobApiController extends Controller
             }
         }
 
-        $this->sendInvoice($job->id);
+        $this->sendInvoice($job);
 
         return response()->json([
         	'status' => 200,
