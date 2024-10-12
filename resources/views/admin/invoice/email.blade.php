@@ -5,6 +5,10 @@
 </head>
 <body>
     <p>Dear {{ $clientName }},</p>
+@php
+    // Debugging the $message variable
+    dd($message);
+@endphp
     @if(!empty($message))
         <p>{{ $message }}</p> <!-- Ensure $message is a string -->
     @endif
