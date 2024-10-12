@@ -5,6 +5,7 @@
 </head>
 <body>
     <p>Dear {{ $clientName }},</p>
+    <p>{{ $message }},</p>
     <p>Thank you for your business.</p>
 </body>
 </html>
