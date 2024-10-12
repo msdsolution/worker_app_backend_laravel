@@ -20,7 +20,7 @@ class InvoiceMail extends Mailable
     public $clientName;
     public $message;
     public $pdfPath;
-    public function __construct($clientName, $message, $pdfPath)
+    public function __construct($clientName = '', $message = '', $pdfPath)
     {
         //
         $this->clientName = $clientName;
