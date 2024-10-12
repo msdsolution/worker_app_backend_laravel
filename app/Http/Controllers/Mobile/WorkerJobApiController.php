@@ -271,6 +271,7 @@ class WorkerJobApiController extends Controller
         $clientName = $refferal->first_name." ".$refferal->last_name;
         $clientEmail = $refferal->email;
         $message = 'Job has been completed by the worker. Please review the attached invoice and do the payment through mobile app.';
+        dd($message);
 
 
         // Retrieve job details
