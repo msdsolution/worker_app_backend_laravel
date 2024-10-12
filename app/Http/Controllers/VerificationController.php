@@ -218,7 +218,7 @@ class VerificationController extends Controller
 
             </body>
             </html>';
-        }else if ($status == 3) {
+        } else if ($status == 3) {
             return $html = '<!DOCTYPE html>
             <html lang="en">
             <head>
@@ -292,7 +292,7 @@ class VerificationController extends Controller
                 </script>
 
             </body>
-            </html>'
+            </html>';
         }
         
     }
