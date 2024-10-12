@@ -49,6 +49,8 @@ class InvoiceMail extends Mailable
     }
     public function build()
     {
+
+        dd($message);
         return $this->subject('Invoice Mail')
                     ->view('invoice.email')  // Use your view path here
                     ->with([
