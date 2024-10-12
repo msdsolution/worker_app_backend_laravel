@@ -5,7 +5,9 @@
 </head>
 <body>
     <p>Dear {{ $clientName }},</p>
-    <p>{{ $message }},</p>
+    @if(!empty($message))
+        <p>{{ $message }}</p> <!-- Ensure $message is a string -->
+    @endif
     <p>Thank you for your business.</p>
 </body>
 </html>

@@ -24,7 +24,7 @@ class InvoiceMail extends Mailable
     {
         //
         $this->clientName = $clientName;
-        $this->message = $message;
+        $this->message = (string) $message;
         $this->pdfPath = $pdfPath;
     }
 
