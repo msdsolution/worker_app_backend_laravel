@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mobile;
 
 use App\Http\Controllers\Controller;
+use App\Mail\InvoiceMail;
 use App\Http\Controllers\Mobile\FCMApiController;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
 
 class WorkerJobApiController extends Controller
 {
@@ -267,7 +270,7 @@ class WorkerJobApiController extends Controller
         $refferal = User::findOrFail($job_data->user_id);
         $clientName = $refferal->first_name." ".$refferal->last_name;
         $clientEmail = $refferal->email;
-        $message = "Job has been completed by the worker. Please review the attached invoice and do the payment through mobile app.\nThank you";
+        $message = 'Job has been completed by the worker. Please review the attached invoice and do the payment through mobile app.';
 
 
         // Retrieve job details

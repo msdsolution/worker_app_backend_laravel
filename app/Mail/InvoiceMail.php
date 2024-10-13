@@ -20,11 +20,11 @@ class InvoiceMail extends Mailable
     public $clientName;
     public $message;
     public $pdfPath;
-    public function __construct($clientName, $message, $pdfPath)
+    public function __construct($clientName = '', $message = '', $pdfPath)
     {
         //
         $this->clientName = $clientName;
-        $this->message = $message;
+        $this->message = (string) $message;
         $this->pdfPath = $pdfPath;
     }
 
@@ -49,11 +49,12 @@ class InvoiceMail extends Mailable
     }
     public function build()
     {
+
         return $this->subject('Invoice Mail')
                     ->view('invoice.email')  // Use your view path here
                     ->with([
                         'clientName' => $this->clientName,
-                        'message' => $this->message,
+                        'message' => "Please find the attached invoice.",
                     ])
                     ->attach($this->pdfPath, [
                         'as' => 'invoice.pdf',
