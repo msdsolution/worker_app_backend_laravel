@@ -215,6 +215,7 @@ class JobApiController extends Controller
         if ($jobs->worker_id != null) {
             $jobs->worker_name = $jobs->worker->first_name.' '.$jobs->worker->last_name;
             $jobs->worker_pro_pic = $jobs->worker->pro_pic_url;
+            $jobs->worker_bio = $jobs->worker->description;
 
             $worker_feedback = worker_feedback::where('user_id', $jobs->worker_id)->where('status', 1)->latest()->take(5)->get();
             $worker_docs = UserDocuments::with(['documentType'])->where('user_id', $jobs->worker_id)->get();
