@@ -582,6 +582,23 @@ VBGYCZ5APiEyipPLiQIDAQAB
             }
         }
 
+        $travelledAllowanceAmount = 0;
+        $job->travelledAllowanceAmount = 0;
+        $isTravelled = $job->is_travelled ? 'Yes' : 'No';
+
+        // If the job has travel allowance, calculate travelled allovance
+        if ($job->is_travelled == 1) {
+            //Get the amount for 1km travel allowance
+            $travelledAllowanceRate = DB::table('transpotation_km_rate')
+                ->select('amount')
+                ->first();
+
+            //Calculate travel allowance
+            if ($travelledAllowanceRate) {
+               $travelledAllowanceAmount = $travelledAllowanceRate->amount * $job->travelled_km;
+            }
+        }
+
         if ($job->is_worker_tip == 1) {
             $workerTipAmount = $job->worker_tip_amount;
         }
@@ -595,6 +612,8 @@ VBGYCZ5APiEyipPLiQIDAQAB
             'referalAmount' => $referalAmount,
             'isExtended' => $isExtended,
             'extendedHourAmount' => $extendedHourAmount,
+            'isTravelled' => $isTravelled,
+            'travellAllowanceAmount' => $travelledAllowanceAmount,
             'workerTipAmount' => $workerTipAmount,
             'grandTotal' => $grandTotal
         ]);
