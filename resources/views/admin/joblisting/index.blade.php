@@ -65,7 +65,7 @@
                                         {{ $job->workerFirstName }}
                                     @elseif(!$job->worker_id && $job->status == 0)
                                         No worker assigned
-                                    @elseif($job->worker_id && in_array($job->status, [2, 3, 4,5]))
+                                    @elseif($job->worker_id && in_array($job->status, [2, 3, 4,5,8]))
                                         {{ $job->workerFirstName }}
                                     @elseif($job->worker_id && $job->status == 6)
                                         Worker Rejected
@@ -76,7 +76,7 @@
                                         {{ $job->workerLastName }}
                                     @elseif(!$job->worker_id && $job->status == 0)
                                         No worker assigned
-                                    @elseif($job->worker_id && in_array($job->status, [2, 3, 4,5]))
+                                    @elseif($job->worker_id && in_array($job->status, [2, 3, 4,5,8]))
                                         {{ $job->workerLastName }}
                                     @elseif($job->worker_id && $job->status == 6)
                                         Worker Rejected
@@ -97,7 +97,10 @@
                                           Paid
                                     @elseif($job->status == 6)
                                         Worker Rejected
-                                  
+                                    @elseif($job->status == 7)
+                                        Cancelled
+                                    @elseif($job->status == 8)
+                                        Awaiting Bank Approval
                                     @endif
                                 </td>
                                 <td>
@@ -115,6 +118,10 @@
                                         <a href="{{ route('assign-job', $job->jobId) }}" class="btn btn-outline-success">Paid</a>
                                     @elseif ($job->worker_id !== null && $job->status === 6)
                                         <a href="{{ route('assign-job', $job->jobId) }}" class="btn btn-danger">Worker Rejected</a>
+                                     @elseif ($job->worker_id == null && $job->status === 7)
+                                        <a href="{{ route('assign-job', $job->jobId) }}" class="btn btn-danger">Cancelled</a>
+                                        @elseif ($job->worker_id !== null && $job->status === 8)
+                                        <a href="{{ route('assign-job', $job->jobId) }}" class="btn btn-danger">Awaiting Bank Approval</a>
                                     @endif
                                 </td>
                             </tr>

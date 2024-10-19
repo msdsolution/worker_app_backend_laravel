@@ -55,6 +55,10 @@
                     <label>Phone Number</label>
                     <input type="text" name="phone_no" value="{{ $employee->phone_no }}" class="form-control">
                 </div>
+                <div class="mb-3">
+                    <label>User Description</label>
+                    <input type="text" name="description" value="{{ $employee->description }}" class="form-control">
+                </div>
 
                 @foreach($documentMap as $fieldName => $docId)
                 @php

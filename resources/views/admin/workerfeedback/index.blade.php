@@ -19,7 +19,9 @@
                         <th>Worker name</th>
                         <th>Message</th>
                         <th>Rating</th>
-                        <th>Show in App</th>
+                        @if(auth()->user()->user_type != 4)  <!-- Check for user_type -->
+                            <th>Show in App</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -30,10 +32,13 @@
                             <td>{{ $feedback->user_name }}</td>
                             <td>{{ $feedback->message }}</td>
                             <td>{{ $feedback->ratings }}</td>
-                            <td> <input type="checkbox" role="switch" class="toggle-class" data-id="{{ $feedback->id }}" data-toggle="toggle" data-style="slow" data-on="Show" data-off="Hide" {{ $feedback->status == true ? 'checked' : ''}}></td>
-                                <!-- <a href="{{ url('medicine-delete') }}/{{ $feedback->id }}" class="btn btn-danger"><i
-                                    class="fa fa-trash-o" aria-hidden="true"></i>
-                                Delete</a> -->
+                            @if(auth()->user()->user_type != 4)  <!-- Check for user_type -->
+                                <td>
+                                    <input type="checkbox" role="switch" class="toggle-class" data-id="{{ $feedback->id }}" data-toggle="toggle" data-style="slow" data-on="Show" data-off="Hide" {{ $feedback->status == true ? 'checked' : ''}}>
+                                </td>
+                            @else
+                                
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>
@@ -45,33 +50,31 @@
 
 @endsection
 
-
 @section('scripts')
- <script>
-  $(function() {
-    $('#toggle-two').bootstrapToggle({
-      on: 'Show',
-      off: 'Hide'
-    });
-    
-  })
+<script>
+    $(function() {
+        $('#toggle-two').bootstrapToggle({
+            on: 'Show',
+            off: 'Hide'
+        });
+    })
 </script>
 <script>
     $('.toggle-class').on('change', function() {
         var status = $(this).prop('checked') == true ? 1 : 0;
         var id = $(this).data('id');
-       $.ajax({
-        type: 'GET',
+        $.ajax({
+            type: 'GET',
             dataType: 'JSON',
             url: '{{ route('changeStatus') }}',
             data: {
                 'status': status,
                 'id': id
             },
-            success:function(data){
-
+            success:function(data) {
+                // Handle success response here if needed
             }
-       })
+        })
     });
 </script>
 @endsection

@@ -119,7 +119,7 @@ class InvoiceController extends Controller
         // If the job is extended, calculate the extended hour amount
         if ($job->is_extended) {
             // Get the amount for the extended hours
-            $extendedHourRate = DB::table('extended_hour')
+            $extendedHourRate = DB::table('refferal_extended_hr_rate')
                 ->select('amount')
                 ->first(); // Assuming amount is constant for all extended hours
             
@@ -285,7 +285,7 @@ class InvoiceController extends Controller
         // If the job is extended, calculate the extended hour amount
         if ($job->is_extended) {
             // Get the amount for the extended hours
-            $extendedHourRate = DB::table('extended_hour')
+            $extendedHourRate = DB::table('refferal_extended_hr_rate')
                 ->select('amount')
                 ->first(); // Assuming amount is constant for all extended hours
             
@@ -406,7 +406,7 @@ class InvoiceController extends Controller
         // If the job is extended, calculate the extended hour amount
         if ($job->is_extended) {
             // Get the amount for the extended hours
-            $extendedHourRate = DB::table('extended_hour')
+            $extendedHourRate = DB::table('refferal_extended_hr_rate')
                 ->select('amount')
                 ->first(); // Assuming amount is constant for all extended hours
 

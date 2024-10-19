@@ -93,7 +93,17 @@
                 </div>
             </div>
         </div>
-
+        <div class="col-12 col-lg-4 mb-3 mb-lg-0" >
+            <div class="card text-white text-center" style="background-color: #842a2a;">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-size: 44px;">{{$unverifiedWorkerCount}}</h5>
+                    <p class="card-text">Worker's documents submitted, pending verification</p>
+                </div>
+                <div class="card-footer text-center font-weight-bold">
+                    <a href="{{url('admin/Worker_unferified_sub_alldoc')}}" class="text-white"><span>View Details <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></span></a>
+                </div>
+            </div>
+        </div>
     </div>
 
 

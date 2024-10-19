@@ -54,6 +54,9 @@ class EmployeeFormRequest extends FormRequest
               'regex:/^(\+?\d{1,4}[\s-]?)?(\(?\d{1,5}\)?[\s-]?)?\d{1,5}[\s-]?\d{1,5}[\s-]?\d{1,5}$/',
 
             ],
+            'description' =>[
+                'string',
+            ],
             'identity_card' => [
                 'file',
                 'mimes:jpeg,png,pdf',

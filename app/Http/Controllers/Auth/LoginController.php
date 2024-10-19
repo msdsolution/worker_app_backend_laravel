@@ -37,7 +37,7 @@ class LoginController extends Controller
 
      public function authenticated(Request $request, $user)
      {
-         if ($user->user_type == '1') {
+        if ($user->user_type == '1' || $user->user_type == '4')  {
              return redirect('admin/dashboard')->with('status', 'Welcome to admin Dashboard');
          } else {
              Auth::logout();
