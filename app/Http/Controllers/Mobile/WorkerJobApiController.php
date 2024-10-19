@@ -49,6 +49,12 @@ class WorkerJobApiController extends Controller
                           ->orderBy('job.created_at', 'desc')
                           ->get();
 
+        // Retrieve WORKER amount associated with the job
+        $workerAmount = DB::table('job_service_cat')
+            ->select('worker_amount')
+            ->where('job_id', $job_data->id)
+            ->first();
+
             return response()->json([
                 'status' => 200,
                 'success' => true,
@@ -346,6 +352,7 @@ class WorkerJobApiController extends Controller
         $travelledAllowanceAmount = 0;
         $job->travelledAllowanceAmount = 0;
         $isTravelled = $job->is_travelled ? 'Yes' : 'No';
+        $perKmAmount = 0;
 
         // If the job has travel allowance, calculate travelled allovance
         if ($job->is_travelled == 1) {
@@ -356,6 +363,7 @@ class WorkerJobApiController extends Controller
 
             //Calculate travel allowance
             if ($travelledAllowanceRate) {
+                $perKmAmount = $travelledAllowanceRate->amount;
                $travelledAllowanceAmount = $travelledAllowanceRate->amount * $job->travelled_km;
             }
         }
@@ -375,6 +383,7 @@ class WorkerJobApiController extends Controller
             'extendedHourAmount' => $extendedHourAmount,
             'isTravelled' => $isTravelled,
             'travellAllowanceAmount' => $travelledAllowanceAmount,
+            'perKmAmount' => $perKmAmount,
             'workerTipAmount' => $workerTipAmount,
             'grandTotal' => $grandTotal
         ]);
