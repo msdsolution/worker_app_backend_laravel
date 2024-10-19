@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Web\AllowanceManagementController;
+use App\Http\Controllers\Web\BankTransferController;
 use App\Http\Controllers\Web\EmployeeController;
 use App\Http\Controllers\Web\ClientController;
 use App\Http\Controllers\Web\ClientRateController;
@@ -123,9 +125,9 @@ Route::get('Invoice', [InvoiceController::class, 'index']);
 Route::get('download-pdf/{jobId}', [InvoiceController::class, 'download'])->name('download-pdf');
 Route::get('view-pdf/{jobId}', [InvoiceController::class, 'view'])->name('view-pdf');
 
-Route::get('extended-hour', [extendedhourController::class, 'index']);
+Route::get('extended-hour-worker', [extendedhourController::class, 'index']);
 Route::get('add-extdhour', [extendedhourController::class, 'create']);
-Route::post('add-extdhour',[extendedhourController::class,'store']);
+Route::post('add-extdhour-worker',[extendedhourController::class,'store']);
 
 Route::post('send-invoice', [InvoiceController::class, 'sendInvoice']);
 // In routes/web.php
@@ -140,8 +142,10 @@ Route::post('update-complaint-status', [ComplaintController::class, 'updateCompl
 // Route::get('/joblisting/{jobServiceCat}', 'Web\JobListingController@index')->name('joblisting.index');
 //ManooDev
 
-Route::get('edit-extendex-hour/{extd_hri_d}',[extendedhourController::class,'edit']);
-Route::put('update-extendex-hour/{extd_hri_d}',[extendedhourController::class,'update']);
+// For workers
+Route::get('edit-extendex-hour/worker/{extd_hri_d}', [extendedhourController::class, 'edit']);
+Route::put('update-extendex-hour/worker/{extd_hri_d}', [extendedhourController::class, 'update']);
+
 Route::get('delete-extendex-hour/{extd_hri_d}',[extendedhourController::class,'destroy']);
 
 Route::get('assignedwokr', [DashBoardController::class, 'assignedwokr']);
@@ -150,6 +154,10 @@ Route::get('rejectedwork', [DashBoardController::class, 'rejectedwork']);
 Route::get('completedworkunpaid', [DashBoardController::class, 'completedworkunpaid']);
 Route::get('completedworkpaid', [DashBoardController::class, 'completedworkpaid']);
 Route::get('Unresolvedcomplaint', [DashBoardController::class, 'Unresolvedcomplaint']);
+Route::get('Worker_unferified_sub_alldoc', [DashBoardController::class, 'Worker_unferified_sub_alldoc']);
+
+
+
 Route::get('restore-client/{id}', [ClientController::class, 'restore'])->name('client.restore');
 Route::get('restore-employee/{id}', [EmployeeController::class, 'restore'])->name('employee.restore');
 Route::get('restore-service/{id}', [ServicecategoryController::class, 'restore'])->name('servicecategory.restore');
@@ -165,10 +173,27 @@ Route::delete('edit-employee/delete-document/{id}', [EmployeeController::class, 
 Route::delete('client/delete-document/{id}', [ClientController::class, 'deleteDocument'])->name('delete-document');
 
 
+Route::get('allowance-management', [AllowanceManagementController::class, 'index']);
+Route::get('edit-kmrates/{kilomrate_id}', [AllowanceManagementController::class, 'edit']);
+Route::put('update-kmrates/{kilomrate_id}', [AllowanceManagementController::class, 'update']);
 
 
 
+Route::get('extended-hour-client', [extendedhourController::class, 'indexclient']);
 
+
+
+// For clients
+Route::get('edit-extendex-hour/client/{extd_hri_d}', [extendedhourController::class, 'editclientextdhr']);
+Route::put('update-extendex-hour/client/{extd_hri_d}', [extendedhourController::class, 'updateclientextdhr']);
+
+
+Route::get('banktransfer', [BankTransferController::class, 'index']);
+Route::get('changeStatustransfer', [BankTransferController::class, 'changeStatusBankTransfer'])->name('changeStatustransfer');
+
+
+
+Route::post('cancel-job/{jobId}', [JobListingController::class, 'cancelJob'])->name('cancel-job');
 
 
 });

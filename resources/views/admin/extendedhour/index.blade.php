@@ -3,81 +3,49 @@
 @section('title','Company')
 @section('content')
 
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-    <form action="{{url('admin/delete-service/{employee_id}')}}" method="POST">
-        @csrf
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Delete Employee</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" name="company_delete_id" id="employee_id">
-        <h5>Are you sure You want to delete this Employee?</h5>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-danger">Yes Delete</button>
-      </div>
-     </form>
-    </div>
-  </div>
-</div>
-
-
-
 <div class="container-fluid px-4">
- 
-<div class="card mt-4">
-    <div class="card-header">
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4>{{ $type === 'worker' ? 'Extended Hour Rates (Worker)' : 'Extended Hour Rates (Client)' }}</h4>
+        </div>
+        <div class="card-body">
+            @if(session('message'))
+                <div class="alert alert-success">{{session('message')}}</div>
+            @endif
 
-    <h4>Extended hour Rates
-    <a href="{{ url('admin/add-extdhour')}}" class="btn btn-primary btn-sm float-end">Add new Extended rates for workers</a>
-    </h4>
+            <table id="myDataTable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Extended Hours</th>
+                        <th>Amount</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($exted_hr as $item)
+                    <tr>
+                        <td>{{ $item->hour_extended ?? $item->hr_extended }}</td>
+                        <td>{{ $item->amount }}</td>
+                        <td>
+
+                        @if($type == 'worker')
+    <a href="{{ url('admin/edit-extendex-hour/worker/' . $item->id) }}" class="btn btn-success">Edit</a>
+@elseif($type == 'client')
+    <a href="{{ url('admin/edit-extendex-hour/client/' . $item->id) }}" class="btn btn-success">Edit</a>
+@endif
+                       
+
+
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="card-body">
-    @if(session('message'))
-    <div class="alert alert-success">{{session('message')}}</div>
-    @endif
-
-    <table id="myDataTable" class="table table-bordered">
-    <thead>
-        <tr>
-            <!-- <th>ID</th> -->
-            <th>Hour Extended</th>
-            <th>Amount</th>
-            <th>Edit</th>
-            <!-- <th>Delete</th> -->
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($exted_hr as $item)
-
-      
-        <tr>
-            <!-- <td>{{$item -> id}}</td> -->
-            <td>{{$item -> hour_extended}}</td>
-            <td>{{$item -> amount}}</td>
-            <td>
-                <a href="{{url('admin/edit-extendex-hour/' .$item -> id )}}" class="btn btn-success">Edit</a>
-            </td>
-            <!-- <td>
-            <a href="{{url('admin/delete-extendex-hour/' .$item -> id )}}" class="btn btn-danger">Delete</a> -->
-            <!-- <button type="button" class="btn btn-danger deleteCategoryBtn" value="{{$item -> id}}">Delete</button> -->
-            <!-- </td> -->
-        </tr>
-        @endforeach
-    </tbody>
-    </table>
-    </div>
-</div>
-
-  
- 
 </div>
 
 @endsection
-
 @section('scripts')
 <script>
     $(document).ready(function (){

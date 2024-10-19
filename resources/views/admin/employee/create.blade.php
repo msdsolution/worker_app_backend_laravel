@@ -50,6 +50,10 @@
                     <input type="text" name="phone_no" class="form-control">
                 </div>
                 <div class="mb-3">
+                    <label >User Descripiton</label>
+                    <input type="text" name="description" class="form-control">
+                </div>
+                <div class="mb-3">
                     <label for="attachments" class="form-label">Attachments: Identity card Front</label>
                     <input type="file" class="form-control" id="identity_card_front" name="identity_card_front">
                 </div>
