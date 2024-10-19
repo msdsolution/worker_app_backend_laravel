@@ -419,6 +419,7 @@ class InvoiceController extends Controller
         $travelledAllowanceAmount = 0;
         $job->travelledAllowanceAmount = 0;
         $isTravelled = $job->is_travelled ? 'Yes' : 'No';
+        $perKmAmount = 0;
 
         // If the job has travel allowance, calculate travelled allovance
         if ($job->is_travelled == 1) {
@@ -429,6 +430,7 @@ class InvoiceController extends Controller
 
             //Calculate travel allowance
             if ($travelledAllowanceRate) {
+                $perKmAmount = $travelledAllowanceRate->amount;
                $travelledAllowanceAmount = $travelledAllowanceRate->amount * $job->travelled_km;
             }
         }
@@ -448,6 +450,7 @@ class InvoiceController extends Controller
             'extendedHourAmount' => $extendedHourAmount,
             'isTravelled' => $isTravelled,
             'travellAllowanceAmount' => $travelledAllowanceAmount,
+            'perKmAmount' => $perKmAmount,
             'workerTipAmount' => $workerTipAmount,
             'grandTotal' => $grandTotal
         ]);
