@@ -49,11 +49,11 @@ class WorkerJobApiController extends Controller
                           ->orderBy('job.created_at', 'desc')
                           ->get();
 
-        // Retrieve WORKER amount associated with the job
-        $workerAmount = DB::table('job_service_cat')
-            ->select('worker_amount')
-            ->where('job_id', $job_data->id)
-            ->first();
+            // Retrieve WORKER amount associated with the job
+            // $workerAmount = DB::table('job_service_cat')
+            //     ->select('worker_amount')
+            //     ->where('job_id', $job_data->id)
+            //     ->first();
 
             return response()->json([
                 'status' => 200,
