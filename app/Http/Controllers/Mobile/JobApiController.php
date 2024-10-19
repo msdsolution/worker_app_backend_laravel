@@ -582,6 +582,10 @@ class JobApiController extends Controller
                             'job_id' => $request->job_id,
                             'amount' => $request->amount,
                         ]);
+
+        $job = Job::findOrFail($request->job_id);
+        $job->status = 8;
+        $job->save();
         // Handle file uploads if 'files' are provided
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
@@ -609,6 +613,5 @@ class JobApiController extends Controller
                 'success' => true,
                 'message' => 'Bank transfer added successfully',
             ], 201);
-
     }
 }
