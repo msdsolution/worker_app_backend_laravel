@@ -493,7 +493,7 @@ class JobApiController extends Controller
 
         try {
 
-                $job_statuses = [4, 5];
+                $job_statuses = [4, 5, 8];
                 $job = Job::with(['worker', 'jobServiceCat'])
                     ->where('id', $jobId)
                     ->whereIn('status', $job_statuses)  // Filter by status 4 and 5
