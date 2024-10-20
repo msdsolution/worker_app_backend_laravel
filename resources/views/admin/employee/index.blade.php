@@ -50,11 +50,12 @@
                             <th>Location</th>
                             <th>User Address</th>
                             <th>Phone Number</th>
+                            <th>Edit</th>
                             @if(auth()->user()->user_type != 4) 
                                 <th>Status</th>
                                 <th>Delete/Restore</th>
                             @endif
-                            <th>Edit</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -68,6 +69,13 @@
                                 <td>{{$item->location}}</td>
                                 <td>{{$item->user_address}}</td>
                                 <td>{{$item->phone_no}}</td>
+                                <td>
+                                    @if($item->trashed())
+                                        <button class="btn btn-success" disabled>Edit</button>
+                                    @else
+                                        <a href="{{url('admin/edit-employee/' . $item->id )}}" class="btn btn-success">Edit</a>
+                                    @endif
+                                </td>
                                 @if(auth()->user()->user_type != 4) 
                                     <td>
                                         <input 
@@ -83,16 +91,7 @@
                                             @if($item->trashed()) disabled @endif
                                         >
                                     </td>
-                                @endif
-                                <td>
-                                    @if($item->trashed())
-                                        <button class="btn btn-success" disabled>Edit</button>
-                                    @else
-                                        <a href="{{url('admin/edit-employee/' . $item->id )}}" class="btn btn-success">Edit</a>
-                                    @endif
-                                </td>
-                                @if(auth()->user()->user_type != 4) 
-                                <td>
+                                    <td>
                                         @if($item->trashed())
                                             <a href="{{ url('admin/restore-employee/' . $item->id) }}" class="btn btn-warning">Restore</a>
                                         @else
@@ -145,7 +144,7 @@
                 'id': id
             },
             success: function(data){
-                // Handle success
+               
             }
         });
     });
