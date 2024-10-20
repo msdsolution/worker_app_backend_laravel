@@ -605,7 +605,7 @@ VBGYCZ5APiEyipPLiQIDAQAB
             $workerTipAmount = $job->worker_tip_amount;
         }
         // Calculate grand total
-        $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount + $workerTipAmount;
+        $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount + $workerTipAmount + $travelledAllowanceAmount;
 
         // Generate the PDF
         $pdf = Pdf::loadView('admin.invoice.invoice', [

@@ -542,7 +542,7 @@ class JobApiController extends Controller
 
                     //Calculate travel allowance
                     if ($travelledAllowanceRate) {
-                       $travelledAllowanceAmount = $travelledAllowanceRate * $job->travelled_km;
+                       $travelledAllowanceAmount = $travelledAllowanceRate->amount * $job->travelled_km;
                        $job->travelledAllowanceAmount = $travelledAllowanceAmount ?? 0;
                     }
                 }

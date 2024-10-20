@@ -28,7 +28,7 @@
                             <td>{{ $transfer->id }}</td>
                             <td>{{ $transfer->job_id }}</td>
                             <td>{{ $transfer->amount }}</td>
-                            <td>{{ $transfer->attachment_url }}</td>
+                            <td><a href="{{ asset('storage/' . $transfer->attachment_url) }}" target="_blank">View Attached Image</a></td>
                             <td> <input type="checkbox" role="switch" class="toggle-class" data-id="{{ $transfer->id }}" data-toggle="toggle" data-style="slow" data-on="Approved" data-off="Un Approved" {{ $transfer->status == true ? 'checked' : ''}}></td>
                             
                         </tr>
