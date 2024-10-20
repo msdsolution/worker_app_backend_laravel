@@ -540,7 +540,9 @@ VBGYCZ5APiEyipPLiQIDAQAB
                 'job.is_extended',
                 'job.extended_hrs',
                 'job.is_worker_tip',
-                'job.worker_tip_amount'
+                'job.worker_tip_amount',
+                'job.is_travelled',
+                'job.travelled_km'
             )
             ->leftJoin('users', 'job.user_id', '=', 'users.id')
             ->leftJoin('users as workers', 'job.worker_id', '=', 'workers.id')

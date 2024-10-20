@@ -93,7 +93,7 @@
 
 <div class="mb-3">
     <label for="district" class="form-label">Select Worker Area</label>
-    <select name="district" class="form-control" id="district_id" onchange="updateWorkers()"
+    <select name="district" class="form-control" id="district_id" onclick="updateWorkers()"
     @if(!in_array($job->status, [0, 1,2,6])) disabled @endif>
         <option value="">Select District</option>
         @foreach($districts as $district)
