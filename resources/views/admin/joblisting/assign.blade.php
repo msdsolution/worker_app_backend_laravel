@@ -12,13 +12,19 @@
         </div>
         <div class="card-body">
 
-            @if($errors->any())
-            <div class="alert alert-danger">
-                @foreach($errors->all() as $error)
-                <div>{{ $error }}</div>
-                @endforeach
-            </div>
-            @endif
+        @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Display error message -->
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
 
             <form action="{{ route('assigning-job', ['jobId' => $job->jobId]) }}"  method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                 @csrf
@@ -50,13 +56,18 @@
                 </div>
                 <div class="mb-3">
                     <label for="requiredDate" class="form-label">Required Date</label>
-                    <input type="text" name="requiredDate" value="{{ $job->required_date }}" class="form-control" id="requiredDate" readonly>
+                    <input type="date" name="requiredDate" value="{{ $job->required_date }}" min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"class="form-control" id="requiredDate" @if(!in_array($job->status, [0, 1, 2,6])) readonly @endif>
                 </div>
 
                 <div class="mb-3">
-                    <label for="requiredTime" class="form-label">Required Time</label>
-                    <input type="text" name="requiredTime" value="{{ $job->required_time }}" class="form-control" id="requiredTime" readonly>
-                </div>
+    <label for="requiredTime" class="form-label">Required Time</label>
+    <select name="requiredTime" class="form-control" id="requiredTime" @if(!in_array($job->status, [0, 1, 2,6])) disabled @endif>
+    <option value="8am-12noon" @if(trim(strtolower(str_replace(' ', '', $job->required_time))) == "8am-12noon") selected @endif>8am - 12noon</option>
+<option value="1pm-5pm" @if(trim(strtolower(str_replace(' ', '', $job->required_time))) == "1pm-5pm") selected @endif>1pm - 5pm</option>
+<option value="4pm-8pm" @if(trim(strtolower(str_replace(' ', '', $job->required_time))) == "4pm-8pm") selected @endif>4pm - 8pm</option>
+
+    </select>
+</div>
 
                 <div class="mb-3">
                     <label for="preferredSex" class="form-label">Preferred Sex</label>
@@ -78,35 +89,12 @@
                     <input type="text" name="endLocation" value="{{ $job->end_location }}" class="form-control" id="endLocation" readonly>
                 </div>
 
-                <!-- <div class="mb-3">
-                    <label for="district" class="form-label">Select Area</label>
-                    <select name="district" class="form-control" id="district_id" onchange="updateWorkers()"@if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
-                        <option value="">Select District</option>
-                        @foreach($districts as $district)
-                            <option value="{{ $district->id }}">{{ $district->name_en }}</option>
-                        @endforeach
-                    </select>
-                </div> -->
-
-                
-                <!-- <div class="mb-3">
-    <label for="district" class="form-label">Select Area</label>
-    <select name="district" class="form-control" id="district_id" onchange="updateWorkers()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
-        <option value="">Select District</option>
-        @foreach($districts as $district)
-            <option value="{{ $district->id }}" @if($district->id == $job->worker_area_id) selected @endif>
-                {{ $district->name_en }}
-            </option>
-        @endforeach
-    </select>
-</div> -->
-
-
+      
 
 <div class="mb-3">
     <label for="district" class="form-label">Select Worker Area</label>
     <select name="district" class="form-control" id="district_id" onchange="updateWorkers()"
-    @if(!in_array($job->status, [0, 6])) disabled @endif>
+    @if(!in_array($job->status, [0, 1,2,6])) disabled @endif>
         <option value="">Select District</option>
         @foreach($districts as $district)
             <option value="{{ $district->id }}"
@@ -120,30 +108,14 @@
 
 
 
-    <!-- Space here--- -->
-                <!-- <div class="mb-3">
-    <label for="workerName" class="form-label">Worker Full Name (First Name and Last Name)</label>
-    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
-        <option value="">Select Worker</option> -->
-        <!-- Options will be added here via AJAX -->
-        <!-- @if($job->worker_id) -->
-            <!-- Display the assigned worker if a worker is assigned -->
-            <!-- @foreach($workers as $worker)
-                @if($job->worker_id == $worker->id) -->
-                    <!-- <option value="{{ $worker->id }}" selected>{{ $worker->first_name }} {{ $worker->last_name }}</option> -->
-                    <!-- <option value="{{ $worker->id }}" @if($job->status != 6 && $job->worker_id == $worker->id) selected @endif>{{ $worker->first_name }} {{ $worker->last_name }}</option>
-                @endif
-            @endforeach
-        @endif
-    </select>
-</div> -->
+
 
 
 
 <!-- Space here ---- -->
 <div class="mb-3">
     <label for="workerName" class="form-label">Worker Full Name (First Name and Last Name)</label>
-    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
+    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [ 3, 4, 5])) disabled @endif>
         <option value="">Select Worker</option>
         @if($job->status != 6 && $job->worker_id)
             <!-- Display the assigned worker if a worker is assigned and job status is not 6 -->
@@ -158,16 +130,7 @@
 </div>
 
 
-<!-- <div class="mb-3">
-    <label for="workerName" class="form-label">Worker Full Name (First Name and Last Name)</label>
-    <select name="workerId" class="form-control" id="workerId" onchange="updateSelectedWorkerId()" @if(in_array($job->status, [1, 2, 3, 4, 5])) disabled @endif>
-                        <option value="">Select Worker</option>
-                        @foreach($workers as $worker)
-                            <option value="{{ $worker->id }}" @if($job->status != 6 && $job->worker_id == $worker->id) selected @endif>{{ $worker->first_name }} {{ $worker->last_name }}</option>
-                        @endforeach
-                    </select>
 
-</div> -->
                 
                 <input type="hidden" name="selectedWorkerId" id="selectedWorkerId">
 
@@ -195,7 +158,12 @@
                     <div class="col-md-6">
                         @if ($job->status === 0)
                             <button type="submit" class="btn btn-primary">Assign</button>
-                        @elseif ($job->status === 6)
+                            <button type="submit" class="btn btn-info">Edit</button>
+                            <button type="button" class="btn btn-danger" onclick="handleCancel({{ $job->jobId }})">Cancel Job</button>
+                        @elseif ($job->status === 1 || $job->status === 2)
+                        <button type="submit" class="btn btn-info">Edit</button>
+                        <button type="button" class="btn btn-danger" onclick="handleCancel({{ $job->jobId }})">Cancel Job</button>
+                        @elseif($job->status === 6)
                             <button type="submit" class="btn btn-primary">Reassign</button>
                         @else
                             <button type="submit" class="btn btn-primary" disabled>Edit</button>
@@ -225,6 +193,10 @@
                 return 'Paid';
             case 6:
                 return 'Worker Rejected';
+            case 7:
+                    return 'Cancelled';
+            case 8:
+                    return 'Awaiting for Bank approval';
             default:
                 return 'Unknown';
         }
@@ -236,10 +208,19 @@
     function updateSelectedWorkerId() {
         var selectedWorkerId = document.getElementById('workerId').value;
         document.getElementById('selectedWorkerId').value = selectedWorkerId;
+        console.log("Selected Worker ID: ", selectedWorkerId); 
         console.log(selectedWorkerId);
     }
 
     function validateForm() {
+        updateSelectedWorkerId(); 
+        var isCancel = event.submitter.innerText === "Cancel"; // Check if the clicked button is 'Cancel'
+    
+    // If it's a cancel action, do not validate the worker selection
+    if (isCancel) {
+        return true; // Allow form submission for cancel
+    }
+    
         var workerId = document.getElementById('workerId').value;
         if (workerId === "") {
             alert("Please select a worker.");
@@ -268,6 +249,38 @@
                 .catch(error => console.error('Error fetching workers:', error));
         }
     }
+    
+
+    function handleCancel(jobId) {
+    // Perform AJAX request to cancel the job
+    if (confirm("Are you sure you want to cancel this job?")) {
+        fetch('{{ route("cancel-job", ":jobId") }}'.replace(':jobId', jobId), {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}', // Include CSRF token
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                // Include any data if needed
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle success
+                alert('Job has been cancelled successfully.');
+                window.location.reload(); // Refresh the page
+            } else {
+                // Handle error
+                alert('An error occurred while cancelling the job.');
+            }
+        })
+        .catch(error => console.error('Error cancelling job:', error));
+    }
+}
+
+
+
+
 </script>
 @endsection
 

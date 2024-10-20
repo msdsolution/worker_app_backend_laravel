@@ -129,7 +129,7 @@ public function getReferralAmount($jobId)
     // If the job is extended, calculate extended hour amount
     if ($jobDetails && $jobDetails->is_extended == 1) {
         // Retrieve the extended hour rate from the extended_hour table
-        $extendedHourRate = DB::table('extended_hour')
+        $extendedHourRate = DB::table('worker_extended_hr_rate')
             ->select('amount')
             ->first(); // Assuming a constant rate for extended hours
         

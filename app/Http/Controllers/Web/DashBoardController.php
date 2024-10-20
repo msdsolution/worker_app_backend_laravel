@@ -39,7 +39,26 @@ class DashBoardController extends Controller
      //->whereMonth('created_at', $currentMonth)
      ->count();
 
-      return view('admin.dashboard', compact('jobCount','clientsCount','Assignedworkcount','Pendingworkcount','Rejectedworkcount','Completedworkcount','CompletedworkPaidcount','UnresolvedJobcomplaints'));
+    // Implementing the unverified worker document check
+    // Step 1: Retrieve unverified workers with user_type = 3
+    $unverifiedWorkers = DB::table('users')
+        ->where('user_type', 3)
+        ->where('is_verified', 0)
+        ->pluck('id');
+
+    // Step 2: Check if they have submitted all required documents (excluding optional documents)
+    $workersWithRequiredDocs = DB::table('user_documents')
+        ->whereIn('user_id', $unverifiedWorkers)
+        ->whereNotIn('doc_id', [4, 8, 5, 9, 6])  // Exclude optional docs
+        ->groupBy('user_id')
+        ->havingRaw('COUNT(doc_id) = (SELECT COUNT(*) FROM documents WHERE id NOT IN (4, 8, 5, 9,6))')
+        ->pluck('user_id');
+
+    // Step 3: Count of workers who have submitted all required documents but are unverified
+    $unverifiedWorkerCount = count($workersWithRequiredDocs);
+
+
+      return view('admin.dashboard', compact('jobCount','clientsCount','Assignedworkcount','Pendingworkcount','Rejectedworkcount','Completedworkcount','CompletedworkPaidcount','UnresolvedJobcomplaints',  'unverifiedWorkerCount'));
     }
     
     public function assignedwokr()
@@ -283,4 +302,30 @@ return view('admin.complaint.index', ['jobs' => $jobsWithComplaints]);
 
 //  return view('admin.complaint.index', ['jobs' => $jobsWithComplaints]);
 }
+public function Worker_unferified_sub_alldoc()
+{
+    // Step 1: Retrieve unverified workers with user_type = 3
+    $unverifiedWorkers = DB::table('users')
+        ->where('user_type', 3)
+        ->where('is_verified', 0)
+        ->pluck('id');
+
+    // Step 2: Check user documents (excluding optional docs)
+    $workersWithRequiredDocs = DB::table('user_documents')
+        ->whereIn('user_id', $unverifiedWorkers)
+        ->whereNotIn('doc_id', [4, 8, 5, 9, 6])  // Exclude optional documents
+        ->groupBy('user_id')
+        ->havingRaw('COUNT(doc_id) = (SELECT COUNT(*) FROM documents WHERE id NOT IN (4, 8, 5, 9, 6))')  // Ensure all required docs are submitted
+        ->pluck('user_id');
+
+    // Step 3: Retrieve details of workers with submitted but unverified documents
+    $employees = User::withTrashed()  // Include soft-deleted records if applicable
+        ->whereIn('id', $workersWithRequiredDocs)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    // Step 4: Pass the employee data to the view
+    return view('admin.employee.index', compact('employees'));
+}
+
 }

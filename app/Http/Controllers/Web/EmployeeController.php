@@ -53,6 +53,7 @@ class EmployeeController extends Controller
         $employee -> location = $data['location'];
         $employee -> user_address = $data['user_address'];
         $employee -> phone_no = $data['phone_no'];
+        $employee -> description = $data['description'];
        // $employee->status = 1;
         $employee->user_type = 3;
         $employee -> save();
@@ -131,7 +132,7 @@ class EmployeeController extends Controller
        $employee -> location = $data['location']; 
        $employee -> user_address = $data['user_address']; 
        $employee -> phone_no = $data['phone_no']; 
-
+       $employee -> description = $data['description'];
         $employee -> update();
 
         $documentMap = [
