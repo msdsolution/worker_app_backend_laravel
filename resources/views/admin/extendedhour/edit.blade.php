@@ -28,7 +28,7 @@
                     <!-- Display hour_extended for workers and hr_extended for clients -->
                     <input type="number" name="hour_extended" 
                            value="{{ $exted_hr->hour_extended ?? $exted_hr->hr_extended }}" 
-                           class="form-control">
+                           class="form-control" readonly>
                 </div>
                 
                 <div class="mb-3">

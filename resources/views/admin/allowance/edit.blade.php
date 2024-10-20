@@ -24,7 +24,7 @@
 
                 <div class="mb-3">
                     <label >KM</label>
-                    <input type="number" name="km" value="{{$kilomrate -> km}}" class="form-control">
+                    <input type="number" name="km" value="{{$kilomrate -> km}}" class="form-control" readonly>
                 </div>
                 
                 <div class="mb-3">
