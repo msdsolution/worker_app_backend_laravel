@@ -202,7 +202,7 @@ class WorkerJobApiController extends Controller
         if ($exists) {
          return response()->json([
                         'status' => 200,
-                        'success' => true,
+                        'success' => false,
                         'message' => 'Already one job is started. Please finish the job to start new job.',
                     ], 200);
         } else {
