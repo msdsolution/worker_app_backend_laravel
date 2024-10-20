@@ -144,7 +144,7 @@
                 'id': id
             },
             success: function(data){
-                // Handle success
+               
             }
         });
     });
