@@ -95,13 +95,11 @@ class JobListingController extends Controller
         ->leftJoin('cities', 'job.city_id', '=', 'cities.id') 
         ->where('job.id', $jobId)
         ->first();
-
         $district = DB::table('cities')
         ->leftJoin('districts', 'cities.district_id', '=', 'districts.id')
         ->where('cities.id', $job->city_id)
         ->select('districts.name_en as districtName')
         ->first();
-
         $attachments = DB::table('job_attachments')
         ->where('job_id', $jobId)
         ->select('id', 'img_url', 'job_id')
@@ -144,13 +142,17 @@ class JobListingController extends Controller
     // Retrieve the details of the job being assigned
     $newJobRequiredDate = $job->required_date;
     $newJobRequiredTime = $job->required_time;
+
+   // dd("First".$newJobRequiredTime);
+   // dd("First".$newJobRequiredDate);
     // Find overlapping jobs for the selected worker
 
     $requestedDate = $request->input('requiredDate');
+    $requestedTime = $request->input('requiredTime');
     $formattedRequestedDate = Carbon::parse($requestedDate)->format('M d, Y');
 
     $requestedDayOfWeek = Carbon::parse($requestedDate)->format('l');
-
+//dd("second".$requestedTime );
     // Check if the requested date is a holiday
   // Check if the formatted requested date is a holiday
 $isHoliday = DB::table('holiday')->where('date', $formattedRequestedDate)->exists();
@@ -214,10 +216,10 @@ $isHoliday = DB::table('holiday')->where('date', $formattedRequestedDate)->exist
     $overlappingJobs = DB::table('job')
         ->where('worker_id', $selectedWorkerId)
         ->where('id', '<>', $jobId) // Exclude the current job being updated
-        ->where(function($query) use ($newJobRequiredDate, $newJobRequiredTime) {
+        ->where(function($query) use ($requestedDate, $requestedTime) {
             $query->whereNotIn('status', [5, 4,3]) // Exclude jobs that are finished (status 5) or paid (status 7)
-                ->where('required_date', $newJobRequiredDate)
-                ->where('required_time', $newJobRequiredTime);
+                ->where('required_date', $requestedDate)
+                ->where('required_time', $requestedTime);
         })
         ->exists(); // Check if there are any overlapping jobs
 
@@ -227,36 +229,49 @@ $isHoliday = DB::table('holiday')->where('date', $formattedRequestedDate)->exist
     }
 
      // Additional checks for shift assignments
-     $morningShift = '8am -12pm';
-     $afternoonShift = '1pm - 5pm';
-     $eveningShift = '4pm - 8pm';
+     $morningShift = '8am-12noon';
+     $afternoonShift = '1pm-5pm';
+     $eveningShift = '4pm-8pm';
  
+$morningShift = strtolower(trim($morningShift));
+$afternoonShift = strtolower(trim($afternoonShift));
+$eveningShift = strtolower(trim($eveningShift));
+
      // Get the shifts for the new job being assigned
-     $isMorningShift = ($newJobRequiredTime === $morningShift);
-     $isAfternoonShift = ($newJobRequiredTime === $afternoonShift);
-     $isEveningShift = ($newJobRequiredTime === $eveningShift);
+     $isMorningShift = ($requestedTime === $morningShift);
+     $isAfternoonShift = ($requestedTime === $afternoonShift);
+     $isEveningShift = ($requestedTime === $eveningShift);
  
+
+
+     Log::info('Requested Time: ' . $requestedTime);
+Log::info('Morning Shift: ' . $morningShift);
+Log::info('isMorningShift: ' . ($isMorningShift ? 'true' : 'false'));
+
      // Check for existing jobs assigned to the selected worker on the same date
      $existingJobs = DB::table('job')
          ->where('worker_id', $selectedWorkerId)
          ->where('id', '<>', $jobId) // Exclude the current job being updated
-         ->where('required_date', $newJobRequiredDate)
+         ->where('required_date', $requestedDate)
          ->whereNotIn('status', [5, 4, 3]) // Exclude finished or paid jobs
          ->get();
- 
+
      foreach ($existingJobs as $existingJob) {
          $existingTime = $existingJob->required_time;
  
+        //  Log::info('Existing Time: ' . $existingTime);
+        //  Log::info('isMorningShift: ' . $isMorningShift );
+        //  Log::info('isMorningShift2: ' .      $morningShift  );
+
          // Condition 1: Check if the worker is assigned to the same time
-         if ($existingTime === $newJobRequiredTime) {
+         if ($existingTime === $requestedTime) {
              return redirect()->back()->with('error', 'The selected worker is already assigned to another job at the same time.');
          }
- 
          // Condition 2: Morning shift can only allow one evening shift assignment
-         if ($isMorningShift && ($existingTime === $afternoonShift || $existingTime === $eveningShift)) {
-             return redirect()->back()->with('error', 'The selected worker is already assigned to an evening shift.');
-         }
- 
+        //  if ($isMorningShift && ($existingTime === $afternoonShift || $existingTime === $eveningShift)) {
+        //      return redirect()->back()->with('error', 'The selected worker is already assigned to an evening shift.');
+        //  }
+
          // Condition 3: If the worker is assigned to the afternoon shift, they cannot be assigned to the evening shift
          if ($isAfternoonShift && $existingTime === $eveningShift) {
              return redirect()->back()->with('error', 'The selected worker is already assigned to an evening shift.');
@@ -274,7 +289,8 @@ $isHoliday = DB::table('holiday')->where('date', $formattedRequestedDate)->exist
     $job->worker_area_id = $selectedDistrictId;
    // $job->required_date = $request->input('requiredDate');
    $job->required_date = $requestedDate;
-    $job->required_time = $request->input('requiredTime');
+   $job->required_time = $requestedTime;
+   // $job->required_time = $request->input('requiredTime');
     if ($shouldUpdateStatus) {
         $job->status = 1; // Assuming you want to set it to assigned status
     }
