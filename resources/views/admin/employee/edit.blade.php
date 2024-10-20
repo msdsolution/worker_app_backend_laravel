@@ -95,7 +95,7 @@
 
                             </div>
                         @endif
-                        <button type="button" class="btn btn-danger btn-sm mt-2 delete-document" data-id="{{ $document->id }}">Delete</button>
+                        <button type="button" class="btn btn-danger btn-sm mt-2 delete-document" data-id="{{ $document->id }}"@if(auth()->user()->user_type == 4) disabled @endif >Delete</button>
                     @endif
                     
                 </div>
@@ -103,7 +103,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">Update Employee</button>
+                    <button type="submit" class="btn btn-primary" @if(auth()->user()->user_type == 4) disabled @endif>Update Employee</button>
                     </div>
                 </div>
             </form>

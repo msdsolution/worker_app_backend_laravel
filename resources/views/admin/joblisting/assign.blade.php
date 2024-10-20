@@ -62,9 +62,10 @@
                 <div class="mb-3">
     <label for="requiredTime" class="form-label">Required Time</label>
     <select name="requiredTime" class="form-control" id="requiredTime" @if(!in_array($job->status, [0, 1, 2,6])) disabled @endif>
-        <option value="8am-12pm" @if($job->required_time == '8am-12pm') selected @endif>8am - 12pm</option>
-        <option value="1pm-5pm" @if($job->required_time == '1pm-5pm') selected @endif>1pm - 5pm</option>
-        <option value="4pm-8pm" @if($job->required_time == '4pm-8pm') selected @endif>4pm - 8pm</option>
+    <option value="8am-12noon" @if(trim(strtolower(str_replace(' ', '', $job->required_time))) == "8am-12noon") selected @endif>8am - 12noon</option>
+<option value="1pm-5pm" @if(trim(strtolower(str_replace(' ', '', $job->required_time))) == "1pm-5pm") selected @endif>1pm - 5pm</option>
+<option value="4pm-8pm" @if(trim(strtolower(str_replace(' ', '', $job->required_time))) == "4pm-8pm") selected @endif>4pm - 8pm</option>
+
     </select>
 </div>
 
@@ -158,10 +159,10 @@
                         @if ($job->status === 0)
                             <button type="submit" class="btn btn-primary">Assign</button>
                             <button type="submit" class="btn btn-secondary">Edit</button>
-                            <button type="button" class="btn btn-secondary" onclick="handleCancel({{ $job->jobId }})">Cancel</button>
+                            <button type="button" class="btn btn-secondary" onclick="handleCancel({{ $job->jobId }})">Cancel Job</button>
                         @elseif ($job->status === 1 || $job->status === 2)
                         <button type="submit" class="btn btn-secondary">Edit</button>
-                        <button type="button" class="btn btn-secondary" onclick="handleCancel({{ $job->jobId }})">Cancel</button>
+                        <button type="button" class="btn btn-secondary" onclick="handleCancel({{ $job->jobId }})">Cancel Job</button>
                         @elseif($job->status === 6)
                             <button type="submit" class="btn btn-primary">Reassign</button>
                         @else
@@ -194,6 +195,8 @@
                 return 'Worker Rejected';
             case 7:
                     return 'Cancelled';
+            case 8:
+                    return 'Awaiting for Bank approval';
             default:
                 return 'Unknown';
         }

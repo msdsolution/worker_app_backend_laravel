@@ -49,9 +49,9 @@ class DashBoardController extends Controller
     // Step 2: Check if they have submitted all required documents (excluding optional documents)
     $workersWithRequiredDocs = DB::table('user_documents')
         ->whereIn('user_id', $unverifiedWorkers)
-        ->whereNotIn('doc_id', [4, 8, 5, 9])  // Exclude optional docs
+        ->whereNotIn('doc_id', [4, 8, 5, 9, 6])  // Exclude optional docs
         ->groupBy('user_id')
-        ->havingRaw('COUNT(doc_id) = (SELECT COUNT(*) FROM documents WHERE id NOT IN (4, 8, 5, 9))')
+        ->havingRaw('COUNT(doc_id) = (SELECT COUNT(*) FROM documents WHERE id NOT IN (4, 8, 5, 9,6))')
         ->pluck('user_id');
 
     // Step 3: Count of workers who have submitted all required documents but are unverified
@@ -313,9 +313,9 @@ public function Worker_unferified_sub_alldoc()
     // Step 2: Check user documents (excluding optional docs)
     $workersWithRequiredDocs = DB::table('user_documents')
         ->whereIn('user_id', $unverifiedWorkers)
-        ->whereNotIn('doc_id', [4, 8, 5, 9])  // Exclude optional documents
+        ->whereNotIn('doc_id', [4, 8, 5, 9, 6])  // Exclude optional documents
         ->groupBy('user_id')
-        ->havingRaw('COUNT(doc_id) = (SELECT COUNT(*) FROM documents WHERE id NOT IN (4, 8, 5, 9))')  // Ensure all required docs are submitted
+        ->havingRaw('COUNT(doc_id) = (SELECT COUNT(*) FROM documents WHERE id NOT IN (4, 8, 5, 9, 6))')  // Ensure all required docs are submitted
         ->pluck('user_id');
 
     // Step 3: Retrieve details of workers with submitted but unverified documents
