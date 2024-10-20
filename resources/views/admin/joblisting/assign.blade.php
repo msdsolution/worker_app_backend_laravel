@@ -56,7 +56,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="requiredDate" class="form-label">Required Date</label>
-                    <input type="date" name="requiredDate" value="{{ $job->required_date }}" class="form-control" id="requiredDate" @if(!in_array($job->status, [0, 1, 2,6])) readonly @endif>
+                    <input type="date" name="requiredDate" value="{{ $job->required_date }}" min="{{ \Carbon\Carbon::today()->format('Y-m-d') }}"class="form-control" id="requiredDate" @if(!in_array($job->status, [0, 1, 2,6])) readonly @endif>
                 </div>
 
                 <div class="mb-3">
@@ -158,11 +158,11 @@
                     <div class="col-md-6">
                         @if ($job->status === 0)
                             <button type="submit" class="btn btn-primary">Assign</button>
-                            <button type="submit" class="btn btn-secondary">Edit</button>
-                            <button type="button" class="btn btn-secondary" onclick="handleCancel({{ $job->jobId }})">Cancel Job</button>
+                            <button type="submit" class="btn btn-info">Edit</button>
+                            <button type="button" class="btn btn-danger" onclick="handleCancel({{ $job->jobId }})">Cancel Job</button>
                         @elseif ($job->status === 1 || $job->status === 2)
-                        <button type="submit" class="btn btn-secondary">Edit</button>
-                        <button type="button" class="btn btn-secondary" onclick="handleCancel({{ $job->jobId }})">Cancel Job</button>
+                        <button type="submit" class="btn btn-info">Edit</button>
+                        <button type="button" class="btn btn-danger" onclick="handleCancel({{ $job->jobId }})">Cancel Job</button>
                         @elseif($job->status === 6)
                             <button type="submit" class="btn btn-primary">Reassign</button>
                         @else
