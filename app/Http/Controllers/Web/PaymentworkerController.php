@@ -115,7 +115,7 @@ public function getReferralAmount($jobId)
     // Retrieve job details, including status, tip, and extended hour information
     $jobDetails = DB::table('job')
         ->where('id', $jobId)
-        ->select('status', 'is_worker_tip', 'worker_tip_amount', 'is_extended', 'extended_hrs')
+        ->select('status', 'is_worker_tip', 'worker_tip_amount', 'is_extended', 'extended_hrs','is_travelled','travelled_km')
         ->first();
 
     // Initialize worker amount (from job service category or 0 if not available)
@@ -138,6 +138,20 @@ public function getReferralAmount($jobId)
             $extendedHourAmount = $extendedHourRate->amount * $jobDetails->extended_hrs;
             // Add the extended hour amount to the worker amount
             $workerAmount += $extendedHourAmount;
+        }
+    }
+       // If the worker traveled, calculate the transportation cost
+       if ($jobDetails && $jobDetails->is_travelled == 1) {
+
+        // Retrieve the transportation rate from the transpotation_km_rate table
+            $transportationRate = DB::table('transpotation_km_rate')
+            ->select('amount')
+            ->first(); 
+
+        if ($transportationRate) {
+            $travelAmount = $transportationRate->amount *  $jobDetails->travelled_km;
+            // Add the travel amount to the worker amount
+            $workerAmount += $travelAmount;
         }
     }
 
