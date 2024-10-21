@@ -293,7 +293,7 @@ VBGYCZ5APiEyipPLiQIDAQAB
             // If the job is extended, calculate the extended hour amount
             if ($job->is_extended == 1) {
                 // Get the amount for the extended hours
-                $extendedHourRate = DB::table('extended_hour')
+                $extendedHourRate = DB::table('refferal_extended_hr_rate')
                     ->select('amount')
                     ->first(); // Assuming amount is constant for all extended hours
                 
@@ -303,8 +303,23 @@ VBGYCZ5APiEyipPLiQIDAQAB
                 }
             }
 
+            $travelledAllowanceAmount = 0;
+
+            // If the job has travel allowance, calculate travelled allovance
+            if ($job->is_travelled == 1) {
+                //Get the amount for 1km travel allowance
+                $travelledAllowanceRate = DB::table('transpotation_km_rate')
+                    ->select('amount')
+                    ->first();
+
+                //Calculate travel allowance
+                if ($travelledAllowanceRate) {
+                   $travelledAllowanceAmount = $travelledAllowanceRate->amount * $job->travelled_km;
+                }
+            }
+
             // Calculate grand total
-            $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount;
+            $grandTotal = ($referalAmount->refferal_amount ?? 0) + $extendedHourAmount + $travelledAllowanceAmount;
 
             if ($responseVariables[6] > $grandTotal) {
                 $job->is_worker_tip = 1;
